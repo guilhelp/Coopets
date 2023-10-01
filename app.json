@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "Coopets",
+    "slug": "Coopets",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#745147"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.coopets.Coopets"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.coopets.Coopets"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ca189f98-ba63-40ba-8693-6fe79069fb58"
+      }
+    }
+  }
+}
