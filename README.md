@@ -26,7 +26,7 @@ $ npm install
 ### Executar o Mobile
 
 ```bash
-# Execute em outro terminal (dentro da pasta AluraEsporte)
+# Execute em outro terminal (dentro da pasta Coopets)
 $ npx expo start
 ```
 
