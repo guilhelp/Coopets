@@ -14,10 +14,10 @@ No terminal, digite os comandos a seguir:
 
 ```bash
 # Clonar esse repositório
-$ git clone https://github.com/alura-cursos/react-native-firebase-authentication.git
+$ git clone [https://github.com/alura-cursos/react-native-firebase-authentication.git](https://github.com/guilhelp/Coopets)
 
 # Vá para o ropositório
-$ cd react-native-firebase-authentication
+$ cd coopetsapp
 
 # Instale as dependências
 $ npm install
