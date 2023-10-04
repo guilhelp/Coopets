@@ -47,7 +47,7 @@ export default function ConsultarDocumentos({ route }) {
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.returnButton}>
-                            <MaterialIcons name={'keyboard-return'} size={55} color="white" style={styles.returnIcon} />
+                            <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage(petPedigree)}>
                             <Text style={styles.title}>PEDIGREE</Text>

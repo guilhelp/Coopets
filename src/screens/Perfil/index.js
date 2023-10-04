@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Image } from 'react-native';
-import { doc, getDoc, deleteDoc, getDocs, query, collection, where, } from 'firebase/firestore';
+import { ImageBackground, View, Text, TouchableOpacity, ScrollView, Image, StyleSheet, ActivityIndicator } from 'react-native';
+import { doc, getDoc, deleteDoc, getDocs, query, collection, where } from 'firebase/firestore';
 import { db, auth, storage } from '../../config/Firebase';
 import { ref, deleteObject, listAll, uploadString } from 'firebase/storage';
 import { deleteUser, signOut } from 'firebase/auth';
@@ -18,6 +18,9 @@ import { Roboto_900Black } from '@expo-google-fonts/roboto';
 import Background from '../../assets/Background/Background.png'
 import ConfirmationModal from '../../components/ModalConfirma';
 
+// Importanto imagens
+import LogoBranca from '../../assets/Logo/Logo_FundoBranco.png';
+
 export default function Perfil() {
     let [fontsLoaded, fontError] = useFonts({
         LuckiestGuy_400Regular,
@@ -33,7 +36,7 @@ export default function Perfil() {
     const [petRef, setPetRef] = useState(null);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [password, setPassword] = useState('');
-
+    const [isLoading, setIsLoading] = useState(true);
 
 
     const handleSignOut = async () => {
@@ -134,10 +137,13 @@ export default function Perfil() {
                     }
                 }
             }
+            setIsLoading(true)
         } catch (error) {
             console.log('Erro ao recuperar os dados do pet:', error);
             setPetData(null); // Define os dados como null em caso de erro
-            setLoading(false);
+            
+        }finally {
+            setIsLoading(false)
         }
     };
 
@@ -316,6 +322,13 @@ export default function Perfil() {
     return (
         <ImageBackground source={Background} style={styles.background}>
             <Header title="PERFIL" iconName="supervised-user-circle" />
+            {isLoading && (
+                <View style={[styles.loadingOverlay, StyleSheet.absoluteFillObject]}>
+                    <Image source={LogoBranca} style={styles.imagemLogo} />
+                    <Text style={styles.carregando}>Carregando</Text>
+                    <ActivityIndicator size="large" color="#FFF" />
+                </View>
+            )}
             <ScrollView>
                 <View style={styles.container}>
                     <View style={styles.containerImagemSair}>

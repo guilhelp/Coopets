@@ -6,7 +6,7 @@ import { doc, setDoc, collection, getDoc, getDocs, query, where, updateDoc } fro
 import { getDownloadURL, ref, uploadBytesResumable, uploadBytes, deleteObject } from '@firebase/storage';
 import { useNavigation } from '@react-navigation/native';
 import { updateEmail } from 'firebase/auth';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import SelectDropdown from 'react-native-select-dropdown';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -559,7 +559,7 @@ export default function EditarPerfil() {
                         <View style={styles.container}>
                             <View style={styles.buttonContainer}>
                                 <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
-                                    <MaterialIcons name={'keyboard-return'} size={55} color="white" style={styles.returnIcon} />
+                                <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.inputContainerPerfil}>

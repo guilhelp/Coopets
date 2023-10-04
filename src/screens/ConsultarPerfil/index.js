@@ -1,13 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { ImageBackground, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { ImageBackground, View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import DenunciaPopup from '../../components/DenunciaPopUp';
+import {
+    collection,
+    doc,
+    query,
+    where,
+    getDocs,
+    getDoc,
+    onSnapshot,
+    addDoc,
+    ActivityIndicator
+} from 'firebase/firestore';
+import { db, auth } from '../../config/Firebase';
+
 // Estilos
 import styles from './styles';
 import Background from '../../assets/Background/Background.png'
 import Header from '../../components/Header';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+
+
 
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
@@ -36,6 +51,7 @@ export default function ConsultarPerfil({ route }) {
     const { petCep } = route.params
     const [endereco, setEndereco] = useState('');
     const [isDenunciaPopupVisible, setDenunciaPopupVisible] = useState(false);
+
 
     const calculateAge = () => {
         const currentDate = new Date();
@@ -98,25 +114,23 @@ export default function ConsultarPerfil({ route }) {
         setDenunciaPopupVisible(true);
     };
 
-    const handleCloseDenunciaPopup = () => {
-        setDenunciaPopupVisible(false);
-    };
-
     // Função para enviar uma denúncia
     const enviarDenuncia = async (motivoDenuncia, idUsuarioQueDenunciou, idUsuarioQueRecebeu) => {
         try {
-            // Referência para a coleção "denuncias" no Firestore
-            const denunciaRef = collection(db, 'denuncias');
-
-            // Crie um novo documento na coleção "denuncias" com os dados da denúncia
-            const novaDenuncia = await denunciaRef.add({
+            if (motivoDenuncia && typeof motivoDenuncia === 'string' && motivoDenuncia !== '[object Object]') {
+            // Criar um documento na coleção "likes" com as referências corretas dos pets
+            await addDoc(collection(db, 'denuncias'), {
                 motivo: motivoDenuncia,
                 idDenunciante: idUsuarioQueDenunciou,
                 idRecebedor: idUsuarioQueRecebeu,
-                data: new Date(), // Adicione a data e hora da denúncia (você pode usar o formato que preferir)
+                data: new Date(),
             });
-
-            console.log('Denúncia enviada com sucesso. ID da denúncia:', novaDenuncia.id);
+           
+            console.log('Denúncia enviada com sucesso.');
+        } else {
+            // Caso o usuário não tenha selecionado um motivo de denúncia válido, você pode exibir uma mensagem de erro ou tomar outra ação apropriada.
+            console.error('Selecione um motivo de denúncia válido');
+          }
         } catch (error) {
             console.error('Erro ao enviar a denúncia:', error);
         }
@@ -125,14 +139,30 @@ export default function ConsultarPerfil({ route }) {
     // ...
 
     const handleSubmitDenuncia = (motivoDenuncia) => {
-        // Substitua idDoUsuarioQueDenunciou e idDoUsuarioQueRecebeu pelos IDs reais dos usuários envolvidos na denúncia.
-        const idDoUsuarioQueDenunciou = 'ID_DO_USUARIO_DENUNCIANTE';
-        const idDoUsuarioQueRecebeu = 'ID_DO_USUARIO_RECEBEDOR';
+        // Verifique se um motivo de denúncia válido foi selecionado
+        if (motivoDenuncia) {
+          // Substitua idDoUsuarioQueDenunciou e idDoUsuarioQueRecebeu pelos IDs reais dos usuários envolvidos na denúncia.
+          const idDoUsuarioQueDenunciou = auth.currentUser.uid;
+          const idDoUsuarioQueRecebeu = petId;
+      
+          // Certifique-se de que motivoDenuncia seja uma string simples
+          const motivoDenunciaString = motivoDenuncia.toString();
+      
+          // Envie a denúncia com os dados necessários
+          enviarDenuncia(motivoDenunciaString, idDoUsuarioQueDenunciou, idDoUsuarioQueRecebeu);
+      
+          // Feche o popup após o envio
+          setDenunciaPopupVisible(false);
+        } else {
+          // Caso o motivo de denúncia não seja válido, defina-o como null
+          motivoDenuncia = null;
+      
+          // Exiba uma mensagem de erro ou tome outra ação apropriada
+          console.error('Selecione um motivo de denúncia válido');
+        }
+      };
 
-        // Envie a denúncia com os dados necessários
-        enviarDenuncia(motivoDenuncia, idDoUsuarioQueDenunciou, idDoUsuarioQueRecebeu);
-
-        // Feche o popup após o envio
+    const handleCloseDenunciaPopup = () => {
         setDenunciaPopupVisible(false);
     };
 
@@ -145,6 +175,7 @@ export default function ConsultarPerfil({ route }) {
 
     return (
         <ImageBackground source={Background} style={styles.background}>
+           
             <Header title={petNome} iconName="pets" />
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.container}>
@@ -152,7 +183,7 @@ export default function ConsultarPerfil({ route }) {
                         <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
                             <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={handleSubmitDenuncia} style={styles.denunciarButton}>
+                        <TouchableOpacity onPress={handleDenunciar} style={styles.denunciarButton}>
                             <Ionicons name={'alert'} size={50} color="white" style={styles.denunciarIcon} />
                         </TouchableOpacity>
                     </View>

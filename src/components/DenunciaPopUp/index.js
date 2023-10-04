@@ -9,9 +9,16 @@ const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
+    // Verifique se uma opção foi selecionada antes de chamar onSubmit
     if (selectedOption !== null) {
       onSubmit(selectedOption);
+    } else {
+      // Se nenhum motivo for selecionado, você pode exibir uma mensagem de erro ou tomar outra ação apropriada.
+      console.error('Selecione um motivo de denúncia válido');
     }
+
+    // Feche o popup após o envio (independentemente de uma opção ser selecionada ou não)
+    onClose();
   };
 
   return (
@@ -28,7 +35,7 @@ const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
             style={styles.option}
             onPress={() => handleOptionChange('Opção 1')}
           >
-            <Text>Opção 1</Text>
+            <Text>Perfil com foto ou nome indevido</Text>
             {selectedOption === 'Opção 1' && (
               <Text>Selecionado</Text>
             )}
@@ -37,7 +44,7 @@ const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
             style={styles.option}
             onPress={() => handleOptionChange('Opção 2')}
           >
-            <Text>Opção 2</Text>
+            <Text>Perfil com foto de pedigree e/ou vacinação indevido</Text>
             {selectedOption === 'Opção 2' && (
               <Text>Selecionado</Text>
             )}
@@ -46,7 +53,7 @@ const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
             style={styles.option}
             onPress={() => handleOptionChange('Opção 3')}
           >
-            <Text>Opção 3</Text>
+            <Text>Perfil abusando do uso dos bate-papos</Text>
             {selectedOption === 'Opção 3' && (
               <Text>Selecionado</Text>
             )}

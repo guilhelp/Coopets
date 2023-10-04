@@ -12,7 +12,7 @@ const styles = StyleSheet.create ({
   },
   background: {
     width: wp('100%'),
-    height: hp('105%'),
+    height: hp('100%'),
   },
   buttonContainer:{
     flexDirection: 'row'

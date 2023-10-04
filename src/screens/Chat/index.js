@@ -10,7 +10,7 @@ import Background from '../../assets/Background/Background.png'
 import { MaterialIcons } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import ChatOptionsMenu from '../../components/ChatOptions';
-
+import { Ionicons } from '@expo/vector-icons';
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
@@ -62,9 +62,9 @@ export default function Chat({ route }) {
         }
       }
     };
-  
+
     registerForPushNotifications();
-  
+
     // Subscreva-se para ouvir novas mensagens
     const room = getRoomId();
     const chatReference = ref(database, `messages/${room}`);
@@ -72,7 +72,7 @@ export default function Chat({ route }) {
       const newMessages = snapshot.val();
       if (newMessages) {
         setDisplayMessages(newMessages);
-  
+
         // Envie uma notificação quando uma nova mensagem for recebida
         const lastMessage = newMessages[newMessages.length - 1];
         if (lastMessage.userId !== myId) {
@@ -87,7 +87,7 @@ export default function Chat({ route }) {
       title: 'Nova mensagem',
       body: message,
     };
-  
+
     await Notifications.scheduleNotificationAsync({
       content: notificationContent,
       trigger: null, // Notificação imediata
@@ -101,10 +101,10 @@ export default function Chat({ route }) {
       const newMessages = snapshot.val();
       if (newMessages) {
         setDisplayMessages(newMessages);
-  
+
         // Obtenha a última mensagem
         const lastMessage = newMessages[newMessages.length - 1];
-  
+
         // Verifique se a última mensagem foi enviada pela outra pessoa
         if (lastMessage.userId !== myId) {
           // Envie a notificação apenas quando a outra pessoa enviar uma mensagem
@@ -141,9 +141,9 @@ export default function Chat({ route }) {
       console.log("Message has been sent successfully! ✨")
       console.log(`${petResp}: ${message}`)
       // Envie a notificação apenas se a mensagem for enviada pela outra pessoa
-    if (petResp !== myId) {
-      sendNotificationIfNeeded(message);
-    }
+      if (petResp !== myId) {
+        sendNotificationIfNeeded(message);
+      }
     } catch (error) {
       console.error("Something gone wrong with the chat thing!")
       console.error(error)
@@ -341,7 +341,7 @@ export default function Chat({ route }) {
       </View>
       <View style={styles.botoesContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
-          <MaterialIcons name={'keyboard-return'} size={55} color="white" style={styles.returnIcon} />
+          <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={toggleOptionsModal} style={styles.optionButton}>
           <SimpleLineIcons name={'options-vertical'} size={40} color="white" style={styles.optionIcon} />
