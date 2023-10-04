@@ -36,5 +36,4 @@ yarn-error.*
 
 .env
 
-src/config/Firebase.js
 
