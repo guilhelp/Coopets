@@ -13,27 +13,87 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
 
     },
+    
+    // Cabeçalho da página
+    cabecalhoPagina: {
+        zIndex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#573C35',
+        width: wp('100%'),
+        height: hp('20%'),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    tituloCabecalho: {
+        marginTop: '8%',
+        fontSize: wp('10%'),
+        fontFamily: 'LuckiestGuy_400Regular',
+        color: '#FFF',
+        paddingHorizontal: 20
+    },
+    logoImage: {
+        width: 80,
+        height: 80,
+        marginTop: 20,
+    },
+    filterButton: {
+        width: 70,
+        height: 70,
+        marginTop: 20,
+
+    },
+
+
+    // Cards dos pets
     cardContainer: {
         width: wp('95%'),
         height:  hp('65%'),
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 140,
-
     },
-    messageContainer: {
+    image: {
         width: '100%',
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 30,
-
     },
-    messageText: {
+
+    
+    // Botão de perfil
+    buttonPerfilContainer:{
+        bottom: 500,
+        width: 1000,
+        height: 150,
+        padding: 16,
+        left: 210,
         fontFamily: 'Roboto_900Black',
-        fontSize: wp('7%'),
+    },
+    buttonPerfil:{
+        backgroundColor: '#573C35',
+        width: 120,
+        height: 50,
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 10,
+        marginHorizontal: 30,
+    },
+    buttonPerfilText:{
+        color: '#FFF',
+        fontFamily: 'Roboto_900Black',
+        fontSize: wp('5%'),
+    },
+    
+    
+    // Informações card
+    petInfoContainer: {
+        position: 'absolute',
+        bottom: 50,
+        width: 1000,
+        height: 150,
+        padding: 16,
+        fontFamily: 'Roboto_900Black',
     },
     name: {
         fontSize: wp('7%'),
@@ -55,6 +115,8 @@ export const styles = StyleSheet.create({
         width: wp('95%'),
         height:  hp('60%'),
     },
+
+    // Efeito de gradiente do card
     overlayContainer: {
         position: 'absolute',
         width: wp('100%'),
@@ -65,20 +127,23 @@ export const styles = StyleSheet.create({
     gradient: {
         ...StyleSheet.absoluteFillObject,
     },
-    image: {
+    
+    // Não há mais pets
+    messageContainer: {
         width: '100%',
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+        marginBottom: 30,
     },
-    petInfoContainer: {
-        position: 'absolute',
-        bottom: 50,
-        width: 1000,
-        height: 150,
-        padding: 16,
+    messageText: {
         fontFamily: 'Roboto_900Black',
+        fontSize: wp('7%'),
+        justifyContent: 'center',
+        alignItems: 'center',
     },
+
+    // Botões de like e dislike
     button: {
         backgroundColor: '#573C35',
         width: 140,
@@ -106,6 +171,8 @@ export const styles = StyleSheet.create({
         width: wp('13%'),
         height: hp('6%'),
     },
+
+    // Pop-up do match
     matchPopup: {
         position: 'absolute',
         top: 0,
@@ -115,35 +182,6 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.7)', // Fundo semi-transparente
-
-    },
-    cabecalhoPagina: {
-        zIndex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#573C35',
-        width: wp('100%'),
-        height: hp('20%'),
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    tituloCabecalho: {
-        marginTop: '8%',
-        fontSize: wp('10%'),
-        fontFamily: 'LuckiestGuy_400Regular',
-        color: '#FFF',
-        paddingHorizontal: 20
-    },
-    petImage: {
-        width: 80,
-        height: 80,
-        marginTop: 20,
-    },
-    filterButton: {
-        width: 70,
-        height: 70,
-        marginTop: 20,
-
     },
     closePopupButton: {
         borderRadius: 8,
@@ -166,5 +204,32 @@ export const styles = StyleSheet.create({
     petchMatch: {
         fontFamily: 'Roboto_900Black',
         fontSize: 20,
-    }
+    },
+
+    // Tela de carregamento
+    imagemLogo:{
+        width: wp('60%'),
+        height: hp('30%'),
+    },
+    carregando:{
+        color: '#FFFFFF',
+        fontSize: 30,
+        fontFamily: 'Roboto_900Black',
+        marginBottom: 10,
+    },
+    loadingOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        zIndex: 4,
+      },
+      overlay: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+      },
 });

@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
     // Container dos botões cadastrar e esqueci senha
 
     botoesContainer: {
-        marginTop: '8%',
+        marginTop: '3%',
         marginBottom: 10,
         flexDirection: 'row',
         justifyContent: 'space-evenly'

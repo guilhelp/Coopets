@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { ImageBackground, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-
+import DenunciaPopup from '../../components/DenunciaPopUp';
 // Estilos
 import styles from './styles';
 import Background from '../../assets/Background/Background.png'
 import Header from '../../components/Header';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
@@ -35,29 +35,30 @@ export default function ConsultarPerfil({ route }) {
     const { petRaca } = route.params
     const { petCep } = route.params
     const [endereco, setEndereco] = useState('');
-  
+    const [isDenunciaPopupVisible, setDenunciaPopupVisible] = useState(false);
+
     const calculateAge = () => {
         const currentDate = new Date();
         const birthDate = new Date(petIdade); // Converter a string em um objeto Date
-        
-      
+
+
         const ageInMilliseconds = currentDate - birthDate;
         const ageInSeconds = ageInMilliseconds / 1000;
         const ageInMinutes = ageInSeconds / 60;
         const ageInHours = ageInMinutes / 60;
         const ageInDays = ageInHours / 24;
-      
+
         if (ageInDays >= 365.25) {
-          const ageInYears = ageInDays / 365.25;
-          return `${Math.floor(ageInYears)} anos`;
+            const ageInYears = ageInDays / 365.25;
+            return `${Math.floor(ageInYears)} anos`;
         } else if (ageInDays >= 30.44) {
-          const ageInMonths = ageInDays / 30.44;
-          return `${Math.floor(ageInMonths)} meses`;
+            const ageInMonths = ageInDays / 30.44;
+            return `${Math.floor(ageInMonths)} meses`;
         } else {
-          return `${Math.floor(ageInDays)} dias`;
+            return `${Math.floor(ageInDays)} dias`;
         }
-      };
-    
+    };
+
     // Use calculateAge() para obter a idade formatada
     const idadeFormatada = calculateAge();
     console.log(idadeFormatada); // Exibirá a idade formatada
@@ -67,7 +68,7 @@ export default function ConsultarPerfil({ route }) {
         try {
             const response = await axios.get(`https://viacep.com.br/ws/${petCep}/json/`);
             const data = response.data;
-    
+
             if (!data.erro) {
                 // Verifique se não há erros na resposta
                 const endereco = `${data.bairro}, ${data.localidade}, ${data.uf}`;
@@ -80,7 +81,7 @@ export default function ConsultarPerfil({ route }) {
             return 'Erro ao buscar endereço';
         }
     };
-    
+
     // Use getPetAddress() para obter o endereço com base no CEP
     useEffect(() => {
         // Use getPetAddress() para obter o endereço com base no CEP
@@ -92,6 +93,50 @@ export default function ConsultarPerfil({ route }) {
                 console.error(error);
             });
     }, []);
+
+    const handleDenunciar = () => {
+        setDenunciaPopupVisible(true);
+    };
+
+    const handleCloseDenunciaPopup = () => {
+        setDenunciaPopupVisible(false);
+    };
+
+    // Função para enviar uma denúncia
+    const enviarDenuncia = async (motivoDenuncia, idUsuarioQueDenunciou, idUsuarioQueRecebeu) => {
+        try {
+            // Referência para a coleção "denuncias" no Firestore
+            const denunciaRef = collection(db, 'denuncias');
+
+            // Crie um novo documento na coleção "denuncias" com os dados da denúncia
+            const novaDenuncia = await denunciaRef.add({
+                motivo: motivoDenuncia,
+                idDenunciante: idUsuarioQueDenunciou,
+                idRecebedor: idUsuarioQueRecebeu,
+                data: new Date(), // Adicione a data e hora da denúncia (você pode usar o formato que preferir)
+            });
+
+            console.log('Denúncia enviada com sucesso. ID da denúncia:', novaDenuncia.id);
+        } catch (error) {
+            console.error('Erro ao enviar a denúncia:', error);
+        }
+    };
+
+    // ...
+
+    const handleSubmitDenuncia = (motivoDenuncia) => {
+        // Substitua idDoUsuarioQueDenunciou e idDoUsuarioQueRecebeu pelos IDs reais dos usuários envolvidos na denúncia.
+        const idDoUsuarioQueDenunciou = 'ID_DO_USUARIO_DENUNCIANTE';
+        const idDoUsuarioQueRecebeu = 'ID_DO_USUARIO_RECEBEDOR';
+
+        // Envie a denúncia com os dados necessários
+        enviarDenuncia(motivoDenuncia, idDoUsuarioQueDenunciou, idDoUsuarioQueRecebeu);
+
+        // Feche o popup após o envio
+        setDenunciaPopupVisible(false);
+    };
+
+
 
 
     if (!fontsLoaded && !fontError) {
@@ -105,7 +150,10 @@ export default function ConsultarPerfil({ route }) {
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
-                            <MaterialIcons name={'keyboard-return'} size={55} color="white" style={styles.returnIcon} />
+                            <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleSubmitDenuncia} style={styles.denunciarButton}>
+                            <Ionicons name={'alert'} size={50} color="white" style={styles.denunciarIcon} />
                         </TouchableOpacity>
                     </View>
 
@@ -117,7 +165,7 @@ export default function ConsultarPerfil({ route }) {
                         <View style={styles.descricaoPerfil}>
                             <Text style={styles.getTextBio}>{petBio}</Text>
                         </View>
-                   
+
 
                         <View style={styles.sexoContainer}>
                             <Text style={styles.titleView}>Sexo</Text>
@@ -159,6 +207,11 @@ export default function ConsultarPerfil({ route }) {
                             <Text style={styles.buttonText}>Documentos</Text>
                         </TouchableOpacity>
                     </View>
+                    <DenunciaPopup
+                        visible={isDenunciaPopupVisible}
+                        onClose={handleCloseDenunciaPopup}
+                        onSubmit={handleSubmitDenuncia}
+                    />
                 </View>
 
             </ScrollView>

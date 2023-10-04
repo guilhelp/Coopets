@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, View, TouchableOpacity } from 'react-native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
 // Importe as telas que você deseja navegar
 import Login  from './screens/Login';
@@ -87,6 +88,7 @@ function BottomTabs() {
             right: 0,
             backgroundColor: 'transparent', // Define o background como transparente
             height: 100,
+            zIndex: 1,
           }}
         >
           <CustomTabBar {...props} />

@@ -2,7 +2,7 @@ import { View, Text, ImageBackground, Linking, TouchableOpacity, ScrollView, Key
 import { useState } from 'react';
 import SelectDropdown from 'react-native-select-dropdown';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { format } from 'date-fns';
+import { format, isBefore} from 'date-fns';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -87,6 +87,9 @@ export default function CadastrarPet() {
         Linking.openURL(url);
     };
 
+    const limiteIdade = new Date();
+    limiteIdade.setFullYear(limiteIdade.getFullYear() - 40);
+
     const validarCep = async (cep) => {
         try {
             const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
@@ -107,6 +110,13 @@ export default function CadastrarPet() {
             alert('Por favor, preencha todos os campos antes de avançar.');
             return;
         }
+
+        const dataNascimentoPetDate = new Date(dataNascimentoPet);
+        if (isBefore(dataNascimentoPetDate, limiteIdade)) {
+          alert('A idade do pet não pode ser superior a 40 anos.');
+          return;
+        }
+
         const dadosPet1 = {
             nomePet,
             sexo,
@@ -116,6 +126,8 @@ export default function CadastrarPet() {
             dataNascimentoPet: dataNascimentoPet.toISOString(),
             cep
         };
+
+        
 
         navigation.navigate('CadastrarPet2', { dadosResp, dadosPet1 });
     }

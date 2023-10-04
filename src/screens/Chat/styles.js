@@ -75,6 +75,8 @@ export default StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#573C35',
         width: wp('100%'),
+        height: hp('10%'),
+        marginBottom: 33
       
     },
     input: {

@@ -3,10 +3,9 @@ import { ImageBackground, View, Text, TouchableOpacity, ScrollView, ActivityIndi
 import { doc, getDoc, deleteDoc, getDocs, query, collection, where, } from 'firebase/firestore';
 import { db, auth, storage } from '../../config/Firebase';
 import { ref, deleteObject, listAll, uploadString } from 'firebase/storage';
-import { deleteUser } from 'firebase/auth';
+import { deleteUser, signOut } from 'firebase/auth';
 import styles from './styles';
 import Header from '../../components/Header';
-import { signOut } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
@@ -39,7 +38,11 @@ export default function Perfil() {
 
     const handleSignOut = async () => {
         try {
-            await signOut(auth); // Desloga o usuário
+            await signOut(auth).then(() => {
+                console.log('saiu')
+              }).catch((error) => {
+                // An error happened.
+              });
             // Navega para a tela de login ou qualquer outra tela desejada
             navigation.navigate('Login');
         } catch (error) {

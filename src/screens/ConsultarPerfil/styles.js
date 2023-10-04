@@ -14,17 +14,33 @@ const styles = StyleSheet.create ({
     width: wp('100%'),
     height: hp('105%'),
   },
+  buttonContainer:{
+    flexDirection: 'row'
+  },
   returnButton: {
     width: 60,
     height: 60,
     borderRadius: 200,
     backgroundColor: '#573C35',
-    marginLeft: -200,
+    marginLeft: -190,
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center'
     },
+  denunciarButton:{
+    width: 60,
+    height: 60,
+    borderRadius: 200,
+    backgroundColor: '#573C35',
+    marginRight: -100,
+    left: 125,
+    marginTop: 20,
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center'
+  },
   
   imagemPerfil: {
     width: wp('65%'),
