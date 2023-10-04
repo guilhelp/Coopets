@@ -7,13 +7,13 @@ import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCK0Y3NoDl8lLDGzMtLWLYIsmiZBIlu0Wc",
-  authDomain: "coopets-app.firebaseapp.com",
-  databaseURL: "https://coopets-app-default-rtdb.firebaseio.com",
-  projectId: "coopets-app",
-  storageBucket: "coopets-app.appspot.com",
-  messagingSenderId: "484702316450",
-  appId: "1:484702316450:web:b85d81c8554674a8b6f4fb"
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
+  databaseURL: process.env.EXPO_PUBLIC_DATABASE_URL,
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
