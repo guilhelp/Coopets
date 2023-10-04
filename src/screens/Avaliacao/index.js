@@ -19,7 +19,7 @@ import {
     addDoc
 } from 'firebase/firestore';
 import { db, auth } from '../../config/Firebase';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, useNavigationState } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { signOut } from 'firebase/auth';
@@ -48,6 +48,12 @@ export default function Avaliacao() {
     const [isLoading, setIsLoading] = useState(true); // Inicialmente, definimos como true para mostrar o carregamento.
     const [userPreferencesChanged, setUserPreferencesChanged] = useState(false);
 
+    const [filteredPets, setFilteredPets] = useState([]);
+    
+    // Mantenha um estado para rastrear todos os pets
+    const [allPets, setAllPets] = useState([]);
+    // Mantenha um estado para rastrear os pets não avaliados
+    const [unratedPets, setUnratedPets] = useState([]);
 
     // Adicione um estado para controlar se os dados já foram buscados
     const [dataFetched, setDataFetched] = useState(false);
@@ -58,12 +64,10 @@ export default function Avaliacao() {
     });
 
     // const OPEN_CAGE_API_KEY = '9a786e26fb0c45019985ae5a0d8cad7f';
-    const OPEN_CAGE_API_KEY = '5e610d1e180147918c32c72194be0e4e'
+    const OPEN_CAGE_API_KEY = '9a786e26fb0c45019985ae5a0d8cad7f'
 
     const resetState = () => {
-        setCurrentCardIndex(0);
         setUserProfileId(null);
-        setPets([]);
         setShowMatchPopup(false);
         setPet1Name('');
         setPet1Image('');
@@ -74,66 +78,70 @@ export default function Avaliacao() {
     };
 
 
-
     const fetchData = async () => {
-
         setIsLoading(true);
-        console.log('Fetching data...'); // Adicione este log
-
+        console.log('Fetching data...');
+    
         try {
-            // Use try-catch para lidar com exceções
             const user = auth.currentUser;
             if (user) {
                 const userId = user.uid;
                 setUserProfileId(userId);
                 console.log('User Profile ID:', userId);
-
+    
                 const userRef = doc(db, 'responsaveis', userId);
                 const userDoc = await getDoc(userRef);
-
+    
                 const petRef = userDoc.data().petID;
                 const petIdAssociado = petRef.id;
-
+    
                 const petDoc = await getDoc(petRef);
                 const petCep = petDoc.data().cep;
-
+    
                 const petAddress = await getAddressFromCep(petCep);
                 const petCoordinates = await getCoordinatesFromAddress(petAddress);
-
+    
                 if (petCoordinates) {
                     console.log('Pet Coordinates:', petCoordinates);
-
+    
                     const petsQuery = query(
                         collection(db, 'pets'),
                         where('responsavelID', '!=', userRef)
                     );
-
+    
                     const petsEvaluatedQuery = query(
                         collection(db, 'avaliacoes'),
                         where('userId', '==', userId)
                     );
-
+    
                     const petsEvaluatedSnapshot = await getDocs(petsEvaluatedQuery);
                     const petsEvaluatedIds = petsEvaluatedSnapshot.docs.map(
                         (doc) => doc.data().petIdAvaliado.id
                     );
-
+    
                     const userPreferencesRef = doc(db, 'preferencias', userId);
                     const userPreferencesSnapshot = await getDoc(userPreferencesRef);
                     const userPreferencesData = userPreferencesSnapshot.data();
                     const distancePreference = userPreferencesData?.distancia;
-
+    
                     const petsSnapshot = await getDocs(petsQuery);
                     const petsData = petsSnapshot.docs.map((doc) => ({
                         id: doc.id,
                         ...doc.data(),
                     }));
-
+    
+                    // Filtrar os pets pelos campos relevantes (sexo, tipo, raça)
+                    const filteredPets = petsData.filter((pet) =>
+                        checkUserPreferences(userPreferencesData, pet)
+                    );
+    
+                    setAllPets(filteredPets);
+    
                     const calculateDistance = (coordinates1, coordinates2) => {
                         if (!coordinates1 || !coordinates2) {
                             return null;
                         }
-
+    
                         const R = 6371;
                         const dLat = (coordinates2.lat - coordinates1.lat) * (Math.PI / 180);
                         const dLon = (coordinates2.lng - coordinates1.lng) * (Math.PI / 180);
@@ -143,43 +151,46 @@ export default function Avaliacao() {
                             Math.sin(dLon / 2) * Math.sin(dLon / 2);
                         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
                         const distance = R * c;
-
+    
                         return distance;
                     };
-
+    
+                    // Calcula as distâncias apenas para os pets filtrados
                     const petsWithCoordinates = await Promise.all(
-                        petsData.map(async (pet) => {
+                        filteredPets.map(async (pet) => {
                             const petAddress = await getAddressFromCep(pet.cep);
                             const petCoordinates = await getCoordinatesFromAddress(petAddress);
-
+    
                             return { ...pet, coordinates: petCoordinates };
                         })
                     );
-
+    
                     const petsNotEvaluatedAndMatchingPreferences = petsWithCoordinates.filter((pet) => {
                         if (!pet.coordinates) {
                             return false;
                         }
-
+    
                         const distance = calculateDistance(
                             pet.coordinates,
                             petCoordinates
                         );
-
+    
                         console.log(`Distância para ${pet.nomePet}: ${distance ? distance + ' km' : 'N/A'}`);
-
+    
                         return (
                             !petsEvaluatedIds.includes(pet.id) &&
-                            checkUserPreferences(userPreferencesData, pet) &&
                             (!distancePreference || distance <= parseFloat(distancePreference))
                         );
                     });
+    
+                    setUnratedPets(petsNotEvaluatedAndMatchingPreferences);
                     setUserPreferencesChanged(false);
                     setPets(petsNotEvaluatedAndMatchingPreferences);
                     console.log(
                         'Pets não avaliados com preferências, distância filtrada e dentro da preferência de distância:',
                         petsNotEvaluatedAndMatchingPreferences
                     );
+                    console.log('Índice do card atual:', currentCardIndex);
                 } else {
                     console.log('Coordenadas do usuário não encontradas.');
                 }
@@ -187,9 +198,10 @@ export default function Avaliacao() {
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
         } finally {
-            setIsLoading(false); // Após concluir a busca de dados (com êxito ou com erro), defina o estado como false para ocultar a tela de carregamento.
+            setIsLoading(false);
         }
     };
+    
 
 
     const getAddressFromCep = async (cep) => {
@@ -273,48 +285,66 @@ export default function Avaliacao() {
         if (user) {
             const userId = user.uid;
             const userPreferencesRef = doc(db, 'preferencias', userId);
-
+    
             const unsubscribe = onSnapshot(userPreferencesRef, (snapshot) => {
                 const updatedPreferences = snapshot.data();
                 setUserPreferences(updatedPreferences);
-
-                // Define userPreferencesChanged como true quando as preferências mudarem
+    
+                // Defina userPreferencesChanged como true quando as preferências mudarem
                 setUserPreferencesChanged(true);
             });
-
-            return unsubscribe;
+    
+            return unsubscribe; // Retorne a função de desinscrição
         }
     };
 
     useEffect(() => {
-        const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                // Chama a função para ouvir as preferências do usuário
-                await listenToUserPreferences();
-
-                if (!dataFetched) {
-                    // Remova esta chamada para fetchData
-                    // fetchData();
-                    setDataFetched(true);
+        let unsubscribeAuth;
+        let unsubscribePreferences;
+    
+        const setupAuthListener = async () => {
+            unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    // Chame a função para ouvir as preferências do usuário
+                    unsubscribePreferences = await listenToUserPreferences();
+    
+                    if (!dataFetched) {
+                        // Remova esta chamada para fetchData
+                        // fetchData();
+                        setDataFetched(true);
+                    }
+                } else {
+                    resetState();
                 }
-            } else {
-                resetState();
-            }
-        });
-
+            });
+        };
+    
+        setupAuthListener();
+    
         // Certifique-se de desinscrever o ouvinte de autenticação quando o componente for desmontado
         return () => {
             if (typeof unsubscribeAuth === 'function') {
                 unsubscribeAuth();
+            }
+    
+            // Certifique-se de desinscrever o ouvinte de preferências quando o componente for desmontado
+            if (typeof unsubscribePreferences === 'function') {
+                unsubscribePreferences();
             }
         };
     }, [dataFetched]);
 
     useFocusEffect(
         React.useCallback(() => {
-            // Chame a função fetchData aqui para buscar os pets com base nos novos filtros
-            fetchData();
-        }, [])
+            // Esta função será chamada quando a tela de Avaliação obtiver foco
+            // Verifique se as preferências do usuário foram alteradas
+            if (userPreferencesChanged) {
+                // As preferências do usuário mudaram, busque dados atualizados com base nas novas preferências
+                fetchData();
+                // Redefina userPreferencesChanged como false após buscar os dados
+                setUserPreferencesChanged(false);
+            }
+        }, [userPreferencesChanged])
     );
 
     const handleMatchClose = () => {
@@ -393,6 +423,8 @@ export default function Avaliacao() {
             console.log('Índice do card atual:', currentCardIndex);
             // Avançar para o próximo card
             setCurrentCardIndex(currentCardIndex + 1);
+            // Atualize a lista de pets não avaliados
+            setUnratedPets(unratedPets.slice(1));
         }
     };
 
@@ -433,6 +465,9 @@ export default function Avaliacao() {
             console.log('Índice do card atual:', currentCardIndex);
             // Avançar para o próximo card
             setCurrentCardIndex(currentCardIndex + 1);
+            console.log('Índice do card atual:', currentCardIndex);
+            // Atualize a lista de pets não avaliados
+            setUnratedPets(unratedPets.slice(1));
         }
     };
 
@@ -538,6 +573,7 @@ export default function Avaliacao() {
             return `${Math.floor(ageInDays)} dias`;
         }
     };
+
 
 
     if (!fontsLoaded && !fontError) {

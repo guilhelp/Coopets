@@ -106,7 +106,7 @@ export default function Filtros() {
         if (filtroDistanciaAtivado) {
             filters.distancia = distancia;
         } else {
-            filters.distancia = 99999; // Um valor alto para mostrar todos os pets
+            filters.distancia = 999999999999; // Um valor alto para mostrar todos os pets
         }
 
         try {
