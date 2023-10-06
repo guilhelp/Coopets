@@ -50,20 +50,25 @@ export default function Login() {
     useEffect(() => {
         // Verifique se há dados de usuário no AsyncStorage
         const checkAuthentication = async () => {
-            const userData = await AsyncStorage.getItem('userData');
-            if (userData) {
-                const user = JSON.parse(userData);
-
-                onAuthStateChanged(auth, (userAuth) => {
-                    if (userAuth) {
-                        navigation.navigate('BottomTabs'); // Substitua pelo nome da sua tela principal após o login
-                    }
-                });
+          const userData = await AsyncStorage.getItem('userData');
+          if (userData) {
+            const user = JSON.parse(userData);
+      
+            // Verifique se o UID do usuário é igual a "isWQePETZqPPT83Cy0bB5AwYXnw2"
+            if (user && user.uid === 'isWQePETZqPPT83Cy0bB5AwYXnw2') {
+              return; // Não faz nada, apenas retorna
             }
+      
+            onAuthStateChanged(auth, (userAuth) => {
+              if (userAuth) {
+                navigation.navigate('BottomTabs'); // Substitua pelo nome da sua tela principal após o login
+              }
+            });
+          }
         };
-
+      
         checkAuthentication();
-    }, []);
+      }, []);
 
     const handleLogin = async () => {
         try {
@@ -74,6 +79,12 @@ export default function Login() {
     
             const userCredential = await signInWithEmailAndPassword(auth, email, senha);
             const user = userCredential.user;
+
+            if ( user.uid === 'isWQePETZqPPT83Cy0bB5AwYXnw2') {
+                // Redirecionar diretamente para a tela de validação de denúncias
+                navigation.navigate('ValidarDenuncias');
+                return;
+            }
     
             if (user && user.emailVerified) {
                 // Armazene informações do usuário no AsyncStorage
@@ -94,6 +105,7 @@ export default function Login() {
             Alert.alert('Credenciais incorretas', 'E-mail ou senha incorretos. Verifique suas credenciais.');
         }
     };
+    
 
     if (!fontsLoaded && !fontError) {
         return null;

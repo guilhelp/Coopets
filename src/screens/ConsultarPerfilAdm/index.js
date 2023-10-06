@@ -13,7 +13,8 @@ import {
     onSnapshot,
     addDoc,
     ActivityIndicator,
-    setDoc
+    updateDoc,
+    serverTimestamp
 } from 'firebase/firestore';
 import { db, auth } from '../../config/Firebase';
 
@@ -29,7 +30,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 
-export default function ConsultarPerfil({ route }) {
+export default function ConsultarPerfilAdm({ route }) {
 
     let [fontsLoaded, fontError] = useFonts({
         LuckiestGuy_400Regular,
@@ -111,72 +112,110 @@ export default function ConsultarPerfil({ route }) {
             });
     }, []);
 
-    const handleDenunciar = () => {
-        setDenunciaPopupVisible(true);
-    };
-
-    // Função para enviar uma denúncia
-    const enviarDenuncia = async (motivoDenuncia, idUsuarioQueDenunciou, idUsuarioQueRecebeu) => {
+    // Função para bloquear um perfil
+    const excluirPerfil = async () => {
         try {
-            if (motivoDenuncia && typeof motivoDenuncia === 'string' && motivoDenuncia !== '[object Object]') {
-                // Gerar um novo ID exclusivo para a denúncia
-                const novaDenunciaRef = doc(collection(db, 'denuncias'));
+            const perfilRef = doc(db, 'responsaveis', petResp);
     
-                // Obter o ID gerado
-                const idDenuncia = novaDenunciaRef.id;
+            // Exclua os documentos na coleção "likes" que têm uma referência ao perfil do responsável
+            const petsQuery = query(collection(db, 'pets'), where('responsavelID', '==', petResp));
+            const petsSnapshot = await getDocs(petsQuery);
     
-                // Criar um documento na coleção "denuncias" com as informações da denúncia
-                await setDoc(novaDenunciaRef, {
-                    id: idDenuncia, // Adicione o ID da denúncia aqui
-                    motivo: motivoDenuncia,
-                    idDenunciante: idUsuarioQueDenunciou,
-                    idRecebedor: idUsuarioQueRecebeu,
-                    data: new Date(),
-                });
+            // Itere pelos documentos encontrados e exclua-os
+            petsSnapshot.forEach(async (petDoc) => {
+                await deleteDoc(petDoc.ref);
+            });
     
-                console.log('Denúncia enviada com sucesso. ID da denúncia:', idDenuncia);
-            } else {
-                // Caso o usuário não tenha selecionado um motivo de denúncia válido, você pode exibir uma mensagem de erro ou tomar outra ação apropriada.
-                console.error('Selecione um motivo de denúncia válido');
-            }
+            // Exclua os documentos na coleção "likes" onde o perfil do responsável está envolvido
+            const likesQuery = query(collection(db, 'likes'), where('petIDLike', '==', petRef));
+            const likesSnapshot = await getDocs(likesQuery);
+    
+            // Itere pelos documentos encontrados e exclua-os
+            likesSnapshot.forEach(async (likeDoc) => {
+                await deleteDoc(likeDoc.ref);
+            });
+    
+            // Agora, repita o processo para documentos onde o perfil do responsável está como petIDRecebeu
+            const likesQuery2 = query(collection(db, 'likes'), where('petIDRecebeu', '==', petRef));
+            const likesSnapshot2 = await getDocs(likesQuery2);
+    
+            // Itere pelos documentos encontrados e exclua-os
+            likesSnapshot2.forEach(async (likeDoc) => {
+                await deleteDoc(likeDoc.ref);
+            });
+    
+            // Exclua os documentos na coleção "preferencias" que têm uma referência ao perfil do responsável
+            const preferenciasQuery = query(collection(db, 'preferencias'), where('userId', '==', petResp));
+            const preferenciasSnapshot = await getDocs(preferenciasQuery);
+    
+            // Itere pelos documentos encontrados e exclua-os
+            preferenciasSnapshot.forEach(async (preferenciaDoc) => {
+                await deleteDoc(preferenciaDoc.ref);
+            });
+    
+            // Exclua os documentos na coleção "avaliacoes" onde o perfil do responsável está envolvido
+            const avaliacoesQuery = query(collection(db, 'avaliacoes'), where('userId', '==', petResp));
+            const avaliacoesSnapshot = await getDocs(avaliacoesQuery);
+    
+            // Itere pelos documentos encontrados e exclua-os
+            avaliacoesSnapshot.forEach(async (avaliacaoDoc) => {
+                await deleteDoc(avaliacaoDoc.ref);
+            });
+    
+            // Agora, repita o processo para documentos onde o perfil do responsável está como petIDAvaliado
+            const avaliacoesQuery2 = query(collection(db, 'avaliacoes'), where('petIdAvaliado', '==', perfilRef));
+            const avaliacoesSnapshot2 = await getDocs(avaliacoesQuery2);
+    
+            // Itere pelos documentos encontrados e exclua-os
+            avaliacoesSnapshot2.forEach(async (avaliacaoDoc) => {
+                await deleteDoc(avaliacaoDoc.ref);
+            });
+    
+            // Exclua os documentos na coleção "dislikes" onde o perfil do responsável está envolvido como "petIDDislike"
+            const dislikesQuery = query(collection(db, 'dislikes'), where('petIDDislike', '==', perfilRef));
+            const dislikesSnapshot = await getDocs(dislikesQuery);
+    
+            // Itere pelos documentos encontrados e exclua-os
+            dislikesSnapshot.forEach(async (dislikeDoc) => {
+                await deleteDoc(dislikeDoc.ref);
+            });
+    
+            // Agora, repita o processo para documentos onde o perfil do responsável está como "petIDRecebeu"
+            const dislikesQuery2 = query(collection(db, 'dislikes'), where('petIDRecebeu', '==', perfilRef));
+            const dislikesSnapshot2 = await getDocs(dislikesQuery2);
+    
+            // Itere pelos documentos encontrados e exclua-os
+            dislikesSnapshot2.forEach(async (dislikeDoc) => {
+                await deleteDoc(dislikeDoc.ref);
+            });
+    
+            // Exclua os documentos na coleção "matches" onde o perfil do responsável está envolvido
+            const matchesQuery = query(collection(db, 'matches'), where('petID1', '==', perfilRef));
+            const matchesSnapshot = await getDocs(matchesQuery);
+    
+            // Itere pelos documentos encontrados e exclua-os
+            matchesSnapshot.forEach(async (matchDoc) => {
+                await deleteDoc(matchDoc.ref);
+            });
+    
+            // Agora, repita o processo para documentos onde o perfil do responsável está como petID2
+            const matchesQuery2 = query(collection(db, 'matches'), where('petID2', '==', perfilRef));
+            const matchesSnapshot2 = await getDocs(matchesQuery2);
+    
+            // Itere pelos documentos encontrados e exclua-os
+            matchesSnapshot2.forEach(async (matchDoc) => {
+                await deleteDoc(matchDoc.ref);
+            });
+    
+            // Por fim, exclua o documento do responsável
+            await deleteDoc(perfilRef);
+    
+            console.log('Perfil excluído com sucesso.');
+            alert('Perfil excluído com sucesso.');
         } catch (error) {
-            console.error('Erro ao enviar a denúncia:', error);
+            console.error('Erro ao excluir o perfil:', error);
         }
     };
-    
-
-    // ...
-
-    const handleSubmitDenuncia = (motivoDenuncia) => {
-        // Verifique se um motivo de denúncia válido foi selecionado
-        if (motivoDenuncia) {
-          // Substitua idDoUsuarioQueDenunciou e idDoUsuarioQueRecebeu pelos IDs reais dos usuários envolvidos na denúncia.
-          const idDoUsuarioQueDenunciou = auth.currentUser.uid;
-          const idDoUsuarioQueRecebeu = petId;
-      
-          // Certifique-se de que motivoDenuncia seja uma string simples
-          const motivoDenunciaString = motivoDenuncia.toString();
-      
-          // Envie a denúncia com os dados necessários
-          enviarDenuncia(motivoDenunciaString, idDoUsuarioQueDenunciou, idDoUsuarioQueRecebeu);
-      
-          // Feche o popup após o envio
-          setDenunciaPopupVisible(false);
-        } else {
-          // Caso o motivo de denúncia não seja válido, defina-o como null
-          motivoDenuncia = null;
-      
-          // Exiba uma mensagem de erro ou tome outra ação apropriada
-          console.error('Selecione um motivo de denúncia válido');
-        }
-      };
-
-    const handleCloseDenunciaPopup = () => {
-        setDenunciaPopupVisible(false);
-    };
-
-
-
 
     if (!fontsLoaded && !fontError) {
         return null;
@@ -189,11 +228,11 @@ export default function ConsultarPerfil({ route }) {
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.returnButton}>
                             <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={handleDenunciar} style={styles.denunciarButton}>
-                            <Ionicons name={'alert'} size={50} color="white" style={styles.denunciarIcon} />
+                        <TouchableOpacity onPress={excluirPerfil} style={styles.blockButton}>
+                            <MaterialIcons name={'block'} size={50} color="white" style={styles.blockIcon} />
                         </TouchableOpacity>
                     </View>
 
@@ -247,11 +286,7 @@ export default function ConsultarPerfil({ route }) {
                             <Text style={styles.buttonText}>Documentos</Text>
                         </TouchableOpacity>
                     </View>
-                    <DenunciaPopup
-                        visible={isDenunciaPopupVisible}
-                        onClose={handleCloseDenunciaPopup}
-                        onSubmit={handleSubmitDenuncia}
-                    />
+                   
                 </View>
 
             </ScrollView>

@@ -33,28 +33,28 @@ const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
           <Text>Selecione a opção de denúncia:</Text>
           <TouchableOpacity
             style={styles.option}
-            onPress={() => handleOptionChange('Opção 1')}
+            onPress={() => handleOptionChange('Perfil com foto ou nome indevido')}
           >
             <Text>Perfil com foto ou nome indevido</Text>
-            {selectedOption === 'Opção 1' && (
+            {selectedOption === 'Perfil com foto ou nome indevido' && (
               <Text>Selecionado</Text>
             )}
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.option}
-            onPress={() => handleOptionChange('Opção 2')}
+            onPress={() => handleOptionChange('Perfil com foto de pedigree e/ou vacinação indevido')}
           >
             <Text>Perfil com foto de pedigree e/ou vacinação indevido</Text>
-            {selectedOption === 'Opção 2' && (
+            {selectedOption === 'Perfil com foto de pedigree e/ou vacinação indevido' && (
               <Text>Selecionado</Text>
             )}
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.option}
-            onPress={() => handleOptionChange('Opção 3')}
+            onPress={() => handleOptionChange('Perfil com nome ou algum dado abusivo')}
           >
-            <Text>Perfil abusando do uso dos bate-papos</Text>
-            {selectedOption === 'Opção 3' && (
+            <Text>Perfil com nome ou algum dado abusivo</Text>
+            {selectedOption === 'Perfil com nome ou algum dado abusivo' && (
               <Text>Selecionado</Text>
             )}
           </TouchableOpacity>

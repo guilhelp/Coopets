@@ -21,7 +21,8 @@ import ConsultarPerfil from './screens/ConsultarPerfil';
 import ConsultarDocumentos from './screens/ConsultarDocumentos';
 import Documentos from './screens/Documentos';
 import EditarPerfil from './screens/EditarPerfil';
-
+import ValidarDenuncias from './screens/ValidarDenuncias';
+import ConsultarPerfilAdm from './screens/ConsultarPerfilAdm';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -123,6 +124,8 @@ function Rotas() {
             <Stack.Screen name="ConsultarDocumentos" component={ConsultarDocumentos}/>
             <Stack.Screen name="Documentos" component={Documentos}/>
             <Stack.Screen name="EditarPerfil" component={EditarPerfil}/>
+            <Stack.Screen name="ValidarDenuncias" component={ValidarDenuncias}/>
+            <Stack.Screen name="ConsultarPerfilAdm" component={ConsultarPerfilAdm}/>
 
         </Stack.Navigator>
     </NavigationContainer>
