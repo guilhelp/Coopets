@@ -3,7 +3,7 @@ import { View, Text, ImageBackground, TouchableOpacity, KeyboardAvoidingView, Sc
 import { useNavigation } from '@react-navigation/native';
 import { signOut } from 'firebase/auth';
 import { db, auth } from '../../config/Firebase';
-import { collection, query, getDocs, where, doc, getDoc } from 'firebase/firestore';
+import { collection, query, getDocs, where, doc, getDoc , deleteDoc} from 'firebase/firestore';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { styles } from './styles';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
@@ -84,6 +84,38 @@ export default function ValidarDenuncias() {
         loadDenuncias();
     }, []);
 
+    const countDenunciasRecebidas = async (petId) => {
+        try {
+          const q = query(collection(db, 'denuncias'), where('idRecebedor', '==', petId));
+          const querySnapshot = await getDocs(q);
+          return querySnapshot.size; // Retorna o número de documentos que correspondem à consulta
+        } catch (error) {
+          console.error('Erro ao contar denúncias recebidas:', error);
+          return 0; // Em caso de erro, retorna 0
+        }
+      };
+
+      const handleExcluirDenunciaExcluir = async (denunciaId) => {
+        try {
+          // Referência para o documento da denúncia
+          const denunciaRef = doc(db, 'denuncias', denunciaId);
+      
+          // Exclua o documento da denúncia
+          await deleteDoc(denunciaRef);
+      
+          // Atualize a lista de denúncias localmente (remova a denúncia excluída)
+          setDenuncias((prevDenuncias) =>
+            prevDenuncias.filter((denuncia) => denuncia.id !== denunciaId)
+          );
+      
+          console.log('Denúncia excluída com sucesso.');
+        } catch (error) {
+          console.error('Erro ao excluir a denúncia:', error);
+        }
+      };
+      
+         
+
     const handleLogout = async () => {
         try {
             await signOut(auth);
@@ -109,7 +141,10 @@ export default function ValidarDenuncias() {
                         data={denuncias}
                         keyExtractor={(item) => item.id}
                         renderItem={({ item }) => (
-                            <DenunciaCard denuncia={item} />
+                            <DenunciaCard 
+                            denuncia={item} 
+                            handleExcluirDenunciaExcluirCard={handleExcluirDenunciaExcluir} 
+                            countDenunciasRecebidas={countDenunciasRecebidas}/>
                         )}
                     />
 

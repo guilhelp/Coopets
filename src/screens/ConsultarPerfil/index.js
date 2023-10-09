@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ImageBackground, View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native';
+import { ImageBackground, View, Text, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import DenunciaPopup from '../../components/DenunciaPopUp';
@@ -13,7 +13,7 @@ import {
     onSnapshot,
     addDoc,
     ActivityIndicator,
-    setDoc
+    setDoc,
 } from 'firebase/firestore';
 import { db, auth } from '../../config/Firebase';
 
@@ -52,6 +52,7 @@ export default function ConsultarPerfil({ route }) {
     const { petCep } = route.params
     const [endereco, setEndereco] = useState('');
     const [isDenunciaPopupVisible, setDenunciaPopupVisible] = useState(false);
+    const [usuarioJaDenunciou, setUsuarioJaDenunciou] = useState(false);
 
 
     const calculateAge = () => {
@@ -111,9 +112,29 @@ export default function ConsultarPerfil({ route }) {
             });
     }, []);
 
-    const handleDenunciar = () => {
-        setDenunciaPopupVisible(true);
-    };
+    const handleDenunciar = async () => {
+        try {
+          // Consultar o banco de dados para verificar se já existe uma denúncia do usuário para o perfil
+          const denunciaQuery = query(
+            collection(db, 'denuncias'),
+            where('idDenunciante', '==', auth.currentUser.uid),
+            where('idRecebedor', '==', petId)
+          );
+      
+          const denunciaSnapshot = await getDocs(denunciaQuery);
+      
+          // Verificar se há documentos na consulta
+          if (denunciaSnapshot.size > 0) {
+            // O usuário já denunciou o perfil
+            Alert.alert('Aviso', 'Você já denunciou este perfil anteriormente.');
+          } else {
+            // O usuário ainda não denunciou o perfil
+            setDenunciaPopupVisible(true);
+          }
+        } catch (error) {
+          console.error('Erro ao verificar denúncia:', error);
+        }
+      };
 
     // Função para enviar uma denúncia
     const enviarDenuncia = async (motivoDenuncia, idUsuarioQueDenunciou, idUsuarioQueRecebeu) => {
@@ -121,10 +142,10 @@ export default function ConsultarPerfil({ route }) {
             if (motivoDenuncia && typeof motivoDenuncia === 'string' && motivoDenuncia !== '[object Object]') {
                 // Gerar um novo ID exclusivo para a denúncia
                 const novaDenunciaRef = doc(collection(db, 'denuncias'));
-    
+
                 // Obter o ID gerado
                 const idDenuncia = novaDenunciaRef.id;
-    
+
                 // Criar um documento na coleção "denuncias" com as informações da denúncia
                 await setDoc(novaDenunciaRef, {
                     id: idDenuncia, // Adicione o ID da denúncia aqui
@@ -133,7 +154,7 @@ export default function ConsultarPerfil({ route }) {
                     idRecebedor: idUsuarioQueRecebeu,
                     data: new Date(),
                 });
-    
+
                 console.log('Denúncia enviada com sucesso. ID da denúncia:', idDenuncia);
             } else {
                 // Caso o usuário não tenha selecionado um motivo de denúncia válido, você pode exibir uma mensagem de erro ou tomar outra ação apropriada.
@@ -143,33 +164,33 @@ export default function ConsultarPerfil({ route }) {
             console.error('Erro ao enviar a denúncia:', error);
         }
     };
-    
+
 
     // ...
 
     const handleSubmitDenuncia = (motivoDenuncia) => {
         // Verifique se um motivo de denúncia válido foi selecionado
         if (motivoDenuncia) {
-          // Substitua idDoUsuarioQueDenunciou e idDoUsuarioQueRecebeu pelos IDs reais dos usuários envolvidos na denúncia.
-          const idDoUsuarioQueDenunciou = auth.currentUser.uid;
-          const idDoUsuarioQueRecebeu = petId;
-      
-          // Certifique-se de que motivoDenuncia seja uma string simples
-          const motivoDenunciaString = motivoDenuncia.toString();
-      
-          // Envie a denúncia com os dados necessários
-          enviarDenuncia(motivoDenunciaString, idDoUsuarioQueDenunciou, idDoUsuarioQueRecebeu);
-      
-          // Feche o popup após o envio
-          setDenunciaPopupVisible(false);
+            // Substitua idDoUsuarioQueDenunciou e idDoUsuarioQueRecebeu pelos IDs reais dos usuários envolvidos na denúncia.
+            const idDoUsuarioQueDenunciou = auth.currentUser.uid;
+            const idDoUsuarioQueRecebeu = petId;
+
+            // Certifique-se de que motivoDenuncia seja uma string simples
+            const motivoDenunciaString = motivoDenuncia.toString();
+
+            // Envie a denúncia com os dados necessários
+            enviarDenuncia(motivoDenunciaString, idDoUsuarioQueDenunciou, idDoUsuarioQueRecebeu);
+
+            // Feche o popup após o envio
+            setDenunciaPopupVisible(false);
         } else {
-          // Caso o motivo de denúncia não seja válido, defina-o como null
-          motivoDenuncia = null;
-      
-          // Exiba uma mensagem de erro ou tome outra ação apropriada
-          console.error('Selecione um motivo de denúncia válido');
+            // Caso o motivo de denúncia não seja válido, defina-o como null
+            motivoDenuncia = null;
+
+            // Exiba uma mensagem de erro ou tome outra ação apropriada
+            console.error('Selecione um motivo de denúncia válido');
         }
-      };
+    };
 
     const handleCloseDenunciaPopup = () => {
         setDenunciaPopupVisible(false);
@@ -184,7 +205,7 @@ export default function ConsultarPerfil({ route }) {
 
     return (
         <ImageBackground source={Background} style={styles.background}>
-           
+
             <Header title={petNome} iconName="pets" />
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.container}>

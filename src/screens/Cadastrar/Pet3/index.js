@@ -60,6 +60,7 @@ export default function CadastrarPet3() {
     const [cadastrando, setCadastrando] = useState(false);
     const [perfilImage, setPerfilImage] = useState(null);
     const [bio, setBio] = useState('');
+    
 
     useEffect(() => {
         (async () => {
@@ -150,8 +151,16 @@ export default function CadastrarPet3() {
                 await sendEmailVerification(auth.currentUser);
                 console.log('E-mail de verificação enviado.');
             }
-            Alert.alert('Confirmação', 'E-mail de verificação enviado.');
-            navigation.navigate('Login'); // Navega para a tela de login
+            Alert.alert(
+                'Confirmação',
+                'E-mail de verificação enviado.',
+                [{
+                    text: 'OK',
+                    onPress: () => {
+                        navigation.navigate('Login'); // Navega para a tela de login
+                    },
+                }]
+            );
         } catch (error) {
             console.error('Erro ao cadastrar dados:', error);
         } finally {

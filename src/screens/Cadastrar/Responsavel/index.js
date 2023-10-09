@@ -90,6 +90,64 @@ export default function CadastrarResponsavel() {
     }
   };
 
+  function validarCPF(cpf) {
+    // Remove caracteres não numéricos
+    const cpfLimpo = cpf.replace(/\D/g, '');
+  
+    // Verifica se o CPF tem 11 dígitos
+    if (cpfLimpo.length !== 11) {
+      return false; // CPF inválido
+    }
+  
+    // Validação do CPF
+    let soma = 0;
+    let resto;
+  
+    for (let i = 1; i <= 9; i++) {
+      soma += parseInt(cpfLimpo.substring(i - 1, i)) * (11 - i);
+    }
+  
+    resto = (soma * 10) % 11;
+  
+    if (resto === 10 || resto === 11) {
+      resto = 0;
+    }
+  
+    if (resto !== parseInt(cpfLimpo.substring(9, 10))) {
+      return false; // CPF inválido
+    }
+  
+    soma = 0;
+  
+    for (let i = 1; i <= 10; i++) {
+      soma += parseInt(cpfLimpo.substring(i - 1, i)) * (12 - i);
+    }
+  
+    resto = (soma * 10) % 11;
+  
+    if (resto === 10 || resto === 11) {
+      resto = 0;
+    }
+  
+    if (resto !== parseInt(cpfLimpo.substring(10, 11))) {
+      return false; // CPF inválido
+    }
+  
+    return true; // CPF válido
+  }
+
+  function validarRG(rg) {
+    // Remove caracteres não numéricos
+    const rgLimpo = rg.replace(/\D/g, '');
+  
+    // Verifica se o RG tem 9 dígitos
+    if (rgLimpo.length !== 9) {
+      return false; // RG inválido
+    }
+  
+    return true; // RG válido
+  }
+  
   const checkFieldsAndNavigate = async () => {
     if (
       !nome ||
@@ -103,27 +161,39 @@ export default function CadastrarResponsavel() {
       alert('Por favor, preencha todos os campos antes de avançar.');
       return;
     }
-
+  
     if (senha.length < 6) {
       alert('A senha deve ter pelo menos 6 caracteres.');
       return;
     }
-
+  
     if (senha !== confirmarSenha) {
       alert('A senha e a confirmação da senha não coincidem.');
       return;
     }
-
+  
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if (!emailRegex.test(email)) {
       alert('Digite um email válido.');
       return;
     }
-
+  
     if (!(await checkEmailExistence())) {
       return;
     }
-
+  
+    // Validar CPF
+    if (!validarCPF(cpf)) {
+      alert('CPF inválido. Verifique o formato do CPF.');
+      return;
+    }
+  
+    // Validar RG
+    if (!validarRG(rg)) {
+      alert('RG inválido. Verifique o formato do RG.');
+      return;
+    }
+  
     const dadosResp = {
       nome,
       email,
@@ -133,9 +203,10 @@ export default function CadastrarResponsavel() {
       rg,
       dataNascimentoResp: dataNascimentoResp.toISOString(),
     };
-
+  
     navigation.navigate('CadastrarPet1', { dadosResp });
   };
+  
 
   if (!fontsLoaded && !fontError) {
     return null;

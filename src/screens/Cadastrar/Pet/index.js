@@ -1,8 +1,8 @@
-import { View, Text, ImageBackground, Linking, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, Text, ImageBackground, Linking, TouchableOpacity, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
 import { useState } from 'react';
 import SelectDropdown from 'react-native-select-dropdown';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { format, isBefore} from 'date-fns';
+import { format, isAfter, isBefore } from 'date-fns';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -75,8 +75,11 @@ export default function CadastrarPet() {
         setDatePickerVisible(false);
     };
 
+
     const handleConfirm = (date) => {
         hideDatePicker();
+
+
         setDataNascimentoPet(date);
     };
 
@@ -90,47 +93,84 @@ export default function CadastrarPet() {
     const limiteIdade = new Date();
     limiteIdade.setFullYear(limiteIdade.getFullYear() - 40);
 
+    const minIdade = new Date();
+    minIdade.setFullYear(minIdade.getFullYear() - 2);
+
     const validarCep = async (cep) => {
+        // Remova qualquer caractere não numérico do CEP
+        const cepLimpo = cep.replace(/\D/g, '');
+      
+        // Verifique se o CEP tem exatamente 8 dígitos
+        if (cepLimpo.length !== 8) {
+          return false; // CEP inválido
+        }
+      
         try {
-            const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-
-
-            return true; // CEP válido
-
+          const response = await axios.get(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+      
+          // Verifique se o serviço de consulta de CEP retornou um resultado válido
+          if (response.data.erro) {
+            return false; // CEP inválido
+          }
+      
+          return true; // CEP válido
         } catch (error) {
-            console.error('Erro ao validar CEP:', error);
-            return false; // Erro na requisição
+          console.error('Erro ao validar CEP:', error);
+          return false; // Erro na requisição
         }
-    };
+      };
+      
 
+    // Resto do código...
 
-    const checkFieldsAndNavigate = () => {
-
-        if (!nomePet || !sexo || !tipo || !raca || !cor || !dataNascimentoPet || !cep) {
-            alert('Por favor, preencha todos os campos antes de avançar.');
-            return;
-        }
-
-        const dataNascimentoPetDate = new Date(dataNascimentoPet);
-        if (isBefore(dataNascimentoPetDate, limiteIdade)) {
-          alert('A idade do pet não pode ser superior a 40 anos.');
-          return;
-        }
-
-        const dadosPet1 = {
-            nomePet,
-            sexo,
-            tipo,
-            raca,
-            cor,
-            dataNascimentoPet: dataNascimentoPet.toISOString(),
-            cep
-        };
-
-        
-
-        navigation.navigate('CadastrarPet2', { dadosResp, dadosPet1 });
+const checkFieldsAndNavigate = async () => {
+    if (!nomePet || !sexo || !tipo || !raca || !cor || !dataNascimentoPet || !cep) {
+      alert('Por favor, preencha todos os campos antes de avançar.');
+      return;
     }
+  
+    if (cep.length !== 8) {
+      Alert.alert('CEP Inválido', 'O CEP deve conter exatamente 8 dígitos.');
+      return;
+    }
+  
+    const dataNascimentoPetDate = new Date(dataNascimentoPet);
+    if (isBefore(dataNascimentoPetDate, limiteIdade)) {
+      alert('A idade do pet não pode ser superior a 40 anos.');
+      return;
+    }
+  
+    if (isAfter(dataNascimentoPetDate, minIdade)) {
+      alert('A idade do pet deve ser superior a 2 anos.');
+      return;
+    }
+  
+    try {
+      const isValid = await validarCep(cep);
+      if (!isValid) {
+        Alert.alert('CEP Inválido', 'O CEP digitado não é válido. Verifique o número digitado.');
+        return;
+      }
+  
+      const dadosPet1 = {
+        nomePet,
+        sexo,
+        tipo,
+        raca,
+        cor,
+        dataNascimentoPet: dataNascimentoPet.toISOString(),
+        cep,
+      };
+  
+      navigation.navigate('CadastrarPet2', { dadosResp, dadosPet1 });
+    } catch (error) {
+      console.error('Erro ao validar CEP:', error);
+      Alert.alert('Erro', 'Ocorreu um erro ao validar o CEP. Verifique sua conexão com a internet e tente novamente.');
+    }
+  }
+  
+  // Resto do código...
+  
 
     if (!fontsLoaded && !fontError) {
         return null;
@@ -229,7 +269,7 @@ export default function CadastrarPet() {
                                 value={cep}
                                 onChangeText={setCep}
                                 keyboardType="numeric"
-                                maxLength={9}
+                                maxLength={8}
                             />
 
                             <TouchableOpacity style={styles.naoSabeCEP} onPress={handleOpenWebPage}>
@@ -241,25 +281,6 @@ export default function CadastrarPet() {
                             <TouchableOpacity
                                 style={styles.botaoAvancar}
                                 onPress={async () => {
-                                    if (cep.length === 9) {
-                                        let isValid = false;
-                                        try {
-                                            isValid = await validarCep(cep);
-                                        } catch (error) {
-                                            console.error('Erro ao validar CEP:', error);
-                                        }
-
-                                        if (!isValid) {
-                                            alert('CEP inválido. Verifique o número digitado.');
-                                            return; // Não avança caso o CEP seja inválido
-                                        }
-                                    }
-
-                                    if (!nomePet || !sexo || !tipo || !raca || !cor || !dataNascimentoPet || !cep) {
-                                        alert('Por favor, preencha todos os campos antes de avançar.');
-                                        return;
-                                    }
-
                                     checkFieldsAndNavigate(); // Avança somente se os campos estiverem preenchidos e o CEP for válido
                                 }}
                             >

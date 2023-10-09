@@ -68,6 +68,7 @@ export const styles = StyleSheet.create({
         height: 150,
         padding: 16,
         left: 210,
+        position: 'relative',
         fontFamily: 'Roboto_900Black',
     },
     buttonPerfil:{

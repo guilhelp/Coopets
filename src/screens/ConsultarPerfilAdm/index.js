@@ -9,15 +9,11 @@ import {
     query,
     where,
     getDocs,
-    getDoc,
-    onSnapshot,
-    addDoc,
-    ActivityIndicator,
-    updateDoc,
-    serverTimestamp
+    deleteDoc,
+    getDoc
 } from 'firebase/firestore';
 import { db, auth } from '../../config/Firebase';
-
+import { deleteUser } from '@firebase/auth';
 // Estilos
 import styles from './styles';
 import Background from '../../assets/Background/Background.png'
@@ -53,6 +49,7 @@ export default function ConsultarPerfilAdm({ route }) {
     const { petCep } = route.params
     const [endereco, setEndereco] = useState('');
     const [isDenunciaPopupVisible, setDenunciaPopupVisible] = useState(false);
+    console.log('O pet Id é:', petId)
 
 
     const calculateAge = () => {
@@ -116,102 +113,125 @@ export default function ConsultarPerfilAdm({ route }) {
     const excluirPerfil = async () => {
         try {
             const perfilRef = doc(db, 'responsaveis', petResp);
-    
+
             // Exclua os documentos na coleção "likes" que têm uma referência ao perfil do responsável
-            const petsQuery = query(collection(db, 'pets'), where('responsavelID', '==', petResp));
+            const petsQuery = query(collection(db, 'pets'), where('responsavelID', '==', perfilRef));
             const petsSnapshot = await getDocs(petsQuery);
-    
+
             // Itere pelos documentos encontrados e exclua-os
             petsSnapshot.forEach(async (petDoc) => {
                 await deleteDoc(petDoc.ref);
             });
-    
+
             // Exclua os documentos na coleção "likes" onde o perfil do responsável está envolvido
-            const likesQuery = query(collection(db, 'likes'), where('petIDLike', '==', petRef));
+            const likesQuery = query(collection(db, 'likes'), where('petIDLike', '==', petId));
             const likesSnapshot = await getDocs(likesQuery);
-    
+
             // Itere pelos documentos encontrados e exclua-os
             likesSnapshot.forEach(async (likeDoc) => {
                 await deleteDoc(likeDoc.ref);
             });
-    
+
             // Agora, repita o processo para documentos onde o perfil do responsável está como petIDRecebeu
-            const likesQuery2 = query(collection(db, 'likes'), where('petIDRecebeu', '==', petRef));
+            const likesQuery2 = query(collection(db, 'likes'), where('petIDRecebeu', '==', petId));
             const likesSnapshot2 = await getDocs(likesQuery2);
-    
+
             // Itere pelos documentos encontrados e exclua-os
             likesSnapshot2.forEach(async (likeDoc) => {
                 await deleteDoc(likeDoc.ref);
             });
-    
+
             // Exclua os documentos na coleção "preferencias" que têm uma referência ao perfil do responsável
             const preferenciasQuery = query(collection(db, 'preferencias'), where('userId', '==', petResp));
             const preferenciasSnapshot = await getDocs(preferenciasQuery);
-    
+
             // Itere pelos documentos encontrados e exclua-os
             preferenciasSnapshot.forEach(async (preferenciaDoc) => {
                 await deleteDoc(preferenciaDoc.ref);
             });
-    
+
             // Exclua os documentos na coleção "avaliacoes" onde o perfil do responsável está envolvido
             const avaliacoesQuery = query(collection(db, 'avaliacoes'), where('userId', '==', petResp));
             const avaliacoesSnapshot = await getDocs(avaliacoesQuery);
-    
+
             // Itere pelos documentos encontrados e exclua-os
             avaliacoesSnapshot.forEach(async (avaliacaoDoc) => {
                 await deleteDoc(avaliacaoDoc.ref);
             });
-    
+
             // Agora, repita o processo para documentos onde o perfil do responsável está como petIDAvaliado
-            const avaliacoesQuery2 = query(collection(db, 'avaliacoes'), where('petIdAvaliado', '==', perfilRef));
+            const avaliacoesQuery2 = query(collection(db, 'avaliacoes'), where('petIdAvaliado', '==', petId));
             const avaliacoesSnapshot2 = await getDocs(avaliacoesQuery2);
-    
+
             // Itere pelos documentos encontrados e exclua-os
             avaliacoesSnapshot2.forEach(async (avaliacaoDoc) => {
                 await deleteDoc(avaliacaoDoc.ref);
             });
-    
+
             // Exclua os documentos na coleção "dislikes" onde o perfil do responsável está envolvido como "petIDDislike"
-            const dislikesQuery = query(collection(db, 'dislikes'), where('petIDDislike', '==', perfilRef));
+            const dislikesQuery = query(collection(db, 'dislikes'), where('petIDDislike', '==', petId));
             const dislikesSnapshot = await getDocs(dislikesQuery);
-    
+
             // Itere pelos documentos encontrados e exclua-os
             dislikesSnapshot.forEach(async (dislikeDoc) => {
                 await deleteDoc(dislikeDoc.ref);
             });
-    
+
             // Agora, repita o processo para documentos onde o perfil do responsável está como "petIDRecebeu"
-            const dislikesQuery2 = query(collection(db, 'dislikes'), where('petIDRecebeu', '==', perfilRef));
+            const dislikesQuery2 = query(collection(db, 'dislikes'), where('petIDRecebeu', '==', petId));
             const dislikesSnapshot2 = await getDocs(dislikesQuery2);
-    
+
             // Itere pelos documentos encontrados e exclua-os
             dislikesSnapshot2.forEach(async (dislikeDoc) => {
                 await deleteDoc(dislikeDoc.ref);
             });
-    
+
             // Exclua os documentos na coleção "matches" onde o perfil do responsável está envolvido
-            const matchesQuery = query(collection(db, 'matches'), where('petID1', '==', perfilRef));
+            const matchesQuery = query(collection(db, 'matches'), where('petID1', '==', petId));
             const matchesSnapshot = await getDocs(matchesQuery);
-    
+
             // Itere pelos documentos encontrados e exclua-os
             matchesSnapshot.forEach(async (matchDoc) => {
                 await deleteDoc(matchDoc.ref);
             });
-    
+
             // Agora, repita o processo para documentos onde o perfil do responsável está como petID2
-            const matchesQuery2 = query(collection(db, 'matches'), where('petID2', '==', perfilRef));
+            const matchesQuery2 = query(collection(db, 'matches'), where('petID2', '==', petId));
             const matchesSnapshot2 = await getDocs(matchesQuery2);
-    
+
             // Itere pelos documentos encontrados e exclua-os
             matchesSnapshot2.forEach(async (matchDoc) => {
                 await deleteDoc(matchDoc.ref);
             });
-    
-            // Por fim, exclua o documento do responsável
+
+            // Consulte a coleção "denuncias" para encontrar todas as denúncias onde o perfil a ser excluído é o denunciante (idDenunciante)
+            const denunciasDenuncianteQuery = query(collection(db, 'denuncias'), where('idDenunciante', '==', petResp));
+            const denunciasDenuncianteSnapshot = await getDocs(denunciasDenuncianteQuery);
+
+            // Itere pelos documentos encontrados e exclua-os
+            denunciasDenuncianteSnapshot.forEach(async (denunciaDoc) => {
+                await deleteDoc(denunciaDoc.ref);
+            });
+
+            // Consulte a coleção "denuncias" novamente para encontrar todas as denúncias onde o perfil a ser excluído é o denunciado (idRecebidor)
+            const denunciasRecebidorQuery = query(collection(db, 'denuncias'), where('idRecebedor', '==', petId));
+            const denunciasRecebidorSnapshot = await getDocs(denunciasRecebidorQuery);
+
+            // Itere pelos documentos encontrados e exclua-os
+            denunciasRecebidorSnapshot.forEach(async (denunciaDoc) => {
+                await deleteDoc(denunciaDoc.ref);
+            });
+
+            const perfilDoc = await getDoc(perfilRef);
+            const userId = perfilDoc.data().uid; // Suponhamos que o UID esteja armazenado no campo 'uid'
+
+            await deleteUser(petResp);
             await deleteDoc(perfilRef);
-    
+            
+
             console.log('Perfil excluído com sucesso.');
             alert('Perfil excluído com sucesso.');
+            navigation.goBack();
         } catch (error) {
             console.error('Erro ao excluir o perfil:', error);
         }
@@ -223,7 +243,7 @@ export default function ConsultarPerfilAdm({ route }) {
 
     return (
         <ImageBackground source={Background} style={styles.background}>
-           
+
             <Header title={petNome} iconName="pets" />
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.container}>
@@ -286,7 +306,7 @@ export default function ConsultarPerfilAdm({ route }) {
                             <Text style={styles.buttonText}>Documentos</Text>
                         </TouchableOpacity>
                     </View>
-                   
+
                 </View>
 
             </ScrollView>

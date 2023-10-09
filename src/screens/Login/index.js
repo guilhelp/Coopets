@@ -90,14 +90,10 @@ export default function Login() {
                 // Armazene informações do usuário no AsyncStorage
                 await AsyncStorage.setItem('userData', JSON.stringify(user));
     
-                // Verificar se é a primeira vez do usuário logando
-                const isFirstLogin = user.metadata.creationTime === user.metadata.lastSignInTime;
     
-                if (isFirstLogin) {
-                    navigation.navigate('Filtros'); // Mostra a tela de filtros na primeira vez
-                } else {
+                
                     navigation.navigate('BottomTabs'); // Mostra a tela normalmente após o primeiro login
-                }
+                
             } else {
                 Alert.alert('E-mail não verificado', 'Por favor, verifique seu e-mail antes de fazer login.');
             }

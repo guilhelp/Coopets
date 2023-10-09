@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     Image,
     StyleSheet,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 import {
     collection,
@@ -16,7 +17,8 @@ import {
     getDocs,
     getDoc,
     onSnapshot,
-    addDoc
+    addDoc,
+    updateDoc
 } from 'firebase/firestore';
 import { db, auth } from '../../config/Firebase';
 import { useNavigation, useFocusEffect, useNavigationState } from '@react-navigation/native';
@@ -62,6 +64,41 @@ export default function Avaliacao() {
         LuckiestGuy_400Regular,
         Roboto_900Black,
     });
+
+    useEffect(() => {
+        const checkNotifications = async () => {
+          try {
+            const user = auth.currentUser;
+            if (user) {
+              const userId = user.uid;
+    
+              // Query for unread notifications for the current user
+              const notificationsQuery = query(
+                collection(db, 'notificacoes'),
+                where('userId', '==', userId),
+                where('lida', '==', false)
+              );
+              const querySnapshot = await getDocs(notificationsQuery);
+    
+              if (!querySnapshot.empty) {
+                // Display an alert for the first unread notification
+                const notificationData = querySnapshot.docs[0].data();
+                Alert.alert('Denúncia', 'Você recebeu uma denúncia: ' + notificationData.motivoDenuncia);
+    
+                // Mark the notification as read
+                const notificationId = querySnapshot.docs[0].id;
+                const notificationRef = doc(db, 'notificacoes', notificationId);
+                await updateDoc(notificationRef, { lida: true });
+              }
+            }
+          } catch (error) {
+            console.error('Erro ao verificar notificações:', error);
+          }
+        };
+    
+        // Call the function to check notifications when the component mounts
+        checkNotifications();
+      }, []);
 
     // const OPEN_CAGE_API_KEY = '9a786e26fb0c45019985ae5a0d8cad7f';
     const OPEN_CAGE_API_KEY = '9a786e26fb0c45019985ae5a0d8cad7f'

@@ -8,5 +8,6 @@ export const styles = StyleSheet.create({
         margin: 5,
         fontSize: 20,
         fontWeight: 'bold',
+        backgroundColor: '#FFF'
     },
 });
