@@ -44,7 +44,6 @@ export const styles = StyleSheet.create({
 
     },
 
-
     // Cards dos pets
     cardContainer: {
         width: wp('95%'),
@@ -60,7 +59,6 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-    
     // Botão de perfil
     buttonPerfilContainer:{
         bottom: 500,
@@ -85,7 +83,6 @@ export const styles = StyleSheet.create({
         fontFamily: 'Roboto_900Black',
         fontSize: wp('5%'),
     },
-    
     
     // Informações card
     petInfoContainer: {

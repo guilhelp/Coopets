@@ -50,25 +50,25 @@ export default function Login() {
     useEffect(() => {
         // Verifique se há dados de usuário no AsyncStorage
         const checkAuthentication = async () => {
-          const userData = await AsyncStorage.getItem('userData');
-          if (userData) {
-            const user = JSON.parse(userData);
-      
-            // Verifique se o UID do usuário é igual a "isWQePETZqPPT83Cy0bB5AwYXnw2"
-            if (user && user.uid === 'isWQePETZqPPT83Cy0bB5AwYXnw2') {
-              return; // Não faz nada, apenas retorna
+            const userData = await AsyncStorage.getItem('userData');
+            if (userData) {
+                const user = JSON.parse(userData);
+    
+                if (user && user.uid === 'isWQePETZqPPT83Cy0bB5AwYXnw2') {
+                    // O usuário é 'isWQePETZqPPT83Cy0bB5AwYXnw2', então não faça nada
+                    return;
+                }
+    
+                onAuthStateChanged(auth, (userAuth) => {
+                    if (userAuth && userAuth.emailVerified) {
+                        navigation.navigate('BottomTabs'); // Redireciona para a tela principal após o login
+                    }
+                });
             }
-      
-            onAuthStateChanged(auth, (userAuth) => {
-              if (userAuth) {
-                navigation.navigate('BottomTabs'); // Substitua pelo nome da sua tela principal após o login
-              }
-            });
-          }
         };
-      
+    
         checkAuthentication();
-      }, []);
+    }, []);
 
     const handleLogin = async () => {
         try {
@@ -87,6 +87,7 @@ export default function Login() {
             }
     
             if (user && user.emailVerified) {
+
                 // Armazene informações do usuário no AsyncStorage
                 await AsyncStorage.setItem('userData', JSON.stringify(user));
     

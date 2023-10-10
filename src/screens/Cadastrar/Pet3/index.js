@@ -1,18 +1,60 @@
-import { View, Text, ImageBackground, TouchableOpacity, Image, Alert, KeyboardAvoidingView, ScrollView, StyleSheet } from 'react-native';
-import { useState, useEffect } from 'react';
-import { useRoute } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
-import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+// Importando o React
+import React, { useState, useEffect } from 'react';
+
+// Importando os componentes do React
+import {
+    View,
+    Text,
+    ImageBackground,
+    TouchableOpacity,
+    Image,
+    Alert,
+    KeyboardAvoidingView,
+    ScrollView,
+    ActivityIndicator
+} from 'react-native';
+
+// Importando os componentes do react-navigation
+import { useRoute, useNavigation } from '@react-navigation/native';
+
+// Importando as variáveis do Firebase
 import { db, storage, auth } from '../../../config/Firebase';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+
+// Importando as funções do Firebase
+
+// Firestore
+import {
+    addDoc,
+    collection,
+    doc,
+    setDoc,
+    updateDoc
+} from 'firebase/firestore';
+
+// Storage
+import {
+    ref,
+    getDownloadURL,
+    uploadBytesResumable
+} from 'firebase/storage';
+
+// Auth
+import {
+    createUserWithEmailAndPassword,
+    sendEmailVerification
+} from 'firebase/auth';
+
+// Importando a biblioteca axios para requisições
 import axios from 'axios';
 
 // Estilos
 import { styles } from './styles';
+
+// Importando os componentes do react-native-paper
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+
+// Importando ícones
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { ActivityIndicator } from 'react-native';
 
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
@@ -33,7 +75,7 @@ const theme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
-        primary: 'black', // Aqui você define a cor desejada para o rótulo
+        primary: 'black',
     },
 };
 
@@ -42,12 +84,15 @@ export default function CadastrarPet3() {
     let [fontsLoaded, fontError] = useFonts({
         LuckiestGuy_400Regular,
         Roboto_900Black,
-    });
+    }); // Estado que armazena as fontes do projeto
 
-    const navigation = useNavigation();
-    const route = useRoute();
-    const { dadosResp, dadosPet1, dadosPet2 } = route.params;
 
+    const navigation = useNavigation(); // Variável de navegação
+    const route = useRoute(); // Variável que envia parâmtros pelas rotas
+
+    const { dadosResp, dadosPet1, dadosPet2 } = route.params; // Recebe os parâmetros
+
+    // Armazena os dados do responsavel em variáveis
     const responsavelData = {
         email: dadosResp.email,
         cpf: dadosResp.cpf,
@@ -56,12 +101,17 @@ export default function CadastrarPet3() {
         dataNascimentoResp: dadosResp.dataNascimentoResp
     };
 
+    // Estado que definirá quando a tela estará bloqueada ou não
     const [telaBloqueada, setTelaBloqueada] = useState(false);
+
+    // Estado que define o momento de cadastro
     const [cadastrando, setCadastrando] = useState(false);
+
+    // Estados que armazenam as informações obtidas
     const [perfilImage, setPerfilImage] = useState(null);
     const [bio, setBio] = useState('');
-    
 
+    // Função useEffect que solicita permissões do usuário para ter acesso aos arquivos do dispositivo
     useEffect(() => {
         (async () => {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -71,14 +121,16 @@ export default function CadastrarPet3() {
         })();
     }, []);
 
+    // Função que busca e seleciona a imagem capturada pelo ImagePicker do expo
     const selectImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images, // Permite selecionar apenas imagens
+            allowsEditing: true, // Permite ao usuário editar a imagem antes de selecioná-la
+            aspect: [1, 1], // Define a proporção de aspecto da imagem
+            quality: 1, // Define a qualidade da imagem (valor de 1 a 0)
         });
 
+        // Verifica se o usuário não cancelou a seleção de imagem
         if (!result.canceled) {
             setPerfilImage(result.assets[0].uri);
         }
@@ -87,6 +139,7 @@ export default function CadastrarPet3() {
     const cadastrarDados = async () => {
         try {
 
+            // Verifica se as informações dos inputs da tela foram preenchidos
             if (!perfilImage || !bio) {
                 Alert.alert('Campos obrigatórios', 'Preencha todos os campos obrigatórios.');
                 return;
@@ -147,10 +200,13 @@ export default function CadastrarPet3() {
                 vacina: petData.imagem2
             });
 
+            // Envia uma email de verificação
             if (auth.currentUser) {
                 await sendEmailVerification(auth.currentUser);
                 console.log('E-mail de verificação enviado.');
             }
+
+            // Mostra uma mensagem na tela e volta para a tela de Login
             Alert.alert(
                 'Confirmação',
                 'E-mail de verificação enviado.',
@@ -168,52 +224,65 @@ export default function CadastrarPet3() {
             setCadastrando(false); // Finaliza o indicador de carregamento
         }
     };
+
+    // Função para cadastrar as imagens no storage
     const uploadImageToStorage = async (imageUri, storageRef, imageName) => {
         console.log('o nome da imagem é', imageName);
+
         try {
+            // Faz uma requisição para obter a imagem como um Blob
             const response = await axios.get(imageUri, {
-                responseType: 'blob', // Set the responseType to 'blob' to get a Blob object
+                responseType: 'blob', // Define o responseType como 'blob' para obter um objeto Blob
             });
 
+            // Obtém o Blob da resposta
             const blob = response.data;
+
+            // Cria uma referência ao local de armazenamento da imagem no Firebase Storage
             const imageStorageRef = ref(storageRef, imageName);
+
+            // Inicia uma tarefa de upload de bytes resumível para a referência
             const uploadTask = uploadBytesResumable(imageStorageRef, blob);
 
+            // Retorna uma Promise que resolve quando o upload estiver completo
             return new Promise((resolve, reject) => {
+                // Registra um ouvinte para o evento 'state_changed' da tarefa de upload
                 uploadTask.on(
                     'state_changed',
                     null,
                     (error) => {
                         console.log('Erro ao fazer upload da imagem:', error);
-                        reject(error);
+                        reject(error); // Rejeita a Promise em caso de erro
                     },
                     async () => {
+                        // Quando o upload estiver completo, obtém a URL de download da imagem
                         const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                        resolve(downloadUrl);
+                        resolve(downloadUrl); // Resolve a Promise com a URL de download
                     }
                 );
             });
         } catch (error) {
             console.log('Erro ao fazer upload da imagem:', error);
-            throw error;
+            throw error; // Lança o erro em caso de falha
         }
     };
 
+
     if (!fontsLoaded && !fontError) {
         return null;
-    }
+    } // Condição caso as fontes não carreguem
 
     return (
         <PaperProvider theme={theme}>
             <ImageBackground source={Background} style={styles.background}>
                 <Header title="PET" iconName="pets" />
                 {telaBloqueada && (
-                            <View style={styles.loadingOverlay}>
-                                <Image source={LogoBranca} style={styles.imagemLogo} />
-                                <Text style={styles.carregando}>Carregando</Text>
-                                <ActivityIndicator size="large" color="#FFF" />
-                            </View>
-                        )}
+                    <View style={styles.loadingOverlay}>
+                        <Image source={LogoBranca} style={styles.imagemLogo} />
+                        <Text style={styles.carregando}>Carregando</Text>
+                        <ActivityIndicator size="large" color="#FFF" />
+                    </View>
+                )}
                 <KeyboardAvoidingView
                     behavior={'padding'}
                     style={styles.container}>
@@ -248,9 +317,9 @@ export default function CadastrarPet3() {
                                     <Text style={styles.botaoAvancarText}>Concluir</Text>
                                 )}
                             </TouchableOpacity>
-                            
+
                         </View>
-                        
+
                     </ScrollView>
                 </KeyboardAvoidingView>
             </ImageBackground>

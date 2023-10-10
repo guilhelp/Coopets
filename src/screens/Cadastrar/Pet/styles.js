@@ -2,19 +2,17 @@ import { StyleSheet } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
 export const styles = StyleSheet.create({
-    // Configurando o Keyboard container
     container: {
         flex: 1,
         width: '100%',
         height: '100%',
     },
-    // Configurações da página
     background: {
         width: wp('100%'),
         height: hp('110%'),
     },
 
-    // Configurando os inputs
+    // Configurando o texto de título
     inputText: {
         fontFamily: 'Roboto_900Black',
         fontSize: wp('7%'),
@@ -26,7 +24,8 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         
     },
-    
+
+    // Configurando os dropdown
     dropdownButton: {
         width: 336,
         height: 61,
@@ -60,6 +59,8 @@ export const styles = StyleSheet.create({
         backgroundColor: 'white',
         elevation: 5,
     },
+
+    // Text informativo para o usuário
     infoText:{
         fontFamily: 'Roboto_900Black',
         fontSize: wp('3.3%'),

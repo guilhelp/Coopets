@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import styles from './styles';
 
+// Expo
+import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
+import { Roboto_900Black } from '@expo-google-fonts/roboto';
+
+// Componente DenunciaPopup que exibe um modal de denúncia
 const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
+  // Função para lidar com a mudança de opção de denúncia
   const handleOptionChange = (option) => {
     setSelectedOption(option);
   };
 
+  // Função para lidar com o envio da denúncia
   const handleSubmit = () => {
     // Verifique se uma opção foi selecionada antes de chamar onSubmit
     if (selectedOption !== null) {
@@ -29,13 +37,13 @@ const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
     >
       <View style={styles.modalContainer}>
         <View style={styles.popup}>
-          <Text style={styles.title}>Denunciar</Text>
-          <Text>Selecione a opção de denúncia:</Text>
+          <Text style={styles.title}>DENUNCIAR</Text>
+          <Text style={styles.optionSubTitleText}>Selecione a opção de denúncia:</Text>
           <TouchableOpacity
             style={styles.option}
             onPress={() => handleOptionChange('Perfil com foto ou nome indevido')}
           >
-            <Text>Perfil com foto ou nome indevido</Text>
+            <Text style={styles.optionText}>Perfil com foto ou nome indevido</Text>
             {selectedOption === 'Perfil com foto ou nome indevido' && (
               <Text>Selecionado</Text>
             )}
@@ -44,7 +52,7 @@ const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
             style={styles.option}
             onPress={() => handleOptionChange('Perfil com foto de pedigree e/ou vacinação indevido')}
           >
-            <Text>Perfil com foto de pedigree e/ou vacinação indevido</Text>
+            <Text style={styles.optionText}>Perfil com foto de pedigree e/ou vacinação indevido</Text>
             {selectedOption === 'Perfil com foto de pedigree e/ou vacinação indevido' && (
               <Text>Selecionado</Text>
             )}
@@ -53,7 +61,7 @@ const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
             style={styles.option}
             onPress={() => handleOptionChange('Perfil com nome ou algum dado abusivo')}
           >
-            <Text>Perfil com nome ou algum dado abusivo</Text>
+            <Text style={styles.optionText}>Perfil com nome ou algum dado abusivo</Text>
             {selectedOption === 'Perfil com nome ou algum dado abusivo' && (
               <Text>Selecionado</Text>
             )}
@@ -69,43 +77,5 @@ const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  popup: {
-    backgroundColor: 'white',
-    padding: 70,
-    borderRadius: 10,
-    elevation: 5,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  submitButton: {
-    backgroundColor: 'blue',
-    color: 'white',
-    padding: 10,
-    textAlign: 'center',
-    borderRadius: 5,
-    fontWeight: 'bold',
-  },
-  closeButton: {
-    marginTop: 10,
-    color: 'blue',
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-  },
-});
 
 export default DenunciaPopup;

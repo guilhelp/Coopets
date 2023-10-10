@@ -2,18 +2,16 @@ import { StyleSheet } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
 export const styles = StyleSheet.create({
-    // Configurando o Keyboard container
     container: {
         flex: 1,
 
     },
-    // Configurações da página
     background: {
         width: wp('100%'),
         height: hp('110%'),
     },
 
-    // Configurando os inputs
+    // Configurando o texto de título
     inputText: {
         fontFamily: 'Roboto_900Black',
         fontSize: wp('7%'),
@@ -23,32 +21,18 @@ export const styles = StyleSheet.create({
     inputContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        
-    },
-    botaoAvancar: {
-        width: wp('80'),
-        height: hp('8%'),
-        backgroundColor: '#573C35',
-        borderRadius: 17,
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 20,
-    },
-    botaoAvancarText: {
-        fontFamily: 'Roboto_900Black',
-        fontSize: wp('6%'),
-        color: '#FFF',
+
     },
 
-    // Configurando as imagens
-    inputTitle:{
+    // Configurando os inputs de imagens
+    inputTitle: {
         fontFamily: 'Roboto_900Black',
         fontSize: wp('5%'),
         color: '#000000',
         textAlign: 'left',
         alignItems: 'center'
     },
-    imageInput:{
+    imageInput: {
         width: 259,
         height: 259,
         backgroundColor: '#FFF',
@@ -59,7 +43,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    selectedImage:{
+    selectedImage: {
         width: 259,
         height: 259,
         backgroundColor: '#FFF',
@@ -68,18 +52,19 @@ export const styles = StyleSheet.create({
         borderRadius: 1000,
         margin: 20,
         justifyContent: 'center',
-        alignItems: 'center' 
+        alignItems: 'center'
     },
-    buttonImage:{
+    buttonImage: {
         justifyContent: 'center',
         alignItems: 'center'
     },
+
     // Tela Bloqueada
-    imagemLogo:{
+    imagemLogo: {
         width: wp('60%'),
         height: hp('30%'),
     },
-    carregando:{
+    carregando: {
         color: '#FFFFFF',
         fontSize: 30,
         fontFamily: 'Roboto_900Black',
@@ -94,14 +79,30 @@ export const styles = StyleSheet.create({
         zIndex: 1,
         width: wp('100%'),
         height: hp('110%'),
-      },
-      overlay: {
+    },
+    overlay: {
         position: 'absolute',
         top: 0,
         right: 0,
         bottom: 0,
         left: 0,
-      },
+    },
+
+    // Configurando o botão de avançar
+    botaoAvancar: {
+        width: wp('80'),
+        height: hp('8%'),
+        backgroundColor: '#573C35',
+        borderRadius: 17,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 20,
+    },
+    botaoAvancarText: {
+        fontFamily: 'Roboto_900Black',
+        fontSize: wp('6%'),
+        color: '#FFF',
+    },
 
 
 });

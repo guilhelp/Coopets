@@ -2,18 +2,16 @@ import { StyleSheet } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
 export const styles = StyleSheet.create({
-    // Configurando o Keyboard container
     container: {
         flex: 1,
 
     },
-    // Configurações da página
     background: {
         width: wp('100%'),
         height: hp('110%'),
     },
 
-    // Configurando os inputs
+    // Configurando o texto de título
     inputText: {
         fontFamily: 'Roboto_900Black',
         fontSize: wp('7%'),
@@ -23,24 +21,9 @@ export const styles = StyleSheet.create({
     inputContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        
-    },
-    botaoAvancar: {
-        width: wp('80'),
-        height: hp('8%'),
-        backgroundColor: '#573C35',
-        borderRadius: 17,
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 20,
-    },
-    botaoAvancarText: {
-        fontFamily: 'Roboto_900Black',
-        fontSize: wp('6%'),
-        color: '#FFF',
     },
 
-    // Configurando as imagens
+    // Configurando os inputs de imagens
     inputTitle:{
         fontFamily: 'Roboto_900Black',
         fontSize: wp('5%'),
@@ -73,7 +56,23 @@ export const styles = StyleSheet.create({
     buttonImage:{
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
+
+    // Configurando o botão de avançar
+    botaoAvancar: {
+        width: wp('80'),
+        height: hp('8%'),
+        backgroundColor: '#573C35',
+        borderRadius: 17,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 20,
+    },
+    botaoAvancarText: {
+        fontFamily: 'Roboto_900Black',
+        fontSize: wp('6%'),
+        color: '#FFF',
+    },
 
 
 });

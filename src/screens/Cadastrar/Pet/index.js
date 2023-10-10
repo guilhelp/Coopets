@@ -1,49 +1,75 @@
-import { View, Text, ImageBackground, Linking, TouchableOpacity, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
-import { useState } from 'react';
+// Importando o React
+import React, { useState } from 'react';
+
+// Importando os componentes do React
+import {
+    View,
+    Text,
+    ImageBackground,
+    Linking,
+    TouchableOpacity,
+    ScrollView,
+    KeyboardAvoidingView,
+    Alert
+} from 'react-native';
+
+// Importando o componente de dropdown do react-native-select-dropdown
 import SelectDropdown from 'react-native-select-dropdown';
+
+// Importando o componente de DateTimePicker do react-native-modal-datetime-picker
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+
+// Importando as funções do date-fns
 import { format, isAfter, isBefore } from 'date-fns';
-import { useRoute } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
+
+// Importando os componentes do react navigation
+import { useRoute, useNavigation } from '@react-navigation/native';
+
+// Importando a biblioteca axios para requisições
 import axios from 'axios';
 
 // Estilos
 import { styles } from './styles';
+
+// Importando os componentes do react-native-paper
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+
+// Importando ícones
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 
-// Importanto imagens
+// Importando imagens
 import Background from '../../../assets/Background/Background.png'
 
-// Importanto componentes
+// Importando componentes
 import Input from '../../../components/Input';
 import Header from '../../../components/Header';
-
 
 // Configurando cores do react native paper
 const theme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
-        primary: 'black', // Aqui você define a cor desejada para o rótulo
+        primary: 'black',
     },
 };
-
 
 export default function CadastrarPet() {
     let [fontsLoaded, fontError] = useFonts({
         LuckiestGuy_400Regular,
         Roboto_900Black,
-    });
+    }); // Estado que armazena as fontes do projeto
 
-    const navigation = useNavigation();
-    const route = useRoute();
-    const { dadosResp } = route.params;
+    const navigation = useNavigation(); // Variável de navegação
+    const route = useRoute(); // Variável que envia parâmtros pelas rotas
 
+
+    const { dadosResp } = route.params; // Recebe os parâmetros
+
+    // Estados que armazenam as informações do pet
     const [nomePet, setNomePet] = useState('');
     const [sexo, setSexo] = useState('');
     const [tipo, setTipo] = useState('');
@@ -51,12 +77,20 @@ export default function CadastrarPet() {
     const [cor, setCor] = useState('');
     const [dataNascimentoPet, setDataNascimentoPet] = useState('');
     const [cep, setCep] = useState('');
+
+    // Estado que armazenara se o datepicker estará visivel ou não
     const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
+    // Estado que armazenara se o dropdown das raças estará visivel ou não
     const [showRacaDropdown, setShowRacaDropdown] = useState(false);
+
+    // Estado que armazena as opções de raça
     const [racaOptions, setRacaOptions] = useState([])
+
+    // Variável que armazena as opções de sexo
     const sexoOptions = ['Macho', 'Fêmea'];
 
+    // Condição, para mostrar diferentes tipos de raça dependendo do tipo de pet
     const updateRacaOptions = (selectedTipo) => {
         if (selectedTipo === 'Cão') {
             setRacaOptions(['Pug', 'Shih Tzu', 'Bulldog Francês', 'Pomerânia', 'Golden Retriever']);
@@ -67,114 +101,125 @@ export default function CadastrarPet() {
         }
     };
 
+    // Função para mostrar o DatePicker
     const showDatePicker = () => {
         setDatePickerVisible(true);
     };
 
+    // Função para esconder o DatePicker
     const hideDatePicker = () => {
         setDatePickerVisible(false);
     };
 
-
+    // Função para confirmar uma data no DatePicker
     const handleConfirm = (date) => {
         hideDatePicker();
-
-
         setDataNascimentoPet(date);
     };
 
-    const maxDate = new Date(); // Data atual
+    // Variável que armazena a Data atual
+    const maxDate = new Date();
 
+    // Função para abrir a URL do correio para buscar um CEP
     const handleOpenWebPage = () => {
-        const url = 'https://buscacepinter.correios.com.br/app/endereco/index.php'; // Substitua pela URL desejada
+        const url = 'https://buscacepinter.correios.com.br/app/endereco/index.php';
         Linking.openURL(url);
     };
 
+    // Lógica para adicionar uma idade máxima para o pet
     const limiteIdade = new Date();
     limiteIdade.setFullYear(limiteIdade.getFullYear() - 40);
 
+    // Lógica para adicionar uma idade mínima para o pet
     const minIdade = new Date();
     minIdade.setFullYear(minIdade.getFullYear() - 2);
 
+    // Função para validar um CEP
     const validarCep = async (cep) => {
-        // Remova qualquer caractere não numérico do CEP
-        const cepLimpo = cep.replace(/\D/g, '');
-      
-        // Verifique se o CEP tem exatamente 8 dígitos
-        if (cepLimpo.length !== 8) {
-          return false; // CEP inválido
+
+        const cepLimpo = cep.replace(/\D/g, ''); // Remove qualquer caractere não numérico do CEP
+
+        if (cepLimpo.length !== 8) { // Verifica se o CEP tem exatamente 8 dígitos
+            return false; // Retorna que o CEP é inválido
         }
-      
+
         try {
-          const response = await axios.get(`https://viacep.com.br/ws/${cepLimpo}/json/`);
-      
-          // Verifique se o serviço de consulta de CEP retornou um resultado válido
-          if (response.data.erro) {
-            return false; // CEP inválido
-          }
-      
-          return true; // CEP válido
+            // Faz uma requisição pela biblioteca axios para verificar se o CEP existe
+            const response = await axios.get(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+
+            // Verifica se o serviço de consulta de CEP retornou um resultado válido
+            if (response.data.erro) {
+                return false; // Retorna que o CEP é inválido
+            }
+
+            return true; // Retorna que CEP é válido
         } catch (error) {
-          console.error('Erro ao validar CEP:', error);
-          return false; // Erro na requisição
+            console.error('Erro ao validar CEP:', error);
+            return false; // Erro na requisição
         }
-      };
-      
+    };
 
-    // Resto do código...
+    // Função que valida diversos campos antes de avançar para a próxima tela
+    const checkFieldsAndNavigate = async () => {
 
-const checkFieldsAndNavigate = async () => {
-    if (!nomePet || !sexo || !tipo || !raca || !cor || !dataNascimentoPet || !cep) {
-      alert('Por favor, preencha todos os campos antes de avançar.');
-      return;
+        // Verifica se todos os campos foram preenchidos
+        if (!nomePet || !sexo || !tipo || !raca || !cor || !dataNascimentoPet || !cep) {
+            alert('Por favor, preencha todos os campos antes de avançar.');
+            return;
+        }
+
+        // Verifica se o cep tem 8 dígitos
+        if (cep.length !== 8) {
+            Alert.alert('CEP Inválido', 'O CEP deve conter exatamente 8 dígitos.');
+            return;
+        }
+
+        // Armazena a Data de Nascimento do pet
+        const dataNascimentoPetDate = new Date(dataNascimentoPet);
+
+        // Verifica se a idade é superior a 40 anos
+        if (isBefore(dataNascimentoPetDate, limiteIdade)) {
+            alert('A idade do pet não pode ser superior a 40 anos.');
+            return;
+        }
+
+        // Verifica se a idade é inferior a 2 anos
+        if (isAfter(dataNascimentoPetDate, minIdade)) {
+            alert('A idade do pet deve ser superior a 2 anos.');
+            return;
+        }
+
+        try {
+            // Valida o cep chamando a função validarCep
+            const isValid = await validarCep(cep);
+            if (!isValid) {
+                Alert.alert('CEP Inválido', 'O CEP digitado não é válido. Verifique o número digitado.');
+                return;
+            }
+
+            // Armazena todos os dados obtidos para enviar para a próxima tela
+            const dadosPet1 = {
+                nomePet,
+                sexo,
+                tipo,
+                raca,
+                cor,
+                dataNascimentoPet: dataNascimentoPet.toISOString(),
+                cep,
+            };
+
+            // Envia os dados tanto do responsável quanto do pet obtidos para a tela de CadastrarPet2
+            navigation.navigate('CadastrarPet2', { dadosResp, dadosPet1 });
+
+        } catch (error) {
+            console.error('Erro ao validar CEP:', error);
+            Alert.alert('Erro', 'Ocorreu um erro ao validar o CEP. Verifique sua conexão com a internet e tente novamente.');
+        }
     }
-  
-    if (cep.length !== 8) {
-      Alert.alert('CEP Inválido', 'O CEP deve conter exatamente 8 dígitos.');
-      return;
-    }
-  
-    const dataNascimentoPetDate = new Date(dataNascimentoPet);
-    if (isBefore(dataNascimentoPetDate, limiteIdade)) {
-      alert('A idade do pet não pode ser superior a 40 anos.');
-      return;
-    }
-  
-    if (isAfter(dataNascimentoPetDate, minIdade)) {
-      alert('A idade do pet deve ser superior a 2 anos.');
-      return;
-    }
-  
-    try {
-      const isValid = await validarCep(cep);
-      if (!isValid) {
-        Alert.alert('CEP Inválido', 'O CEP digitado não é válido. Verifique o número digitado.');
-        return;
-      }
-  
-      const dadosPet1 = {
-        nomePet,
-        sexo,
-        tipo,
-        raca,
-        cor,
-        dataNascimentoPet: dataNascimentoPet.toISOString(),
-        cep,
-      };
-  
-      navigation.navigate('CadastrarPet2', { dadosResp, dadosPet1 });
-    } catch (error) {
-      console.error('Erro ao validar CEP:', error);
-      Alert.alert('Erro', 'Ocorreu um erro ao validar o CEP. Verifique sua conexão com a internet e tente novamente.');
-    }
-  }
-  
-  // Resto do código...
-  
 
     if (!fontsLoaded && !fontError) {
         return null;
-    }
+    } // Condição caso as fontes não carreguem
 
     return (
         <PaperProvider theme={theme}>
@@ -211,8 +256,8 @@ const checkFieldsAndNavigate = async () => {
                                 data={['Cão', 'Gato']}
                                 onSelect={(selectedItem, index) => {
                                     setTipo(selectedItem);
-                                    updateRacaOptions(selectedItem); // Atualize as opções de raça com base no tipo selecionado
-                                    setShowRacaDropdown(true); // Mostrar o dropdown de raças quando um tipo é selecionado
+                                    updateRacaOptions(selectedItem); // Atualiza as opções de raça com base no tipo selecionado
+                                    setShowRacaDropdown(true); // Mostra o dropdown de raças quando um tipo é selecionado
                                 }}
                                 buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                                 rowTextForSelection={(item, index) => item}
@@ -223,10 +268,10 @@ const checkFieldsAndNavigate = async () => {
                                 dropdownStyle={styles.dropdownContainer}
                             />
 
-                            {showRacaDropdown && (
+                            {showRacaDropdown && ( // Condição para mostrar o dropdown de raças somente depois de escolher um tipo de pet
                                 <SelectDropdown
-                                    data={racaOptions} // Use o estado racaOptions como fonte de dados
-                                    onSelect={(selectedItem, index) => setRaca(selectedItem)} // Atualize a raça selecionada
+                                    data={racaOptions} 
+                                    onSelect={(selectedItem, index) => setRaca(selectedItem)} // Atualiza a raça selecionada
                                     buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                                     rowTextForSelection={(item, index) => item}
                                     dropdownIconPosition="right"
