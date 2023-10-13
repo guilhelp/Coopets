@@ -35,7 +35,8 @@ export const styles = StyleSheet.create({
     logoImage: {
         width: 80,
         height: 80,
-        marginTop: 20,
+        marginTop: 30,
+        paddingLeft: 10,
     },
     filterButton: {
         width: 70,
@@ -61,22 +62,18 @@ export const styles = StyleSheet.create({
 
     // Botão de perfil
     buttonPerfilContainer:{
-        bottom: 500,
-        width: 1000,
-        height: 150,
-        padding: 16,
-        left: 210,
-        position: 'relative',
+        padding: 10,
+        marginLeft: 260,
+        position: 'absolute',
         fontFamily: 'Roboto_900Black',
     },
     buttonPerfil:{
         backgroundColor: '#573C35',
-        width: 120,
-        height: 50,
+        width: wp('25%'),
+        height:  hp('5%'),
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 10,
-        marginHorizontal: 30,
+        borderRadius: 17,
     },
     buttonPerfilText:{
         color: '#FFF',
@@ -160,14 +157,14 @@ export const styles = StyleSheet.create({
     likeIcon: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: wp('20%'),
-        height: hp('10%'),
+        width: wp('17%'),
+        height: hp('8%'),
     },
     dislikeIcon: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: wp('13%'),
-        height: hp('6%'),
+        width: wp('10%'),
+        height: hp('5%'),
     },
 
     // Pop-up do match
@@ -185,15 +182,16 @@ export const styles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: '#FFF',
         width: 150,
-        height: 70,
+        height: 50,
         alignContent: 'center',
         justifyContent: 'center',
         borderColor: "#EEE1D3",
-        marginBottom: 10
+        marginBottom: 50,
+        textAlign: 'center'
     },
     closePopupButtonText: {
         fontSize: 20,
-        marginLeft: 40,
+        paddingLeft: 40,
         color: 'black',
         fontFamily: 'Roboto_900Black',
         alignContent: 'center',

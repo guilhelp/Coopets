@@ -6,10 +6,12 @@ function App() {
     const [splashComplete, setSplashComplete] = useState(false);
 
     return (
+        
         splashComplete
             ? <Rotas/>
             : <Splash onComplete={setSplashComplete} />
     );
+    
 }
 
 export default App;

@@ -42,7 +42,7 @@ export default StyleSheet.create({
   buttonText: {
     color: '#FFFFFF',
     fontFamily: 'Roboto_900Black',
-    fontSize: 18,
+    fontSize: 22,
   },
   textInfo: {
     fontFamily: 'Roboto_900Black',
@@ -52,7 +52,7 @@ export default StyleSheet.create({
   },
   textoContainer:{
     backgroundColor: '#573C35',
-    borderRadius: 30,
+    borderRadius: 17,
     width: 305,
     height: 146,
     justifyContent: 'center',

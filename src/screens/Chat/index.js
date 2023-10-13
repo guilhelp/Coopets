@@ -7,10 +7,11 @@ import { database, auth, db } from '../../config/Firebase';
 import { doc, getDoc, deleteDoc, query, collection, getDocs, where } from '@firebase/firestore';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Background from '../../assets/Background/Background.png'
-import { MaterialIcons } from '@expo/vector-icons';
+
 import { SimpleLineIcons } from '@expo/vector-icons';
 import ChatOptionsMenu from '../../components/ChatOptions';
 import { Ionicons } from '@expo/vector-icons';
+
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
@@ -150,9 +151,15 @@ export default function Chat({ route }) {
     }
   }
 
-  function buttonPress() {
-    writeMessage("Hello World")
+  async function buttonPress() {
+    if (message.trim() !== "") { // Verifique se a mensagem não está em branco (após remover espaços em branco)
+      writeMessage("Hello World");
+    } else {
+      // Exiba um alerta ao usuário informando que a mensagem está em branco
+      Alert.alert("Aviso", "Por favor, digite uma mensagem antes de enviar.");
+    }
   }
+
 
   useEffect(() => {
 
@@ -332,79 +339,85 @@ export default function Chat({ route }) {
 
   return (
     <ImageBackground source={Background} style={styles.background}>
-      <View style={styles.cabecalhoPagina}>
+        <KeyboardAvoidingView
+                    behavior={'padding'}
+                    style={styles.container}
+                    keyboardVerticalOffset={0}>
+                    <ScrollView style={styles.scrollContainer}>
+        <View style={styles.cabecalhoPagina}>
 
-        <TouchableOpacity style={styles.petDetails} onPress={() => navigation.navigate('ConsultarPerfil', { petId, petImage, petNome, petBio, petCep, petSexo, petTipo, petRaca, petIdade, petPedigree, petVac })}>
-          <Image source={{ uri: petImage }} style={styles.petImage} />
-          <Text style={styles.petName}>{petNome}</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.botoesContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
-          <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={toggleOptionsModal} style={styles.optionButton}>
-          <SimpleLineIcons name={'options-vertical'} size={40} color="white" style={styles.optionIcon} />
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.petDetails} onPress={() => navigation.navigate('ConsultarPerfil', { petId, petImage, petNome, petBio, petCep, petSexo, petTipo, petRaca, petIdade, petPedigree, petVac })}>
+            <Image source={{ uri: petImage }} style={styles.petImage} />
+            <Text style={styles.petName}>{petNome}</Text>
+          </TouchableOpacity>
+          <View style={styles.botoesContainerOption}>
+            <TouchableOpacity onPress={toggleOptionsModal} style={styles.optionButton}>
+              <SimpleLineIcons name={'options-vertical'} size={35} color="white" style={styles.optionIcon} />
+            </TouchableOpacity>
+          </View>
+        </View>
 
-        {/* Renderize o modal de opções */}
-        <ChatOptionsMenu
-          isVisible={isOptionsVisible}
-          onDesfazerMatchPress={() => {
-            desfazerMatch();
-            toggleOptionsModal(); // Feche o modal após desfazer o match
-          }}
-          onClose={toggleOptionsModal}
-        />
-      </View>
-      <KeyboardAvoidingView
-        behavior={'padding'}
-        style={styles.container}>
-        <ScrollView
-          ref={(ref) => {
-            this.scrollView = ref;
-          }}
-          onContentSizeChange={() => {
-            this.scrollView.scrollToEnd({ animated: true });
-          }}
-          style={styles.scrollMsg}
-        >
-          {displayMessages ? (
-            displayMessages.map((msg, id) => (
-              <View
-                key={id}
-                style={[
-                  styles.messageContainer,
-                  msg.userId === petResp ? styles.myMessage : styles.otherMessage
-                ]}
-              >
-                <Text
+        
+        <View style={styles.fundoBranco}>
+        
+          <View style={styles.botoesContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
+              <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
+            </TouchableOpacity>
+
+            {/* Renderize o modal de opções */}
+            <ChatOptionsMenu
+              isVisible={isOptionsVisible}
+              onDesfazerMatchPress={() => {
+                desfazerMatch();
+                toggleOptionsModal(); // Feche o modal após desfazer o match
+              }}
+              onClose={toggleOptionsModal}
+            />
+          </View>
+
+          
+      
+            {displayMessages ? (
+              displayMessages.map((msg, id) => (
+                <View
+                  key={id}
                   style={[
-                    styles.messageText,
-                    msg.userId === myId ? styles.myMessageText : styles.otherMessageText
+                    styles.messageContainer,
+                    msg.userId === petResp ? styles.myMessage : styles.otherMessage
                   ]}
                 >
-                  {msg.message}
-                </Text>
-              </View>
-            ))
-          ) : (
-            <Text>No messages available.</Text>
-          )}
-        </ScrollView>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={message}
-            onChangeText={(value) => setMessage(value)} placeholder="Digite uma mensagem"
-          />
-          <TouchableOpacity style={styles.sendButton} onPress={buttonPress}>
-            <Icon name="send" size={30} color="white" />
-          </TouchableOpacity>
+                  <Text
+                    style={[
+                      styles.messageText,
+                      msg.userId === myId ? styles.myMessageText : styles.otherMessageText
+                    ]}
+                  >
+                    {msg.message}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <Text>No messages available.</Text>
+            )}
+      
+          
+          <View style={styles.inputContainer}>
+         
+            <TextInput
+              style={styles.input}
+              value={message}
+              onChangeText={(value) => setMessage(value)} placeholder="Digite uma mensagem"
+            />
+            <TouchableOpacity style={styles.sendButton} onPress={buttonPress}>
+              <Icon name="send" size={30} color="gray" />
+            </TouchableOpacity>
+          
+          </View>
         </View>
-      </KeyboardAvoidingView>
-
+        </ScrollView>
+        </KeyboardAvoidingView>
+       
     </ImageBackground>
   );
 }

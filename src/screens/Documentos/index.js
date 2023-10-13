@@ -86,7 +86,7 @@ export default function Documentos() {
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')}>
-                            <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnButton} />
+                            <Ionicons name={'arrow-undo'} size={50} color="white" style={styles.returnButton} />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage(petData?.pedigree)}>
                             <Text style={styles.title}>PEDIGREE</Text>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, ScrollView, ActivityIndicator, Image, StyleSheet, KeyboardAvoidingView, Button } from 'react-native';
 import { auth, db, storage } from '../../config/Firebase';
-import { fetchSignInMethodsForEmail, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
+import { fetchSignInMethodsForEmail, reauthenticateWithCredential, EmailAuthProvider, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc, collection, getDoc, getDocs, query, where, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable, uploadBytes, deleteObject } from '@firebase/storage';
 import { useNavigation } from '@react-navigation/native';
@@ -11,8 +11,9 @@ import SelectDropdown from 'react-native-select-dropdown';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
-import { format } from 'date-fns';
 import axios from 'axios';
+// Importando as funções do date-fns
+import { format, isAfter, isBefore } from 'date-fns';
 
 // Estilos
 import styles from './styles';
@@ -65,7 +66,8 @@ export default function EditarPerfil() {
     const [racaPet, setRacaPet] = useState('');
     const [cor, setCor] = useState('');
     const [dataNascimentoPet, setDataNascimentoPet] = useState('');
-    const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+    const [isDatePickerVisiblePet, setDatePickerVisiblePet] = useState(false);
+    const [isDatePickerVisibleResp, setDatePickerVisibleResp] = useState(false);
     const [pedigreeImage, setPedigreeImage] = useState(null);
     const [vacinaCardImage, setVacinaCardImage] = useState(null);
     const [perfilImage, setPerfilImage] = useState(null);
@@ -75,6 +77,7 @@ export default function EditarPerfil() {
     const [senhaAtual, setSenhaAtual] = useState('');
     const [emailAlterado, setEmailAlterado] = useState(false);
     const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
+
 
     const [newPerfilImage, setNewPerfilImage] = useState(null); // Estado para a nova imagem de perfil
     const [newPedigreeImage, setNewPedigreeImage] = useState(null); // Estado para a nova imagem de pedigree
@@ -201,8 +204,7 @@ export default function EditarPerfil() {
                 setDataNascimentoPet(petData.dataNascimentoPet);
                 setBio(petData.bio);
                 setCep(petData.cep)
-                // Continue preenchendo os outros campos de acordo com os dados do pet
-                // ...
+                updateRacaOptions(petData.tipo);
 
                 // Verifique se as URLs das imagens existem antes de tentar carregá-las
                 if (petData.pedigree) {
@@ -231,6 +233,11 @@ export default function EditarPerfil() {
                         console.error('Erro ao carregar imagem do perfil:', error);
                     }
                 }
+
+                if (racaOptions.length > 0) {
+                    // Renderize o SelectDropdown aqui ou dispare a exibição em outra função.
+                }
+
             } else {
                 console.log('Pet não encontrado para o responsável logado.');
                 alert('Pet não encontrado para o responsável logado.');
@@ -242,6 +249,18 @@ export default function EditarPerfil() {
             setLoadingVisible(false);
         }
     };
+
+    // Lógica para adicionar uma idade máxima para o pet
+    const limiteIdade = new Date();
+    limiteIdade.setFullYear(limiteIdade.getFullYear() - 40);
+
+    // Lógica para adicionar uma idade mínima para o pet
+    const minIdade = new Date();
+    minIdade.setFullYear(minIdade.getFullYear() - 2);
+
+    // Lógica para adicionar uma idade mínima para o pet
+    const minIdadeResp = new Date();
+    minIdadeResp.setFullYear(minIdadeResp.getFullYear() - 18);
 
     const validarCep = async () => {
         try {
@@ -261,8 +280,8 @@ export default function EditarPerfil() {
 
             return true; // Retorna verdadeiro se o CEP for válido
         } catch (error) {
-            console.error('Erro na validação de CEP:', error);
-            alert('Erro na validação de CEP. Ocorreu um erro ao verificar o CEP. Por favor, tente novamente mais tarde.');
+
+            alert('CEP não encontrado. Por favor, verifique o CEP digitado.');
             return false; // Retorna falso em caso de erro
         }
     };
@@ -307,41 +326,139 @@ export default function EditarPerfil() {
     };
 
     const sexoOptions = ['Macho', 'Fêmea'];
-    const [showRacaDropdown, setShowRacaDropdown] = useState(false);
     const [racaOptions, setRacaOptions] = useState([])
 
     const updateRacaOptions = (selectedTipo) => {
+
         if (selectedTipo === 'Cão') {
-            setRacaOptions(['Pug', 'Shih Tzu', 'Bulldog Francês', 'Pomerânia', 'Golden Retriever']);
+            const optionsCao = ['Pug', 'Shih Tzu', 'Bulldog Francês', 'Pomerânia', 'Golden Retriever']
+            setRacaOptions(optionsCao)
+            console.log(racaOptions)
         } else if (selectedTipo === 'Gato') {
             setRacaOptions(['Persa', 'Siamês', 'Angorá', 'Ashera', 'Sphynx']);
         } else {
-            setRacaOptions([]); // Se nenhum tipo estiver selecionado, não há opções de raça
+            setRacaOptions([]); // Se nenhum tipo estiver selecionado, não há opções de raça]
+
         }
     };
 
 
-    const showDatePicker = () => {
-        setDatePickerVisible(true);
+    const showDatePickerPet = () => {
+        setDatePickerVisiblePet(true);
     };
 
-    const hideDatePicker = () => {
-        setDatePickerVisible(false);
+    const showDatePickerResp = () => {
+        setDatePickerVisibleResp(true);
+    };
+
+    const hideDatePickerPet = () => {
+        setDatePickerVisiblePet(false);
+    };
+
+    const hideDatePickerResp = () => {
+        setDatePickerVisibleResp(false);
     };
 
     const handleConfirmPet = (date) => {
-        hideDatePicker();
+        hideDatePickerPet();
         const formattedDate = format(date, 'yyyy-MM-dd'); // Formate a data como desejar
         setDataNascimentoPet(formattedDate); // Atualize dataNascimentoPet com a data formatada
-       
+
     };
 
     const handleConfirmResp = (date) => {
-        hideDatePicker();
+        hideDatePickerResp();
         const formattedDate = format(date, 'yyyy-MM-dd'); // Formate a data como desejar
-       
+
         setDataNascimentoResp(formattedDate);
     };
+
+    const checkCpfRgExistence = async () => {
+        try {
+            // Consulta o Firestore para verificar se já existe algum documento com o mesmo CPF.
+            const cpfQuery = await getDocs(
+                query(collection(db, 'responsaveis'), where('cpf', '==', userCPF))
+            );
+
+            // Consulta o Firestore para verificar se já existe algum documento com o mesmo RG.
+            const rgQuery = await getDocs(
+                query(collection(db, 'responsaveis'), where('rg', '==', userRG))
+            );
+
+            if (!cpfQuery.empty || !rgQuery.empty) {
+                // Se qualquer uma das consultas retornar resultados, CPF ou RG já estão associados a outra conta, então exibe um alerta.
+                alert('CPF ou RG já estão associados a outra conta.');
+                return false; // Retorna false para indicar que CPF ou RG não estão disponíveis.
+            }
+
+            // Se ambas as consultas não retornarem resultados, CPF e RG estão disponíveis para cadastro.
+            return true;
+        } catch (error) {
+            // Em caso de erro, registra-o no console e retorna false.
+            console.error('Erro ao verificar CPF e RG:', error);
+            return false;
+        }
+    };
+
+    // Função para validar um CPF
+    function validarCPF(cpf) {
+        // Remove caracteres não numéricos
+        const cpfLimpo = cpf.replace(/\D/g, '');
+
+        // Verifica se o CPF tem 11 dígitos
+        if (cpfLimpo.length !== 11) {
+            return false; // CPF inválido
+        }
+
+        // Validação do CPF
+        let soma = 0;
+        let resto;
+
+        for (let i = 1; i <= 9; i++) {
+            soma += parseInt(cpfLimpo.substring(i - 1, i)) * (11 - i);
+        }
+
+        resto = (soma * 10) % 11;
+
+        if (resto === 10 || resto === 11) {
+            resto = 0;
+        }
+
+        if (resto !== parseInt(cpfLimpo.substring(9, 10))) {
+            return false; // CPF inválido
+        }
+
+        soma = 0;
+
+        for (let i = 1; i <= 10; i++) {
+            soma += parseInt(cpfLimpo.substring(i - 1, i)) * (12 - i);
+        }
+
+        resto = (soma * 10) % 11;
+
+        if (resto === 10 || resto === 11) {
+            resto = 0;
+        }
+
+        if (resto !== parseInt(cpfLimpo.substring(10, 11))) {
+            return false; // CPF inválido
+        }
+
+        return true; // CPF válido
+    }
+
+    // Função para validar um RG
+    function validarRG(rg) {
+        // Remove caracteres não numéricos
+        const rgLimpo = rg.replace(/\D/g, '');
+
+        // Verifica se o RG tem 9 dígitos
+        if (rgLimpo.length !== 9) {
+            return false; // RG inválido
+        }
+
+        return true; // RG válido
+    }
 
     const maxDate = new Date(); // Data atual
 
@@ -358,6 +475,12 @@ export default function EditarPerfil() {
         try {
             setLoadingVisible(true);
 
+            if (!userNome || !userEmail || !userCPF || !userRG || !dataNascimentoResp || !nomePet || !sexo || !tipoPet || !racaPet || !cor || !dataNascimentoPet || !cep) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                setLoadingVisible(false);
+                return;
+            }
+
             // Validar se é um email válido
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(userEmail)) {
@@ -366,12 +489,73 @@ export default function EditarPerfil() {
                 return;
             }
 
+            // Armazena a Data de Nascimento do pet
+            const dataNascimentoPetDate = new Date(dataNascimentoPet);
+
+            // Verifica se a idade do pet é superior a 40 anos
+            if (isBefore(dataNascimentoPetDate, limiteIdade)) {
+                setLoadingVisible(false);
+                alert('A idade do pet não pode ser superior a 40 anos.');
+                return;
+            }
+
+            // Verifica se a idade do pet é inferior a 2 anos
+            if (isAfter(dataNascimentoPetDate, minIdade)) {
+                setLoadingVisible(false);
+                alert('A idade do pet deve ser superior a 2 anos.');
+                return;
+            }
+
+            const dataNascimentoRespDate = new Date(dataNascimentoResp);
+
+            // Verifica se a idade do responsável é superior a 18 anos 
+            if (isAfter(dataNascimentoRespDate, minIdadeResp)) {
+                setLoadingVisible(false);
+                alert('O responsável deve ser maior de 18 anos.');
+                return;
+            }
+
+
             // Validar se o CEP existe
             const cepValido = await validarCep();
 
             if (!cepValido) {
                 setLoadingVisible(false);
                 return; // Retorna se o CEP não for válido
+            }
+
+            // Chama a função de validar CPF
+            if (!validarCPF(userCPF)) {
+                setLoadingVisible(false);
+                alert('CPF inválido. Verifique o formato do CPF.');
+                return;
+            }
+
+            // Chama a função de validarRG
+            if (!validarRG(userRG)) {
+                setLoadingVisible(false);
+                alert('RG inválido. Verifique o formato do RG.');
+                return;
+            }
+
+            // Consultar o Firestore para obter os dados do usuário com base no ID do usuário atual
+            const userDocRef = doc(db, 'responsaveis', auth.currentUser.uid);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                const dadosAtuaisDoUsuario = userDoc.data();
+
+                // Verificar se CPF e RG foram alterados e precisam ser validados
+                const oldCpf = dadosAtuaisDoUsuario.cpf;
+                const oldRg = dadosAtuaisDoUsuario.rg;
+
+                if (userCPF !== oldCpf || userRG !== oldRg) {
+                    // Chama a função de verificar se o CPF e RG já existem na base de dados
+                    if (!(await checkCpfRgExistence())) {
+                        setLoadingVisible(false);
+                        return;
+                    }
+                }
             }
 
             // Verificar se o email foi alterado
@@ -392,9 +576,6 @@ export default function EditarPerfil() {
                     setLoadingVisible(false);
                     return;
                 }
-
-
-
                 try {
                     // Reautentique o usuário com a senha atual
                     const user = auth.currentUser;
@@ -405,7 +586,6 @@ export default function EditarPerfil() {
                     await updateEmail(user, userEmail);
                     setPasswordModalVisible(false);
                 } catch (reauthError) {
-                    console.error('Erro de reautenticação:', reauthError);
                     alert('Senha atual incorreta. As alterações de email não foram feitas.');
                     setLoadingVisible(false);
                     return;
@@ -511,6 +691,10 @@ export default function EditarPerfil() {
 
                 // Se a atualização do email tiver sucesso, chame a função para editar o perfil
                 await editarPerfil();
+
+                // Após a edição do perfil, envie um e-mail de verificação para o novo e-mail
+                const user = auth.currentUser;
+                await sendEmailVerification(user);
             } else {
                 // Se o email não foi alterado, chame diretamente a função para editar o perfil
                 await editarPerfil();
@@ -519,10 +703,11 @@ export default function EditarPerfil() {
             // Feche o modal de senha, se estiver aberto
             setPasswordModalVisible(false);
         } catch (error) {
-            console.error('Erro ao reautenticar ou atualizar o email:', error);
             alert('Ocorreu um erro. Verifique sua senha ou tente novamente mais tarde.');
         }
     };
+
+
 
     if (!fontsLoaded && !fontError) {
         return null;
@@ -559,7 +744,7 @@ export default function EditarPerfil() {
                         <View style={styles.container}>
                             <View style={styles.buttonContainer}>
                                 <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
-                                <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
+                                    <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.inputContainerPerfil}>
@@ -633,30 +818,17 @@ export default function EditarPerfil() {
                                     maxLength={12}
                                 />
 
-                                <TouchableOpacity onPress={showDatePicker} style={styles.datePickerButton}>
+                                <TouchableOpacity onPress={showDatePickerResp} style={styles.datePickerButton}>
                                     <Text style={styles.datePickerText}>
                                         {dataNascimentoResp ? format(new Date(dataNascimentoResp), 'dd/MM/yyyy') : 'Data de Nascimento'}
                                     </Text>
                                 </TouchableOpacity>
 
                                 <DateTimePickerModal
-                                    isVisible={isDatePickerVisible}
+                                    isVisible={isDatePickerVisibleResp}
                                     mode="date"
-                                    onConfirm={(date) => {
-                                        const selectedDate = new Date(date);
-                                        const today = new Date();
-                                        const age = today.getFullYear() - selectedDate.getFullYear();
-
-                                        // Verifique se a data de nascimento é maior ou igual a 18 anos atrás
-                                        if (age >= 18) {
-                                            setDatePickerVisible(false);
-                                            handleConfirmResp(selectedDate);
-                                        } else {
-                                            alert('Você deve ter pelo menos 18 anos.');
-                                            setDatePickerVisible(false);
-                                        }
-                                    }}
-                                    onCancel={hideDatePicker}
+                                    onConfirm={handleConfirmResp}
+                                    onCancel={hideDatePickerResp}
                                     maximumDate={maxDate}
                                 />
 
@@ -689,7 +861,6 @@ export default function EditarPerfil() {
                                         onSelect={(selectedItem, index) => {
                                             setTipoPet(selectedItem);
                                             updateRacaOptions(selectedItem); // Atualize as opções de raça com base no tipo selecionado
-                                            setShowRacaDropdown(true); // Mostrar o dropdown de raças quando um tipo é selecionado
                                         }}
                                         buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                                         rowTextForSelection={(item, index) => item}
@@ -701,18 +872,20 @@ export default function EditarPerfil() {
                                         defaultValue={tipoPet}
                                     />
 
-                                    <SelectDropdown
-                                        data={racaOptions} // Use o estado racaOptions como fonte de dados
-                                        onSelect={(selectedItem, index) => setRacaPet(selectedItem)} // Atualize a raça selecionada
-                                        buttonTextAfterSelection={(selectedItem, index) => selectedItem}
-                                        rowTextForSelection={(item, index) => item}
-                                        dropdownIconPosition="right"
-                                        defaultButtonText="Selecione"
-                                        buttonStyle={styles.dropdownButton}
-                                        buttonTextStyle={styles.dropdownButtonText}
-                                        dropdownStyle={styles.dropdownContainer}
-                                        defaultValue={racaPet}
-                                    />
+                                    {racaOptions.length > 0 && (
+                                        <SelectDropdown
+                                            data={racaOptions}
+                                            onSelect={(selectedItem, index) => setRacaPet(selectedItem)}
+                                            buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+                                            rowTextForSelection={(item, index) => item}
+                                            dropdownIconPosition="right"
+                                            defaultButtonText="Selecione"
+                                            buttonStyle={styles.dropdownButton}
+                                            buttonTextStyle={styles.dropdownButtonText}
+                                            dropdownStyle={styles.dropdownContainer}
+                                            defaultValue={racaPet}
+                                        />
+                                    )}
 
                                     <Input
                                         style={styles.input}
@@ -721,17 +894,17 @@ export default function EditarPerfil() {
                                         onChangeText={setCor}
                                     />
 
-                                    <TouchableOpacity onPress={showDatePicker} style={styles.datePickerButton}>
+                                    <TouchableOpacity onPress={showDatePickerPet} style={styles.datePickerButton}>
                                         <Text style={styles.datePickerText}>
                                             {dataNascimentoPet ? format(new Date(dataNascimentoPet), 'dd/MM/yyyy') : 'Data de Nascimento'}
                                         </Text>
                                     </TouchableOpacity>
 
                                     <DateTimePickerModal
-                                        isVisible={isDatePickerVisible}
+                                        isVisible={isDatePickerVisiblePet}
                                         mode="date"
                                         onConfirm={handleConfirmPet}
-                                        onCancel={hideDatePicker}
+                                        onCancel={hideDatePickerPet}
                                         maximumDate={maxDate}
                                     />
 
@@ -744,7 +917,7 @@ export default function EditarPerfil() {
                                         onChangeText={setCep}
                                         keyboardType="numeric"
                                         maxLength={9}
-                                        
+
                                     />
 
                                 </View>

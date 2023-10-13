@@ -56,7 +56,7 @@ const TermosDeUsoPopup = ({ visible, onAccept }) => {
   Data de entrada em vigor: 01/10/2023
   `;
 
-    const trimmedText = showFullText ? fullText : fullText.slice(0, 500); // Mostra apenas os primeiros 200 caracteres
+    const trimmedText = showFullText ? fullText : fullText.slice(0, 1000); // Mostra apenas os primeiros 200 caracteres
 
     return (
         <Modal transparent animationType="slide" visible={visible}>

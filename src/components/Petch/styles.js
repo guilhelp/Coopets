@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
-import styles from './styles';
 
 export default StyleSheet.create({
     container: {
@@ -27,11 +26,11 @@ export default StyleSheet.create({
       borderRadius: 100,
       borderColor: '#EEE1D3',
       borderWidth: 5,
-      marginHorizontal: -35, // Reduzir o valor da margem horizontal
+      marginHorizontal: -40, // Reduzir o valor da margem horizontal
       zIndex: 1, // Defina um valor de zIndex menor
     },
     heartIcon: {
-      width: wp('20%'),
+      width: wp('25%'),
       height: hp('13%'),
       zIndex: 2, // Defina um valor de zIndex maior
       shadowColor: 'black', // Cor da sombra

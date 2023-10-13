@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Estilos
 import { styles } from './styles';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
@@ -155,12 +155,12 @@ export default function Login() {
                     <View style={styles.botoesContainer}>
 
                         <TouchableOpacity style={styles.botaoCadastro} onPress={() => { navigation.navigate('CadastrarResponsavel'); }}>
-                            <Icon name="user-plus" size={25} color="black" />
+                            <FontAwesome name="user-circle" size={25} color="black" />
                             <Text style={styles.cadastroText}>Criar Conta</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.botaoEsqueciSenha} onPress={() => { navigation.navigate('EsqueceuSenha'); }}>
-                            <Icon name="key" size={25} color="black" />
+                            <MaterialCommunityIcons name="email" size={25} color="black" />
                             <Text style={styles.esqueciSenhaText}>Esqueci Senha</Text>
                         </TouchableOpacity>
 

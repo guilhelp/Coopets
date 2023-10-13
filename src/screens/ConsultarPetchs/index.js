@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ImageBackground, FlatList, TouchableOpacity, Image, Text, RefreshControl } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db, auth, database } from '../../config/Firebase';
 import { child, ref, get } from '@firebase/database';
 
@@ -9,6 +9,9 @@ import { child, ref, get } from '@firebase/database';
 import styles from './styles';
 import Background from '../../assets/Background/Background.png'
 import Header from '../../components/Header';
+
+// Importando ícones
+import { Ionicons } from '@expo/vector-icons';
 
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
@@ -112,18 +115,9 @@ export default function ConsultarPetchs() {
         setChatsData(updatedChatsData);
     };
 
-    useFocusEffect(
-        React.useCallback(() => {
-            fetchData(); // Busque os dados iniciais dos chats
-        }, [])
-    );
-
-    useFocusEffect(
-        React.useCallback(() => {
-            // Quando a tela obtiver foco novamente, atualize os chats com a última mensagem
-            updateChatsWithLastMessage();
-        }, [messagesData]) // Escute por mudanças em messagesData
-    );
+    useEffect(() => {
+        fetchData(); // Call the async function immediately
+      }, []); 
 
     const onRefresh = () => {
         setRefreshing(true);
@@ -215,7 +209,10 @@ export default function ConsultarPetchs() {
 
     return (
         <ImageBackground source={Background} style={styles.background}>
-            <Header title="CHATS" iconName="chat" />
+            <View style={styles.cabecalhoPagina}>
+                <Ionicons name={'chatbubbles-sharp'} size={65} color="white" style={styles.chatImage} />
+                <Text style={styles.tituloCabecalho}>CHATS</Text>
+            </View>
             <View style={styles.container}>
                 <FlatList
                     data={chatsData}

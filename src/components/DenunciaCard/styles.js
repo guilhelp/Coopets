@@ -13,7 +13,7 @@ export default StyleSheet.create({
       margin: 30,
       marginTop: 10,
       width: 330,
-      height: 280,
+      height: 300,
     },
     infoContainer: {
       flexDirection: 'row',

@@ -47,6 +47,9 @@ import PetchScreen from '../../components/Petch';
 // Importando os estilos
 import { styles } from './styles';
 
+// Importando ícones
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
@@ -428,7 +431,7 @@ export default function Avaliacao() {
     // Esta função será chamada quando a tela de Avaliação obtiver foco
     useFocusEffect(
         React.useCallback(() => {
-            
+
             if (userPreferencesChanged) {  // Verifica se as preferências do usuário foram alteradas
                 // As preferências do usuário mudaram, busque dados atualizados com base nas novas preferências
                 fetchData();
@@ -651,10 +654,10 @@ export default function Avaliacao() {
                 </View>
             )}
             <View style={styles.cabecalhoPagina}>
-                <Image source={require('../../assets/Logo/Logo_FundoBranco.png')} style={styles.logoImage} />
+                <MaterialIcons name={'pets'} size={65} color="white" style={styles.logoImage} />
                 <Text style={styles.tituloCabecalho}>AVALIAÇÃO</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Filtros')}>
-                    <Image source={require('../../assets/Icons/filterButton.png')} style={styles.filterButton} />
+                    <MaterialCommunityIcons name={'filter'} size={65} color="white" style={styles.filterButton} />
                 </TouchableOpacity>
             </View>
             <View style={styles.container}>
@@ -708,7 +711,7 @@ export default function Avaliacao() {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.button} onPress={handleLike}>
-                        <Image source={require('../../assets/Icons/like.png')} style={styles.likeIcon} />
+                        <Image source={LogoBranca} style={styles.likeIcon} />
                     </TouchableOpacity>
 
 

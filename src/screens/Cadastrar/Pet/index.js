@@ -35,7 +35,7 @@ import { styles } from './styles';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
 // Importando ícones
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
@@ -318,7 +318,7 @@ export default function CadastrarPet() {
                             />
 
                             <TouchableOpacity style={styles.naoSabeCEP} onPress={handleOpenWebPage}>
-                                <Icon name="map-marker" size={25} color="black" />
+                                <MaterialCommunityIcons name="map-marker-radius" size={30} color="black" />
                                 <Text style={styles.naoSabeCEPText}>Não sabe seu Cep?</Text>
                             </TouchableOpacity>
 

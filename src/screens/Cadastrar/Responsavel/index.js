@@ -103,7 +103,7 @@ export default function CadastrarResponsavel() {
     setShowTermosDeUso(false);
   };
 
-  // Variável que armaezna a data atual
+  // Variável que armazena a data atual
   const maxDate = new Date();
 
   // Função que verifica se o email já existe na base dados

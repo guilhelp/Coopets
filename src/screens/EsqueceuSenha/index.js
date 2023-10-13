@@ -62,13 +62,13 @@ export default function EsqueceuSenha() {
     return (
         <PaperProvider theme={theme}>
             <ImageBackground source={Background} style={styles.background}>
-                <Header title="SENHA" iconName="mode-edit" />
+                <Header title="SENHA" iconName="lock" />
                 <KeyboardAvoidingView
                     behavior={'padding'}
                     style={styles.container}>
                     <ScrollView>
                         <View style={styles.textoContainer}>
-                            <Text style={styles.textInfo}>Digite seu Email para ser enviado um código de recuperação:</Text>
+                            <Text style={styles.textInfo}>Digite seu e-mail para ser enviado um código de recuperação:</Text>
                         </View>
                         <View style={styles.inputContainer}>
                             <Input

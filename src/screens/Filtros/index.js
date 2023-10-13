@@ -14,11 +14,14 @@ import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 
-// Importanto imagens
+// Importando imagens
 import Background from '../../assets/Background/Background.png'
 
-// Importanto componentes
+// Importando componentes
 import Header from '../../components/Header';
+
+// Importando ícones
+import { Ionicons } from '@expo/vector-icons';
 
 // Configurando cores do react native paper
 const theme = {
@@ -75,9 +78,14 @@ export default function Filtros() {
                     setTipo(preferencesData.tipo || '');
                     setRaca(preferencesData.raca || '');
                     setDistancia(preferencesData.distancia || 0);
-
+                    if (racaOptions.length > 0) {
+                        // Renderize o SelectDropdown aqui ou dispare a exibição em outra função.
+                    }
                     // Chame a função updateRacaOptions com o tipo existente para preencher as opções de raça
                     updateRacaOptions(preferencesData.tipo || '');
+
+
+                    
                 }
             } catch (error) {
                 console.error('Error fetching user preferences:', error);
@@ -130,18 +138,18 @@ export default function Filtros() {
             console.log("User not logged in");
             return;
         }
-    
+
         try {
             // Referência ao documento de filtro no Firestore
             const preferencesRef = doc(db, 'preferencias', auth.currentUser.uid);
-    
+
             // Verifique se o documento existe antes de tentar excluí-lo
             const preferencesDoc = await getDoc(preferencesRef);
-    
+
             if (preferencesDoc.exists()) {
                 // Use a função deleteDoc para excluir o documento
                 await deleteDoc(preferencesRef);
-    
+
                 // Navegue de volta para a tela de Avaliação
                 navigation.navigate('BottomTabs');
                 console.log('Filters cleared successfully!');
@@ -153,7 +161,7 @@ export default function Filtros() {
             console.error('Error clearing filters:', error);
         }
     };
-    
+
 
     if (!fontsLoaded && !fontError) {
         return null;
@@ -162,9 +170,12 @@ export default function Filtros() {
     return (
         <PaperProvider theme={theme}>
             <ImageBackground source={Background} style={styles.background}>
-                <Header title="FILTROS" iconName="supervised-user-circle" />
+                <Header title="FILTROS" iconName="filter-alt" />
                 <ScrollView>
-                    <View style={styles.fundoContainer}>
+                    <View style={styles.cabecalho}>
+                        <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
+                            <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
+                        </TouchableOpacity>
                         <View style={styles.limparContainer}>
                             <TouchableOpacity
                                 style={styles.botaoLimpar}
@@ -173,6 +184,9 @@ export default function Filtros() {
                                 <Text style={styles.botaoLimparText}>Limpar Filtros</Text>
                             </TouchableOpacity>
                         </View>
+                    </View>
+                    <View style={styles.fundoContainer}>
+
 
                         <View style={styles.inputContainer}>
                             <Text style={styles.titleFilterPets}>FILTRANDO PETS</Text>
@@ -212,6 +226,7 @@ export default function Filtros() {
                             </View>
                             <View style={styles.racaContainer}>
                                 <Text style={styles.racaContainerText}>Raça</Text>
+                                {racaOptions.length > 0 && (
                                 <SelectDropdown
                                     data={racaOptions} // Use o estado racaOptions como fonte de dados
                                     onSelect={(selectedItem, index) => setRaca(selectedItem)} // Atualize a raça selecionada
@@ -224,35 +239,61 @@ export default function Filtros() {
                                     dropdownStyle={styles.dropdownContainer}
                                     defaultValue={raca}
                                 />
+                                )}
                             </View>
 
                             <View style={styles.filtroDistanciaContainer}>
                                 <Text style={styles.titleDistance}>Filtrar por Distância</Text>
-                                <Switch
-                                    value={filtroDistanciaAtivado}
-                                    onValueChange={(newValue) => setFiltroDistanciaAtivado(newValue)}
-                                />
                             </View>
 
                             {filtroDistanciaAtivado && (
                                 <View style={styles.baseDistance}>
+
+
                                     <TouchableOpacity
                                         style={[styles.buttonDistance5, distancia === 5 && styles.selectedButtonDistance]}
                                         onPress={() => setDistancia(5)}
                                     >
                                         <Text style={[styles.textInside, distancia === 5 && styles.textInsideSelected]}>5 km</Text>
+                                        {distancia === 5 && (
+                                            <Ionicons
+                                                name="close-circle" // Nome do ícone de "X"
+                                                size={30} // Tamanho do ícone
+                                                style={styles.closefilter} // Estilo para posicionar o ícone "X"
+                                                color={'#573C35'}
+                                                onPress={() => setDistancia(0)} // Adicione a ação para desmarcar o botão
+                                            />
+                                        )}
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         style={[styles.buttonDistance10, distancia === 10 && styles.selectedButtonDistance]}
                                         onPress={() => setDistancia(10)}
                                     >
                                         <Text style={[styles.textInside, distancia === 10 && styles.textInsideSelected]}>10 km</Text>
+                                        {distancia === 10 && (
+                                            <Ionicons
+                                                name="close-circle" // Nome do ícone de "X"
+                                                size={30} // Tamanho do ícone
+                                                style={styles.closefilter} // Estilo para posicionar o ícone "X"
+                                                color={'#573C35'}
+                                                onPress={() => setDistancia(0)} // Adicione a ação para desmarcar o botão
+                                            />
+                                        )}
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         style={[styles.buttonDistance15, distancia === 15 && styles.selectedButtonDistance]}
                                         onPress={() => setDistancia(15)}
                                     >
                                         <Text style={[styles.textInside, distancia === 15 && styles.textInsideSelected]}>15 km</Text>
+                                        {distancia === 15 && (
+                                            <Ionicons
+                                                name="close-circle" // Nome do ícone de "X"
+                                                size={30} // Tamanho do ícone
+                                                style={styles.closefilter} // Estilo para posicionar o ícone "X"
+                                                color={'#573C35'}
+                                                onPress={() => setDistancia(0)} // Adicione a ação para desmarcar o botão
+                                            />
+                                        )}
                                     </TouchableOpacity>
                                 </View>
                             )}

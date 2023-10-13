@@ -245,7 +245,7 @@ export default function ConsultarPerfilAdm({ route }) {
         <ImageBackground source={Background} style={styles.background}>
 
             <Header title={petNome} iconName="pets" />
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <ScrollView>
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.returnButton}>
@@ -258,14 +258,15 @@ export default function ConsultarPerfilAdm({ route }) {
 
                     <Image source={{ uri: petImage }} style={styles.imagemPerfil} />
                     <Text style={styles.nomePerfil}>{petNome}</Text>
-                    <View>
 
-                        <Text style={styles.titleView}>Bio</Text>
+                    <View style={styles.bio}>
+
+                        <Text style={styles.titleViewBio}>Bio</Text>
                         <View style={styles.descricaoPerfil}>
                             <Text style={styles.getTextBio}>{petBio}</Text>
                         </View>
-
-
+                    </View>
+                        <View>
                         <View style={styles.sexoContainer}>
                             <Text style={styles.titleView}>Sexo</Text>
                             <View style={styles.viewSexo}>

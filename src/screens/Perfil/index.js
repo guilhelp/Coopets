@@ -352,7 +352,6 @@ export default function Perfil() {
                     </View>
 
                     <View>
-
                         <View style={styles.sexoContainer}>
                             <Text style={styles.titleView}>Sexo</Text>
                             <View style={styles.viewSexo}>
@@ -380,8 +379,8 @@ export default function Perfil() {
                                 <Text style={styles.getText}>{petData && petData.raca}</Text>
                             </View>
                         </View>
-
                     </View>
+                    
                     <View style={styles.tituloInfo}>
                         <Text style={styles.tituloText}>Local</Text>
                     </View>

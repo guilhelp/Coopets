@@ -4,23 +4,31 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageT
 export default StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        
+        width: '100%',
+        height: '100%',
+    },
+    fundoBranco:{
+        width: wp('100%'),
+        height: hp('87%'),
+        marginTop: 150,
+        backgroundColor: '#FFF',
+        borderRadius: 30,
     },
     background: {
         width: wp('100%'),
         height: hp('105%'),
     },
     cabecalhoPagina: {
-        zIndex: 1,
+        position: 'absolute', // Defina position como 'absolute'
+        top: 0, // Ajuste a posição superior conforme necessário
+        left: 0, // Ajuste a posição esquerda conforme necessário
+        width: '100%', // Garanta que ocupe toda a largura da tela
+        height: 170, // Garanta que ocupe toda a altura da tela
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#573C35',
-        width: wp('100%'),
-        height: hp('17%'),
+
         alignItems: 'center',
-        justifyContent: 'center',
     },
     petImage: {
         width: wp('20%'),
@@ -33,6 +41,10 @@ export default StyleSheet.create({
     botoesContainer:{
         flexDirection: 'row',
         marginBottom: 20,
+    },
+    botoesContainerOption:{
+        marginLeft: 60,
+        marginTop: 15,
     },
     returnButton: {
         width: 60,
@@ -50,15 +62,14 @@ export default StyleSheet.create({
         height: 60,
         borderRadius: 200,
         backgroundColor: '#573C35',
-        marginLeft: 250,
-        marginTop: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center'
+        marginBottom: 20,
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        paddingLeft: 20,
     },
     petName: {
         fontFamily: 'Roboto_900Black',
-        fontSize: wp('10%'),
+        fontSize: wp('8%'),
         color: '#FFFFFF',
         marginBottom: 1,
     },
@@ -67,41 +78,41 @@ export default StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 20,
         right: 20,
-        marginTop: 30,
+        marginTop: 10,
     },
     inputContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: '#573C35',
         width: wp('100%'),
-        height: hp('10%'),
-        marginBottom: 33
-      
-    },
-    input: {
+        height: 200,
+        borderRadius: 20,
+        position: 'absolute',
+        marginTop: 615,
+        paddingTop: 20,
+        paddingHorizontal: 10, // Adicione espaço à esquerda e à direita para melhor aparência
+      },
+      input: {
         backgroundColor: '#FFFFFF',
-        width: 300,
-        height: 50,
-        borderRadius: 17,
+        flex: 1,
+        height: 70,
+        borderWidth: 3,
+        borderColor: 'gray',
+        borderRadius: 20,
         fontFamily: 'Roboto_900Black',
-        fontSize: 15,
-        paddingLeft: 10,
-        
-    },
-    sendButton: {
-        backgroundColor: '#573C35',
+        fontSize: 18,
+        paddingLeft: 30,
+      },
+      sendButton: {
+        paddingTop: 35,
         width: 65,
         height: 65,
         borderRadius: 200,
         alignItems: 'center',
         justifyContent: 'center',
-        margin: 10,
-    },
-    sendText: {
-        color: '#FFFFFF',
-        fontFamily: 'Roboto_900Black',
-    },
+        position: 'absolute', // Defina position como 'absolute'
+        right: 10, // Ajuste a posição para o canto direito
+      },
+      
     messageContainer: {
         padding: 10,
         marginVertical: 5,
@@ -109,16 +120,18 @@ export default StyleSheet.create({
         maxWidth: '100%',
         borderRadius: 30,
         alignSelf: 'flex-end',
+        
 
     },
 
     myMessage: {
-
-        backgroundColor: 'white', // Cor de fundo para as mensagens do usuário logado
+        maxWidth: '100%',
+        alignItems: 'center',
+        backgroundColor: '#573C35', // Cor de fundo para as mensagens do usuário logado
     },
 
     otherMessage: {
-        backgroundColor: '#EEE1D3', // Cor de fundo para as mensagens do usuário que recebe
+        backgroundColor: '#E5C9BF', // Cor de fundo para as mensagens do usuário que recebe
         alignSelf: 'flex-start',
 
     },
@@ -126,7 +139,7 @@ export default StyleSheet.create({
     messageText: {
         fontFamily: 'Roboto_900Black',
         fontSize: wp('4%'),
-        color: '#000000', // Cor do texto das mensagens
+        color: '#FFF', // Cor do texto das mensagens
 
     },
 
@@ -139,11 +152,7 @@ export default StyleSheet.create({
         textAlign: 'left',
 
     },
-    scrollMsg: {
-        width: '100%',
-        height: '100%',
-    }
-
+    
 
 
 

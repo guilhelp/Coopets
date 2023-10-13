@@ -6,13 +6,12 @@ const styles = StyleSheet.create ({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  scrollContainer: {
-    flexGrow: 1,
+    marginBottom: 200,
+    marginTop: 30,
   },
   background: {
     width: wp('100%'),
-    height: hp('100%'),
+    height: hp('110%'),
   },
   buttonContainer:{
     flexDirection: 'row'
@@ -43,8 +42,8 @@ const styles = StyleSheet.create ({
   },
   
   imagemPerfil: {
-    width: wp('65%'),
-    height: hp('33%'),
+    width: 290,
+    height: 290,
     borderWidth: 5,
     borderColor: "#573C35",
     borderRadius: 2000,
@@ -71,47 +70,35 @@ const styles = StyleSheet.create ({
   descricaoPerfil: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 340,
-    height: 120,
+    width: 336,
+    height: 87,
     borderWidth: 3,
-    borderColor: "#573C35",
-    borderRadius: 30,
+    borderColor: "#000000",
+    borderRadius: 17,
     backgroundColor: "#FFFFFF",
+  },
+  titleViewBio:{
+    fontFamily: 'Roboto_900Black',
+    fontSize: wp('6%'),
+    color: '#000000',
+    padding: 10,
   },
   titleView: {
     fontFamily: 'Roboto_900Black',
-    fontSize: wp('7%'),
+    fontSize: wp('6%'),
     color: '#000000',
+    marginHorizontal: 30,
   },
-  viewSexo: {
-    width: 186,
-    height: 76,
-    borderWidth: 3,
-    borderColor: '#573C35',
-    borderRadius: 30,
-    marginBottom: 10,
-    backgroundColor: '#FFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  viewIdade: {
-    width: 186,
-    height: 76,
-    borderWidth: 3,
-    borderColor: '#573C35',
-    borderRadius: 30,
-    marginBottom: 10,
-    backgroundColor: '#FFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  
   getText: {
     fontFamily: 'Roboto_900Black',
     fontSize: wp('5%'),
     color: '#000000',
   },
+
+  // Informações do pet
   sexoContainer: {
-    marginTop: 40,
+    marginTop: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -134,6 +121,42 @@ const styles = StyleSheet.create ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  
+  viewSexo: {
+    width: 150,
+    height: 70,
+    borderWidth: 3,
+    borderColor: "#000000",
+    borderRadius: 17,
+    marginBottom: 10,
+    backgroundColor: '#FFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+  },
+  viewIdade: {
+    width: 150,
+    height: 70,
+    borderWidth: 3,
+    borderColor: "#000000",
+    borderRadius: 17,
+    marginBottom: 10,
+    backgroundColor: '#FFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+  },
+  getSexo: {
+    fontFamily: 'Roboto_900Black',
+    fontSize: 30,
+    color: '#000000',
+  },
+  getIdade: {
+    fontFamily: 'Roboto_900Black',
+    fontSize: 30,
+    color: '#000000',
+  },
+  
 
   // Localizacao
   tituloText: {
@@ -145,11 +168,11 @@ const styles = StyleSheet.create ({
   localizacaoPerfil: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 350,
-    height: 111,
+    width: 310,
+    height: 100,
     borderWidth: 3,
-    borderColor: "#573C35",
-    borderRadius: 30,
+    borderColor: "#000000",
+    borderRadius: 17,
     backgroundColor: "#FFFFFF",
     padding: 10,
   },

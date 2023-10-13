@@ -17,9 +17,9 @@ const styles = StyleSheet.create({
   // Imagem de perfil
 
   imagemPerfil: {
-    width: wp('65%'),
-    height: hp('33%'),
-    borderWidth: 5,
+    width: 290,
+    height: 290,
+    borderWidth: 4,
     borderColor: "#573C35",
     borderRadius: 2000,
     backgroundColor: "#573C35",
@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
   editarButton: {
     width: 50,
     height: 50,
-    
   },
   nomePerfil: {
     fontFamily: 'Roboto_900Black',
@@ -51,7 +50,7 @@ const styles = StyleSheet.create({
   },
   titleView: {
     fontFamily: 'Roboto_900Black',
-    fontSize: wp('7%'),
+    fontSize: wp('6%'),
     color: '#000000',
     marginHorizontal: 30,
   },
@@ -64,7 +63,7 @@ const styles = StyleSheet.create({
   // Bio
   titleViewBio: {
     fontFamily: 'Roboto_900Black',
-    fontSize: wp('5%'),
+    fontSize: wp('6%'),
     color: '#000000',
     padding: 10,
     
@@ -72,11 +71,11 @@ const styles = StyleSheet.create({
   descricaoPerfil: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 340,
-    height: 120,
+    width: 336,
+    height: 87,
     borderWidth: 3,
-    borderColor: "#573C35",
-    borderRadius: 30,
+    borderColor: "#000000",
+    borderRadius: 17,
     backgroundColor: "#FFFFFF",
     marginBottom: 30,
   },
@@ -115,11 +114,11 @@ const styles = StyleSheet.create({
   },
   
   viewSexo: {
-    width: 186,
-    height: 76,
+    width: 150,
+    height: 70,
     borderWidth: 3,
-    borderColor: '#573C35',
-    borderRadius: 30,
+    borderColor: "#000000",
+    borderRadius: 17,
     marginBottom: 10,
     backgroundColor: '#FFF',
     alignItems: 'center',
@@ -127,11 +126,11 @@ const styles = StyleSheet.create({
 
   },
   viewIdade: {
-    width: 186,
-    height: 76,
+    width: 150,
+    height: 70,
     borderWidth: 3,
-    borderColor: '#573C35',
-    borderRadius: 30,
+    borderColor: "#000000",
+    borderRadius: 17,
     marginBottom: 10,
     backgroundColor: '#FFF',
     alignItems: 'center',
@@ -159,11 +158,11 @@ const styles = StyleSheet.create({
   localizacaoPerfil: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 350,
-    height: 111,
+    width: 310,
+    height: 100,
     borderWidth: 3,
-    borderColor: "#573C35",
-    borderRadius: 30,
+    borderColor: "#000000",
+    borderRadius: 17,
     backgroundColor: "#FFFFFF",
     padding: 10,
   },
@@ -178,10 +177,10 @@ const styles = StyleSheet.create({
   buttonDocs:{
     alignItems: 'center',
     justifyContent: 'center',
-    width: 350,
-    height: 90,
-    borderRadius: 30,
-    marginBottom: 20,
+    width: 331,
+    height: 79,
+    borderRadius: 17,
+    marginBottom: 10,
     marginTop: 0,
     backgroundColor: "#573C35",
     color: '#FFFFFF'
@@ -212,7 +211,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 150,
     height: 50,
-    borderRadius: 15,
+    borderRadius: 17,
     marginBottom: 20,
     marginTop: 0,
     backgroundColor: "#573C35",
@@ -233,7 +232,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 150,
     height: 50,
-    borderRadius: 15,
+    borderRadius: 17,
     marginBottom: 20,
     marginTop: 0,
     backgroundColor: "#573C35",

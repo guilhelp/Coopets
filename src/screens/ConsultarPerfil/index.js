@@ -114,27 +114,27 @@ export default function ConsultarPerfil({ route }) {
 
     const handleDenunciar = async () => {
         try {
-          // Consultar o banco de dados para verificar se já existe uma denúncia do usuário para o perfil
-          const denunciaQuery = query(
-            collection(db, 'denuncias'),
-            where('idDenunciante', '==', auth.currentUser.uid),
-            where('idRecebedor', '==', petId)
-          );
-      
-          const denunciaSnapshot = await getDocs(denunciaQuery);
-      
-          // Verificar se há documentos na consulta
-          if (denunciaSnapshot.size > 0) {
-            // O usuário já denunciou o perfil
-            Alert.alert('Aviso', 'Você já denunciou este perfil anteriormente.');
-          } else {
-            // O usuário ainda não denunciou o perfil
-            setDenunciaPopupVisible(true);
-          }
+            // Consultar o banco de dados para verificar se já existe uma denúncia do usuário para o perfil
+            const denunciaQuery = query(
+                collection(db, 'denuncias'),
+                where('idDenunciante', '==', auth.currentUser.uid),
+                where('idRecebedor', '==', petId)
+            );
+
+            const denunciaSnapshot = await getDocs(denunciaQuery);
+
+            // Verificar se há documentos na consulta
+            if (denunciaSnapshot.size > 0) {
+                // O usuário já denunciou o perfil
+                Alert.alert('Aviso', 'Você já denunciou este perfil anteriormente.');
+            } else {
+                // O usuário ainda não denunciou o perfil
+                setDenunciaPopupVisible(true);
+            }
         } catch (error) {
-          console.error('Erro ao verificar denúncia:', error);
+            console.error('Erro ao verificar denúncia:', error);
         }
-      };
+    };
 
     // Função para enviar uma denúncia
     const enviarDenuncia = async (motivoDenuncia, idUsuarioQueDenunciou, idUsuarioQueRecebeu) => {
@@ -207,7 +207,7 @@ export default function ConsultarPerfil({ route }) {
         <ImageBackground source={Background} style={styles.background}>
 
             <Header title={petNome} iconName="pets" />
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <ScrollView>
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
@@ -220,14 +220,16 @@ export default function ConsultarPerfil({ route }) {
 
                     <Image source={{ uri: petImage }} style={styles.imagemPerfil} />
                     <Text style={styles.nomePerfil}>{petNome}</Text>
-                    <View>
 
-                        <Text style={styles.titleView}>Bio</Text>
+                    <View style={styles.bio}>
+
+                        <Text style={styles.titleViewBio}>Bio</Text>
                         <View style={styles.descricaoPerfil}>
                             <Text style={styles.getTextBio}>{petBio}</Text>
                         </View>
+                    </View>
 
-
+                    <View>
                         <View style={styles.sexoContainer}>
                             <Text style={styles.titleView}>Sexo</Text>
                             <View style={styles.viewSexo}>

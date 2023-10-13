@@ -7,7 +7,6 @@ import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
 import Background from '../../assets/Background/Background.png'
 import Header from '../../components/Header';
-import { MaterialIcons } from '@expo/vector-icons';
 
 // Expo
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
@@ -47,7 +46,7 @@ export default function ConsultarDocumentos({ route }) {
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.returnButton}>
-                            <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
+                            <Ionicons name={'arrow-undo'} size={50} color="white" style={styles.returnIcon} />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage(petPedigree)}>
                             <Text style={styles.title}>PEDIGREE</Text>
