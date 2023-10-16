@@ -1,6 +1,17 @@
+// Importando o React
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, TextInput } from 'react-native';
-import styles from './styles'; // Certifique-se de criar estilos adequados
+
+// Importando os componentes do React
+import { 
+  Modal, 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  TextInput 
+} from 'react-native';
+
+// Importando os estilos
+import { styles } from './styles';
 
 const PasswordModal = ({
   visible, // Propriedade que controla a visibilidade do modal

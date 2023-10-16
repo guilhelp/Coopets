@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
-export default StyleSheet.create({
+export const styles = StyleSheet.create ({
     container: {
         flex: 1,
         width: '100%',
@@ -31,8 +31,8 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     petImage: {
-        width: wp('20%'),
-        height: hp('10%'),
+        width: 80,
+        height: 80,
         borderRadius: 200,
         margin: 20,
         borderWidth: 2,
@@ -62,14 +62,17 @@ export default StyleSheet.create({
         height: 60,
         borderRadius: 200,
         backgroundColor: '#573C35',
-        marginBottom: 20,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-        paddingLeft: 20,
+ 
+      
+        position: 'absolute',
+        top: -20,
+       
+
+       
     },
     petName: {
         fontFamily: 'Roboto_900Black',
-        fontSize: wp('8%'),
+        fontSize: wp('6%'),
         color: '#FFFFFF',
         marginBottom: 1,
     },
@@ -84,11 +87,9 @@ export default StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: '#573C35',
         width: wp('100%'),
-        height: 200,
-        borderRadius: 20,
-        position: 'absolute',
-        marginTop: 615,
-        paddingTop: 20,
+        height: hp('20%'),
+        top: '15%',
+        paddingTop: 10,
         paddingHorizontal: 10, // Adicione espaço à esquerda e à direita para melhor aparência
       },
       input: {
@@ -103,7 +104,7 @@ export default StyleSheet.create({
         paddingLeft: 30,
       },
       sendButton: {
-        paddingTop: 35,
+        top: 10,
         width: 65,
         height: 65,
         borderRadius: 200,

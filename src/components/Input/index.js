@@ -1,15 +1,23 @@
+// Importando o React
 import React, { useState } from 'react';
-import { View } from 'react-native';
+
+// Importando os componentes do React
+import { ScrollView, View } from 'react-native';
+
+// Importando os estilos
 import { styles } from './style';
+
+// Importando os componentes do react-native-paper
 import { TextInput } from 'react-native-paper';
 
 // Componente Input
 const Input = ({ label, placeholder, secureTextEntry, value, onChangeText, ...rest }) => {
 
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false); // Estado que armazena se a senha deve aparecer ou não
 
     return (
       <View style={styles.inputContainer}>
+        <ScrollView>
         <TextInput
           mode="outlined"
           label={label}
@@ -31,6 +39,7 @@ const Input = ({ label, placeholder, secureTextEntry, value, onChangeText, ...re
             )
           }
         />
+        </ScrollView>
       </View>
     );
   };

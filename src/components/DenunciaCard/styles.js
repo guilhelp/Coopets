@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
-export default StyleSheet.create({
+export const styles = StyleSheet.create({
     container: {
       backgroundColor: '#573C35',
       padding: 10,
@@ -26,7 +26,6 @@ export default StyleSheet.create({
       height: 60,
       borderRadius: 1000,
       marginLeft: 10,
-  
     },
     nomePerfil: {
       marginLeft: 10,
@@ -47,7 +46,6 @@ export default StyleSheet.create({
       justifyContent: 'center',
       marginTop: 10,
       alignItems: 'center',
-  
     },
     button: {
       backgroundColor: 'white',

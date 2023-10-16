@@ -1,31 +1,52 @@
+// Importando o React
 import React, { useState, useEffect } from 'react';
-import { ImageBackground, View, Text, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-import DenunciaPopup from '../../components/DenunciaPopUp';
+
+// Importando os componentes do React
+import {
+    ImageBackground,
+    View,
+    Text,
+    TouchableOpacity,
+    Image,
+    ScrollView,
+    Alert
+} from 'react-native';
+
+// Importando as variáveis do Firebase
+import { db, auth } from '../../config/Firebase';
+
+// Importando as funções do Firebase
+
+// Firestore
 import {
     collection,
     doc,
     query,
     where,
     getDocs,
-    getDoc,
-    onSnapshot,
-    addDoc,
-    ActivityIndicator,
     setDoc,
 } from 'firebase/firestore';
-import { db, auth } from '../../config/Firebase';
 
-// Estilos
-import styles from './styles';
-import Background from '../../assets/Background/Background.png'
+// Importando os componentes do react navigation
+import { useNavigation } from '@react-navigation/native';
+
+// Importando a biblioteca axios para requisições
+import axios from 'axios';
+
+// Importando os componentes
+import DenunciaPopup from '../../components/DenunciaPopUp';
 import Header from '../../components/Header';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
+// Importando os estilos
+import { styles } from './styles';
 
+// Importando imagens
+import Background from '../../assets/Background/Background.png';
 
-// Expo
+// Importando os ícones
+import { Ionicons } from '@expo/vector-icons';
+
+// Importando as fontes
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 
@@ -34,15 +55,15 @@ export default function ConsultarPerfil({ route }) {
     let [fontsLoaded, fontError] = useFonts({
         LuckiestGuy_400Regular,
         Roboto_900Black,
-    });
+    }); // Estado que armazena as fontes do projeto
 
-    const navigation = useNavigation();
+    const navigation = useNavigation(); // Variável de navegação
+
+    // Variáveis que recebem como parâmetro
     const { petId } = route.params
     const { petImage } = route.params
     const { petNome } = route.params
-    const { petResp } = route.params
     const { petBio } = route.params
-    const { petEndereco } = route.params
     const { petSexo } = route.params
     const { petIdade } = route.params
     const { petPedigree } = route.params
@@ -50,16 +71,16 @@ export default function ConsultarPerfil({ route }) {
     const { petTipo } = route.params
     const { petRaca } = route.params
     const { petCep } = route.params
-    const [endereco, setEndereco] = useState('');
-    const [isDenunciaPopupVisible, setDenunciaPopupVisible] = useState(false);
-    const [usuarioJaDenunciou, setUsuarioJaDenunciou] = useState(false);
 
+    const [endereco, setEndereco] = useState(''); // Estado que armazena o endereço
+    const [isDenunciaPopupVisible, setDenunciaPopupVisible] = useState(false); // Estado que armazena se o modal de denúncia deve aparecer ou não
 
+    // Função para calcular a idade com base na data de nascimento
     const calculateAge = () => {
         const currentDate = new Date();
-        const birthDate = new Date(petIdade); // Converter a string em um objeto Date
+        const birthDate = new Date(petIdade); // Converte a data de nascimento em um objeto Date
 
-
+        // Realiza cálculos para obter a idade em anos, meses ou dias
         const ageInMilliseconds = currentDate - birthDate;
         const ageInSeconds = ageInMilliseconds / 1000;
         const ageInMinutes = ageInSeconds / 60;
@@ -77,18 +98,17 @@ export default function ConsultarPerfil({ route }) {
         }
     };
 
-    // Use calculateAge() para obter a idade formatada
+    // Chama a função para calcular a idade formatada
     const idadeFormatada = calculateAge();
-    console.log(idadeFormatada); // Exibirá a idade formatada
 
-
+    // Função para obter o endereço com base no CEP usando uma API
     const getPetAddress = async (petCep) => {
         try {
             const response = await axios.get(`https://viacep.com.br/ws/${petCep}/json/`);
             const data = response.data;
 
             if (!data.erro) {
-                // Verifique se não há erros na resposta
+                // Se não há erro na resposta da API, monta o endereço
                 const endereco = `${data.bairro}, ${data.localidade}, ${data.uf}`;
                 return endereco;
             } else {
@@ -100,21 +120,21 @@ export default function ConsultarPerfil({ route }) {
         }
     };
 
-    // Use getPetAddress() para obter o endereço com base no CEP
+    // Use useEffect para buscar o endereço com base no CEP quando o componente é montado
     useEffect(() => {
-        // Use getPetAddress() para obter o endereço com base no CEP
         getPetAddress(petCep)
             .then((enderecoObtido) => {
-                setEndereco(enderecoObtido); // Atualize o estado com o endereço
+                setEndereco(enderecoObtido); // Atualiza o estado com o endereço
             })
             .catch((error) => {
                 console.error(error);
             });
     }, []);
 
+    // Função para lidar com a denúncia de um perfil
     const handleDenunciar = async () => {
         try {
-            // Consultar o banco de dados para verificar se já existe uma denúncia do usuário para o perfil
+            // Consulta o banco de dados para verificar se o usuário já denunciou este perfil
             const denunciaQuery = query(
                 collection(db, 'denuncias'),
                 where('idDenunciante', '==', auth.currentUser.uid),
@@ -123,12 +143,11 @@ export default function ConsultarPerfil({ route }) {
 
             const denunciaSnapshot = await getDocs(denunciaQuery);
 
-            // Verificar se há documentos na consulta
             if (denunciaSnapshot.size > 0) {
-                // O usuário já denunciou o perfil
+                // Se já houver denúncia registrada, exibe um alerta ao usuário
                 Alert.alert('Aviso', 'Você já denunciou este perfil anteriormente.');
             } else {
-                // O usuário ainda não denunciou o perfil
+                // Caso contrário, permite que o usuário faça uma nova denúncia
                 setDenunciaPopupVisible(true);
             }
         } catch (error) {
@@ -136,19 +155,19 @@ export default function ConsultarPerfil({ route }) {
         }
     };
 
-    // Função para enviar uma denúncia
+    // Função para enviar uma denúncia com motivo específico
     const enviarDenuncia = async (motivoDenuncia, idUsuarioQueDenunciou, idUsuarioQueRecebeu) => {
         try {
             if (motivoDenuncia && typeof motivoDenuncia === 'string' && motivoDenuncia !== '[object Object]') {
-                // Gerar um novo ID exclusivo para a denúncia
+                // Cria uma nova referência para a denúncia
                 const novaDenunciaRef = doc(collection(db, 'denuncias'));
 
-                // Obter o ID gerado
+                // Gera um ID para a denúncia
                 const idDenuncia = novaDenunciaRef.id;
 
-                // Criar um documento na coleção "denuncias" com as informações da denúncia
+                // Registra a denúncia no banco de dados
                 await setDoc(novaDenunciaRef, {
-                    id: idDenuncia, // Adicione o ID da denúncia aqui
+                    id: idDenuncia,
                     motivo: motivoDenuncia,
                     idDenunciante: idUsuarioQueDenunciou,
                     idRecebedor: idUsuarioQueRecebeu,
@@ -157,7 +176,7 @@ export default function ConsultarPerfil({ route }) {
 
                 console.log('Denúncia enviada com sucesso. ID da denúncia:', idDenuncia);
             } else {
-                // Caso o usuário não tenha selecionado um motivo de denúncia válido, você pode exibir uma mensagem de erro ou tomar outra ação apropriada.
+                // Se o motivo da denúncia for inválido, exibe um erro
                 console.error('Selecione um motivo de denúncia válido');
             }
         } catch (error) {
@@ -165,43 +184,31 @@ export default function ConsultarPerfil({ route }) {
         }
     };
 
-
-    // ...
-
+    // Função para lidar com o envio de uma denúncia
     const handleSubmitDenuncia = (motivoDenuncia) => {
-        // Verifique se um motivo de denúncia válido foi selecionado
         if (motivoDenuncia) {
-            // Substitua idDoUsuarioQueDenunciou e idDoUsuarioQueRecebeu pelos IDs reais dos usuários envolvidos na denúncia.
+            // Se houver um motivo de denúncia válido
             const idDoUsuarioQueDenunciou = auth.currentUser.uid;
             const idDoUsuarioQueRecebeu = petId;
-
-            // Certifique-se de que motivoDenuncia seja uma string simples
             const motivoDenunciaString = motivoDenuncia.toString();
-
-            // Envie a denúncia com os dados necessários
             enviarDenuncia(motivoDenunciaString, idDoUsuarioQueDenunciou, idDoUsuarioQueRecebeu);
-
-            // Feche o popup após o envio
             setDenunciaPopupVisible(false);
         } else {
-            // Caso o motivo de denúncia não seja válido, defina-o como null
+            // Se o motivo da denúncia for inválido, exibe um erro
             motivoDenuncia = null;
-
-            // Exiba uma mensagem de erro ou tome outra ação apropriada
             console.error('Selecione um motivo de denúncia válido');
         }
     };
 
+    // Função para fechar o popup de denúncia
     const handleCloseDenunciaPopup = () => {
         setDenunciaPopupVisible(false);
     };
 
 
-
-
     if (!fontsLoaded && !fontError) {
         return null;
-    }
+    } // Condição caso as fontes não carreguem
 
     return (
         <ImageBackground source={Background} style={styles.background}>

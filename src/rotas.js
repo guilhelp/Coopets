@@ -1,20 +1,24 @@
-import React, {useState, useEffect} from 'react';
+// Importando o React
+import React, { useState, useEffect } from 'react';
+
+// Importando os componentes do React
+import { Image, View, TouchableOpacity } from 'react-native';
+
+// Importando os componentes do react navigation
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image, View, TouchableOpacity } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
-// Importe as telas que você deseja navegar
-import Login  from './screens/Login';
-import CadastrarResponsavel  from './screens/Cadastrar/Responsavel';
-import CadastrarPet  from './screens/Cadastrar/Pet';
+// Importando as telas
+import Login from './screens/Login';
+import CadastrarResponsavel from './screens/Cadastrar/Responsavel';
+import CadastrarPet from './screens/Cadastrar/Pet';
 import CadastrarPet2 from './screens/Cadastrar/Pet2';
-import CadastrarPet3  from './screens/Cadastrar/Pet3';
-import Avaliacao  from './screens/Avaliacao';
-import Filtros  from './screens/Filtros';
-import ConsultarPetchs  from './screens/ConsultarPetchs';
-import Perfil  from './screens/Perfil';
+import CadastrarPet3 from './screens/Cadastrar/Pet3';
+import Avaliacao from './screens/Avaliacao';
+import Filtros from './screens/Filtros';
+import ConsultarPetchs from './screens/ConsultarPetchs';
+import Perfil from './screens/Perfil';
 import Chat from './screens/Chat';
 import EsqueceuSenha from './screens/EsqueceuSenha';
 import ConsultarPerfil from './screens/ConsultarPerfil';
@@ -24,15 +28,14 @@ import EditarPerfil from './screens/EditarPerfil';
 import ValidarDenuncias from './screens/ValidarDenuncias';
 import ConsultarPerfilAdm from './screens/ConsultarPerfilAdm';
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator(); // Variável do stack do react navigation
+const Tab = createBottomTabNavigator(); // Variável do tab do react navigation
 
+// Componente personalizado para a barra de guias inferior
 const CustomTabBar = ({ state, descriptors, navigation }) => {
-
   const [activeRoute, setActiveRoute] = useState(state.routes[state.index].name);
 
-
-useEffect(() => {
+  useEffect(() => {
     // Atualiza a rota ativa quando a navegação é alterada
     setActiveRoute(state.routes[state.index].name);
   }, [state]);
@@ -58,10 +61,19 @@ useEffect(() => {
         
         // Define as imagens de acordo com a rota e o estado de foco
         let imageSource;
-        if (route.name === 'ConsultarPetchs') 
-        { imageSource = isFocused ? require('./assets/Icons/ChatIconSelected.png') : require('./assets/Icons/ChatIcon.png'); 
-        } else if (route.name === 'Avaliacao') { imageSource = isFocused ? require('./assets/Icons/HomeIconSelected.png') : require('./assets/Icons/HomeIcon.png'); 
-        } else if (route.name === 'Perfil') { imageSource = isFocused ? require('./assets/Icons/PerfilIconSelected.png') : require('./assets/Icons/PerfilIcon.png'); }
+        if (route.name === 'ConsultarPetchs') {
+          imageSource = isFocused
+            ? require('./assets/Icons/ChatIconSelected.png')
+            : require('./assets/Icons/ChatIcon.png');
+        } else if (route.name === 'Avaliacao') {
+          imageSource = isFocused
+            ? require('./assets/Icons/HomeIconSelected.png')
+            : require('./assets/Icons/HomeIcon.png');
+        } else if (route.name === 'Perfil') {
+          imageSource = isFocused
+            ? require('./assets/Icons/PerfilIconSelected.png')
+            : require('./assets/Icons/PerfilIcon.png');
+        }
 
         return (
           <TouchableOpacity
@@ -77,6 +89,7 @@ useEffect(() => {
   );
 };
 
+// Componente para a barra de guias inferior
 function BottomTabs() {
   return (
     <Tab.Navigator
@@ -96,40 +109,39 @@ function BottomTabs() {
         </View>
       )}
     >
-        <Tab.Screen name="Avaliacao" component={Avaliacao} options={{ headerShown: false }} />
-        <Tab.Screen name="ConsultarPetchs" component={ConsultarPetchs} options={{ headerShown: false }} />
-        <Tab.Screen name="Perfil" component={Perfil} options={{ headerShown: false }} />
-      </Tab.Navigator>
+      <Tab.Screen name="Avaliacao" component={Avaliacao} options={{ headerShown: false }} />
+      <Tab.Screen name="ConsultarPetchs" component={ConsultarPetchs} options={{ headerShown: false }} />
+      <Tab.Screen name="Perfil" component={Perfil} options={{ headerShown: false }} />
+    </Tab.Navigator>
   );
 }
 
+// Componente para as rotas de navegação
 function Rotas() {
   return (
     <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-            
-            <Stack.Screen name="CadastrarResponsavel" component={CadastrarResponsavel} />
-            <Stack.Screen name="CadastrarPet1" component={CadastrarPet} />
-            <Stack.Screen name="CadastrarPet2" component={CadastrarPet2} />
-            <Stack.Screen name="CadastrarPet3" component={CadastrarPet3} />
-            <Stack.Screen name="Avaliacao" component={Avaliacao} />
-            <Stack.Screen name="Filtros" component={Filtros} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="ConsultarPetchs" component={ConsultarPetchs} />
-            <Stack.Screen name="Perfil" component={Perfil}/>
-            <Stack.Screen name="BottomTabs" component={BottomTabs} screenOptions={{ headerShown: false }}/>
-            <Stack.Screen name="Chat" component={Chat} />
-            <Stack.Screen name="EsqueceuSenha" component={EsqueceuSenha} />
-            <Stack.Screen name="ConsultarPerfil" component={ConsultarPerfil}/>
-            <Stack.Screen name="ConsultarDocumentos" component={ConsultarDocumentos}/>
-            <Stack.Screen name="Documentos" component={Documentos}/>
-            <Stack.Screen name="EditarPerfil" component={EditarPerfil}/>
-            <Stack.Screen name="ValidarDenuncias" component={ValidarDenuncias}/>
-            <Stack.Screen name="ConsultarPerfilAdm" component={ConsultarPerfilAdm}/>
-
-        </Stack.Navigator>
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="CadastrarResponsavel" component={CadastrarResponsavel} />
+        <Stack.Screen name="CadastrarPet1" component={CadastrarPet} />
+        <Stack.Screen name="CadastrarPet2" component={CadastrarPet2} />
+        <Stack.Screen name="CadastrarPet3" component={CadastrarPet3} />
+        <Stack.Screen name="Avaliacao" component={Avaliacao} />
+        <Stack.Screen name="Filtros" component={Filtros} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="ConsultarPetchs" component={ConsultarPetchs} />
+        <Stack.Screen name="Perfil" component={Perfil} />
+        <Stack.Screen name="BottomTabs" component={BottomTabs} screenOptions={{ headerShown: false }} />
+        <Stack.Screen name="Chat" component={Chat} />
+        <Stack.Screen name="EsqueceuSenha" component={EsqueceuSenha} />
+        <Stack.Screen name="ConsultarPerfil" component={ConsultarPerfil} />
+        <Stack.Screen name="ConsultarDocumentos" component={ConsultarDocumentos} />
+        <Stack.Screen name="Documentos" component={Documentos} />
+        <Stack.Screen name="EditarPerfil" component={EditarPerfil} />
+        <Stack.Screen name="ValidarDenuncias" component={ValidarDenuncias} />
+        <Stack.Screen name="ConsultarPerfilAdm" component={ConsultarPerfilAdm} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
-};
+}
 
 export default Rotas;

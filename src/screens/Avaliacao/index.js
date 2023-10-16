@@ -31,7 +31,6 @@ import {
     updateDoc
 } from 'firebase/firestore';
 
-
 // Importando os componentes do react navigation
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
@@ -47,10 +46,10 @@ import PetchScreen from '../../components/Petch';
 // Importando os estilos
 import { styles } from './styles';
 
-// Importando ícones
+// Importando os ícones
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-// Expo
+// Importando as fontes
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 

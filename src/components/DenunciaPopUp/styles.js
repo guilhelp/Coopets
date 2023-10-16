@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
-export default StyleSheet.create({
+export const styles = StyleSheet.create({
     modalContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -29,9 +29,6 @@ export default StyleSheet.create({
       fontFamily: 'LuckiestGuy_400Regular',
       color: 'white',
     },
-    optionSubTitleText:{
-  
-    },
     option: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -53,7 +50,6 @@ export default StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
     },
-    
     submitButton: {
       marginTop: 20,
       backgroundColor: '#FFF',
@@ -84,7 +80,6 @@ export default StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
-  
     selectedOptionSquare: {
       backgroundColor: 'white', // Cor de fundo quando selecionado
     },

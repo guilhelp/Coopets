@@ -1,24 +1,70 @@
+// Importando o React
 import React, { useState, useEffect } from 'react';
-import { View, ImageBackground, TouchableOpacity, Image, Text, TextInput, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
-import styles from './styles';
-import { useNavigation } from '@react-navigation/native';
-import { ref, set, child, get, onValue } from "firebase/database"
+
+// Importando os componentes do React
+import { 
+  View, 
+  ImageBackground, 
+  TouchableOpacity, 
+  Image, 
+  Text, 
+  TextInput, 
+  ScrollView, 
+  KeyboardAvoidingView, 
+  Alert 
+} from 'react-native';
+
+// Importando os estilos
+import { styles } from './styles';
+
+// Importando as variáveis do Firebase
 import { database, auth, db } from '../../config/Firebase';
-import { doc, getDoc, deleteDoc, query, collection, getDocs, where } from '@firebase/firestore';
+
+// Importando as funções do Firebase
+
+// Firestore
+import { 
+  doc, 
+  getDoc, 
+  deleteDoc, 
+  query, 
+  collection, 
+  getDocs, 
+  where 
+} from '@firebase/firestore';
+
+// Realtime Database
+import { 
+  ref, 
+  set, 
+  child, 
+  get, 
+  onValue, 
+  remove 
+} from "firebase/database"
+
+// Importando os componentes do react navigation
+import { useNavigation } from '@react-navigation/native';
+
+// Importando os ícones
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Background from '../../assets/Background/Background.png'
-
-import { SimpleLineIcons } from '@expo/vector-icons';
-import ChatOptionsMenu from '../../components/ChatOptions';
 import { Ionicons } from '@expo/vector-icons';
+import { SimpleLineIcons } from '@expo/vector-icons';
 
-// Expo
+// Importando componentes
+import ChatOptionsMenu from '../../components/ChatOptions';
+
+// Importando as fontes
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
+
+// Importando componente de notificações do expo
 import * as Notifications from 'expo-notifications';
 
+// Importando imagens
+import Background from '../../assets/Background/Background.png'
 
-
+// Variável que irá armazenar a referência do realtime database
 const databaseReference = ref(database)
 
 
@@ -27,10 +73,14 @@ export default function Chat({ route }) {
   let [fontsLoaded, fontError] = useFonts({
     LuckiestGuy_400Regular,
     Roboto_900Black,
-  });
+  });  // Estado que armazena as fontes do projeto
 
+  const navigation = useNavigation(); // Variável de navegação
+
+  // Variável que decidir se o modal de desfazer petch irá aparecer ou não
   const [isOptionsVisible, setOptionsVisible] = useState(false);
-  const navigation = useNavigation();
+  
+  // Variáveis que recebem como parâmetro
   const { petId } = route.params
   const { petImage } = route.params
   const { petNome } = route.params
@@ -46,13 +96,16 @@ export default function Chat({ route }) {
   const { petRaca } = route.params
   const { petCep } = route.params
 
+  // Armazenando o id do usuário logado
   const myId = auth.currentUser.uid
 
+  // Estados que irão armazenam as mensagens digitadas
   const [displayMessages, setDisplayMessages] = useState([])
   const [message, setMessage] = useState("")
 
+  // Lógica para implementação de notificações
   useEffect(() => {
-    // Solicite permissões para notificações
+    // Pede para o usuário permitir a utilização de notificações
     const registerForPushNotifications = async () => {
       const { status } = await Notifications.getPermissionsAsync();
       if (status !== 'granted') {
@@ -66,7 +119,7 @@ export default function Chat({ route }) {
 
     registerForPushNotifications();
 
-    // Subscreva-se para ouvir novas mensagens
+    // Cria um room de messages para armazenar as mensagens no realtimedatabase
     const room = getRoomId();
     const chatReference = ref(database, `messages/${room}`);
     onValue(chatReference, (snapshot) => {
@@ -74,7 +127,7 @@ export default function Chat({ route }) {
       if (newMessages) {
         setDisplayMessages(newMessages);
 
-        // Envie uma notificação quando uma nova mensagem for recebida
+        // Envia uma notificação quando uma nova mensagem for recebida
         const lastMessage = newMessages[newMessages.length - 1];
         if (lastMessage.userId !== myId) {
           sendNotification(lastMessage.message); // Implemente esta função
@@ -83,103 +136,132 @@ export default function Chat({ route }) {
     });
   }, []);
 
+
   const sendNotification = async (message) => {
+    // Cria um conteúdo de notificação com título 'Nova mensagem' e corpo da mensagem.
     const notificationContent = {
       title: 'Nova mensagem',
       body: message,
     };
-
+  
+    // Agende uma notificação com o conteúdo fornecido e um gatilho nulo.
     await Notifications.scheduleNotificationAsync({
       content: notificationContent,
-      trigger: null, // Notificação imediata
+      trigger: null,
     });
   };
-
+  
   async function sendNotificationIfNeeded(message) {
+    // Obtém o ID da sala de bate-papo
     const room = getRoomId();
+  
+    // Cria uma referência à sala de bate-papo no banco de dados.
     const chatReference = ref(database, `messages/${room}`);
+  
+    // Observa alterações na sala de bate-papo.
     onValue(chatReference, (snapshot) => {
       const newMessages = snapshot.val();
+  
+      // Se houver novas mensagens na sala de bate-papo:
       if (newMessages) {
+        // Atualiza as mensagens exibidas no aplicativo.
         setDisplayMessages(newMessages);
-
-        // Obtenha a última mensagem
+  
+        // Obtém a última mensagem enviada.
         const lastMessage = newMessages[newMessages.length - 1];
-
-        // Verifique se a última mensagem foi enviada pela outra pessoa
+  
+        // Verifica se a última mensagem não é do usuário atual.
         if (lastMessage.userId !== myId) {
-          // Envie a notificação apenas quando a outra pessoa enviar uma mensagem
+          // Envia uma notificação com a mensagem recebida.
           sendNotification(message);
         }
       }
     });
   }
-
+  
   function getRoomId() {
-    return [petResp, myId].sort().join("-")
+    // Cria um ID de sala único, ordenando os IDs dos usuários e os unindo com um hífen.
+    return [petResp, myId].sort().join("-");
   }
-
+  
   async function fetchChatMessages() {
-    const room = getRoomId()
-    const chatChild = child(databaseReference, `messages/${room}`)
-    const chatSnapshot = await get(chatChild)
-
-    if (chatSnapshot.exists()) return chatSnapshot.val()
-    else return []
+    // Obtém as mensagens da sala de bate-papo no banco de dados.
+    const room = getRoomId();
+    const chatChild = child(databaseReference, `messages/${room}`);
+    const chatSnapshot = await get(chatChild);
+  
+    // Retorna as mensagens, se existirem; caso contrário, retorna um array vazio.
+    if (chatSnapshot.exists()) return chatSnapshot.val();
+    else return [];
   }
-
+  
   async function writeMessage() {
-    const room = getRoomId()
-
+    // Obtém o ID da sala de bate-papo.
+    const room = getRoomId();
+  
     try {
-      const messages = await fetchChatMessages()
-      const chatReference = ref(database, `messages/${room}`)
-
-      set(chatReference, [...messages, { userId: petResp, message }])
-
-      setMessage("")
-
-      console.log("Message has been sent successfully! ✨")
-      console.log(`${petResp}: ${message}`)
-      // Envie a notificação apenas se a mensagem for enviada pela outra pessoa
+      // Obtém as mensagens atuais da sala de bate-papo.
+      const messages = await fetchChatMessages();
+  
+      // Cria uma referência à sala de bate-papo no banco de dados.
+      const chatReference = ref(database, `messages/${room}`);
+  
+      // Adiciona a nova mensagem à lista de mensagens.
+      set(chatReference, [...messages, { userId: petResp, message }]);
+  
+      // Limpa a mensagem do estado.
+      setMessage("");
+  
+      // Exibe a mensagem no console.
+      console.log("A mensagem foi enviada com sucesso! ✨");
+      console.log(`${petResp}: ${message}`);
+  
+      // Envia uma notificação se a mensagem não for do usuário atual.
       if (petResp !== myId) {
         sendNotificationIfNeeded(message);
       }
     } catch (error) {
-      console.error("Something gone wrong with the chat thing!")
-      console.error(error)
+      console.error("Algo deu errado com o bate-papo!");
+      console.error(error);
     }
   }
-
+  
   async function buttonPress() {
-    if (message.trim() !== "") { // Verifique se a mensagem não está em branco (após remover espaços em branco)
+    if (message.trim() !== "") {
+      // Verifica se a mensagem não está em branco (após remover espaços em branco).
       writeMessage("Hello World");
     } else {
-      // Exiba um alerta ao usuário informando que a mensagem está em branco
+      // Exibe um alerta ao usuário informando que a mensagem está em branco.
       Alert.alert("Aviso", "Por favor, digite uma mensagem antes de enviar.");
     }
   }
-
-
+  
   useEffect(() => {
-
+    // Carrega as mensagens de chat ao montar o componente.
+  
     async function _() {
-      setDisplayMessages(await fetchChatMessages())
+      setDisplayMessages(await fetchChatMessages());
     }
-
-    _()
-
-    const room = getRoomId()
-    const chatReference = ref(database, `messages/${room}`)
+  
+    _();
+  
+    // Obtém o ID da sala de bate-papo.
+    const room = getRoomId();
+  
+    // Cria uma referência à sala de bate-papo no banco de dados.
+    const chatReference = ref(database, `messages/${room}`);
+  
+    // Observa alterações na sala de bate-papo e atualiza as mensagens exibidas.
     onValue(chatReference, (snapshot) => {
-      setDisplayMessages(snapshot.val())
-    })
+      setDisplayMessages(snapshot.val());
+    });
   }, []);
-
+  
   const toggleOptionsModal = () => {
+    // Alterna a visibilidade do modal de opções.
     setOptionsVisible(!isOptionsVisible);
   };
-
+  
   async function fetchPetIdForMyId(myId) {
     try {
       // Crie uma referência ao documento do responsável com base no myId
@@ -214,6 +296,7 @@ export default function Chat({ route }) {
     }
   }
 
+  // Função para desfazer um petch
   async function desfazerMatch() {
     try {
       const myPetId = await fetchPetIdForMyId(myId);
@@ -223,6 +306,15 @@ export default function Chat({ route }) {
 
       // Exclua o documento de match correspondente no Firestore
       await deleteDoc(matchDocRef);
+
+      // Obtém o nome da "room" com base nos IDs de usuário
+      const roomName = getRoomId();
+
+      // Crie uma referência para a "room" no Realtime Database
+      const roomReference = ref(database, `messages/${roomName}`);
+
+      // Remova a "room" no Realtime Database
+      await remove(roomReference);
 
       // Logs para depuração
       console.log(`Documento de match com ID ${matchId} excluído com sucesso.`);
@@ -335,15 +427,15 @@ export default function Chat({ route }) {
 
   if (!fontsLoaded && !fontError) {
     return null;
-  }
+  } // Condição caso as fontes não carreguem
 
   return (
     <ImageBackground source={Background} style={styles.background}>
-        <KeyboardAvoidingView
-                    behavior={'padding'}
-                    style={styles.container}
-                    keyboardVerticalOffset={0}>
-                    <ScrollView style={styles.scrollContainer}>
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        style={styles.container}
+      >
+
         <View style={styles.cabecalhoPagina}>
 
           <TouchableOpacity style={styles.petDetails} onPress={() => navigation.navigate('ConsultarPerfil', { petId, petImage, petNome, petBio, petCep, petSexo, petTipo, petRaca, petIdade, petPedigree, petVac })}>
@@ -357,9 +449,9 @@ export default function Chat({ route }) {
           </View>
         </View>
 
-        
-        <View style={styles.fundoBranco}>
-        
+
+        <KeyboardAvoidingView behavior={'padding'} style={styles.fundoBranco}>
+
           <View style={styles.botoesContainer}>
             <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
               <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
@@ -376,8 +468,8 @@ export default function Chat({ route }) {
             />
           </View>
 
-          
-      
+
+          <ScrollView style={styles.scrollContainer}>
             {displayMessages ? (
               displayMessages.map((msg, id) => (
                 <View
@@ -400,10 +492,10 @@ export default function Chat({ route }) {
             ) : (
               <Text>No messages available.</Text>
             )}
-      
-          
+          </ScrollView>
+
           <View style={styles.inputContainer}>
-         
+
             <TextInput
               style={styles.input}
               value={message}
@@ -412,12 +504,13 @@ export default function Chat({ route }) {
             <TouchableOpacity style={styles.sendButton} onPress={buttonPress}>
               <Icon name="send" size={30} color="gray" />
             </TouchableOpacity>
-          
+
           </View>
-        </View>
-        </ScrollView>
+
         </KeyboardAvoidingView>
-       
+
+      </KeyboardAvoidingView>
+
     </ImageBackground>
   );
 }

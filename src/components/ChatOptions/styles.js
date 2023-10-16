@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+export const styles = StyleSheet.create({
     modalContainer: {
       backgroundColor: '#573C35',
       borderRadius: 10,

@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
         elevation: 5,
     },
 
-    // Text informativo para o usuário
+    // Configurando texto informativo para o usuário
     infoText:{
         fontFamily: 'Roboto_900Black',
         fontSize: wp('3.3%'),
@@ -104,7 +104,7 @@ export const styles = StyleSheet.create({
         marginLeft: 10,
     },
 
-    // Botão Avançar
+    // Configurando botão avançar
     botaoAvancar: {
         width: wp('80'),
         height: hp('8%'),

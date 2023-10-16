@@ -10,4 +10,5 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         backgroundColor: '#FFF'
     },
+    
 });

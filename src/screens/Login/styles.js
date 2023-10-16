@@ -2,12 +2,10 @@ import { StyleSheet } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
 export const styles = StyleSheet.create({
-    // Configurando o Keyboard container
     container: {
         flex: 1,
 
     },
-    // Configurações da página
     background: {
         width: wp('100%'),
         height: hp('110%'),
@@ -46,6 +44,7 @@ export const styles = StyleSheet.create({
         marginBottom: 5,
     },
 
+    // Configurando botão de enviar
     botaoEnviar: {
         width: wp('70%'),
         height: hp('8%'),
@@ -62,7 +61,6 @@ export const styles = StyleSheet.create({
     },
 
     // Container dos botões cadastrar e esqueci senha
-
     botoesContainer: {
         marginTop: '7%',
         marginBottom: 10,

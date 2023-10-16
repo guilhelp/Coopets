@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
-export default StyleSheet.create({
+export const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -11,7 +11,7 @@ export default StyleSheet.create({
         height: hp('110%'),
     },
 
-    // Botão de Retornar
+    // Configurando o botão de Retornar
     returnButton: {
         width: 60,
         height: 60,
@@ -24,13 +24,23 @@ export default StyleSheet.create({
         textAlign: 'center'
     },
 
-    // Container dos Input Perfil
-    inputContainerPerfil:{
+    // Configurando o container dos input de perfil
+    inputContainerPerfil: {
         justifyContent: 'center',
         alignItems: 'center',
     },
-
-    imageInputPerfil:{
+    imageInputPerfil: {
+        width: 259,
+        height: 259,
+        backgroundColor: '#FFF',
+        borderWidth: 3,
+        borderColor: '#000000',
+        borderRadius: 1000,
+        margin: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    selectedImagePerfil: {
         width: 259,
         height: 259,
         backgroundColor: '#FFF',
@@ -42,20 +52,7 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
 
-
-    selectedImagePerfil:{
-        width: 259,
-        height: 259,
-        backgroundColor: '#FFF',
-        borderWidth: 3,
-        borderColor: '#000000',
-        borderRadius: 1000,
-        margin: 20,
-        justifyContent: 'center',
-        alignItems: 'center' 
-    },
-
-    // Container dos Input Resp
+    // Configurando o container dos input do responsável
     inputContainerResp: {
         marginBottom: 10,
         marginTop: 20,
@@ -82,12 +79,11 @@ export default StyleSheet.create({
         marginLeft: 10,
     },
 
-    // Container dos Input Pet
+    // Configurando o container dos input do pet
     inputContainerPet: {
         marginBottom: 10,
         marginTop: 20,
     },
-
     inputText: {
         fontSize: wp('8%'),
         color: '#000000',
@@ -96,7 +92,7 @@ export default StyleSheet.create({
         marginTop: 10,
     },
 
-    // Container dos Input Docs
+    // Configurando o container dos input de documentos
     inputContainerDocs: {
         marginBottom: 10,
         marginTop: 20,
@@ -137,7 +133,7 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
 
-    // Select Dropdown
+    // Configurando o select dropdown
     dropdownButton: {
         width: 336,
         height: 61,
@@ -172,7 +168,7 @@ export default StyleSheet.create({
         elevation: 5,
     },
 
-    // Botão Salvar
+    // Configurando o botão de salvar
     button: {
         backgroundColor: '#573C35',
         width: 350,
@@ -189,11 +185,12 @@ export default StyleSheet.create({
         fontFamily: 'Roboto_900Black',
     },
 
-    imagemLogo:{
+    // Configurando tela bloqueada
+    imagemLogo: {
         width: wp('60%'),
         height: hp('30%'),
     },
-    carregando:{
+    carregando: {
         color: '#FFFFFF',
         fontSize: 30,
         fontFamily: 'Roboto_900Black',
@@ -206,12 +203,12 @@ export default StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         zIndex: 1,
-      },
-      overlay: {
+    },
+    overlay: {
         position: 'absolute',
         top: 0,
         right: 0,
         bottom: 0,
         left: 0,
-      },
+    },
 });

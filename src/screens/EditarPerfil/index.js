@@ -1,25 +1,82 @@
+// Importando o React
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, ScrollView, ActivityIndicator, Image, StyleSheet, KeyboardAvoidingView, Button } from 'react-native';
+
+// Importando os componentes do React
+import { 
+    View, 
+    Text, 
+    TouchableOpacity, 
+    ImageBackground, 
+    ScrollView, 
+    ActivityIndicator, 
+    Image, 
+    StyleSheet, 
+    KeyboardAvoidingView
+} from 'react-native';
+
+// Importando as variáveis do Firebase
 import { auth, db, storage } from '../../config/Firebase';
-import { fetchSignInMethodsForEmail, reauthenticateWithCredential, EmailAuthProvider, sendEmailVerification } from "firebase/auth";
-import { doc, setDoc, collection, getDoc, getDocs, query, where, updateDoc } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytesResumable, uploadBytes, deleteObject } from '@firebase/storage';
+
+// Importando as funções do Firebase
+
+// Firestore
+import { 
+    doc, 
+    setDoc, 
+    collection, 
+    getDoc, 
+    getDocs, 
+    query, 
+    where, 
+    updateDoc 
+} from 'firebase/firestore';
+
+// Auth
+import { 
+    fetchSignInMethodsForEmail, 
+    reauthenticateWithCredential, 
+    EmailAuthProvider, 
+    sendEmailVerification,
+    updateEmail
+} from "firebase/auth";
+
+// Realtime Database
+import { 
+    getDownloadURL, 
+    ref, 
+    uploadBytesResumable, 
+    deleteObject 
+} from '@firebase/storage';
+
+// Importando os componentes do react navigation
 import { useNavigation } from '@react-navigation/native';
-import { updateEmail } from 'firebase/auth';
+
+// Importando os ícones
 import { Ionicons } from '@expo/vector-icons';
-import SelectDropdown from 'react-native-select-dropdown';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+// Importando o componente de dropdown do react-native-select-dropdown
+import SelectDropdown from 'react-native-select-dropdown';
+
+// Importando o componente de DateTimePicker do react-native-modal-datetime-picker
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+
+// Importando componente de imagem do expo
 import * as ImagePicker from 'expo-image-picker';
+
+// Importando a biblioteca axios para requisições
 import axios from 'axios';
+
 // Importando as funções do date-fns
 import { format, isAfter, isBefore } from 'date-fns';
 
-// Estilos
-import styles from './styles';
+// Importando os estilos
+import { styles } from './styles';
+
+// Importando os componentes do react-native-paper
 import { DefaultTheme, Provider as PaperProvider, Modal } from 'react-native-paper';
 
-// Expo
+// Importando as fontes
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 
@@ -37,19 +94,21 @@ const theme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
-        primary: 'black', // Aqui você define a cor desejada para o rótulo
+        primary: 'black', 
     },
 };
 
 
 export default function EditarPerfil() {
+
     let [fontsLoaded, fontError] = useFonts({
         LuckiestGuy_400Regular,
         Roboto_900Black,
-    });
-    const navigation = useNavigation();
+    }); // Estado que armazena as fontes do projeto
 
-    // Responsável
+    const navigation = useNavigation(); // Variável de navegação
+
+    // Estados com as informações do responsável
     const [userNome, setUserNome] = useState('');
     const [userEmail, setUserEmail] = useState('');
     const [userCPF, setUserCPF] = useState('');
@@ -58,7 +117,7 @@ export default function EditarPerfil() {
     const [loadingVisible, setLoadingVisible] = useState(false);
 
 
-    // Pet
+    // Estados com as informações do pet
     const [petId, setPetId] = useState('');
     const [nomePet, setNomePet] = useState('');
     const [sexo, setSexo] = useState('');
@@ -73,23 +132,28 @@ export default function EditarPerfil() {
     const [perfilImage, setPerfilImage] = useState(null);
     const [bio, setBio] = useState('');
     const [cep, setCep] = useState('');
-    const [petData, setPetData] = useState({});
-    const [senhaAtual, setSenhaAtual] = useState('');
-    const [emailAlterado, setEmailAlterado] = useState(false);
-    const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
 
+    const [petData, setPetData] = useState({});  // Estado que armazena todas as informações do pet
+    const [senhaAtual, setSenhaAtual] = useState(''); // Estado que armazena a senha atual
+    const [emailAlterado, setEmailAlterado] = useState(false); // Estado que armazena o email alterado
+    const [isPasswordModalVisible, setPasswordModalVisible] = useState(false); // Estado que armazena se o modal de senha deve aparecer ou não
 
     const [newPerfilImage, setNewPerfilImage] = useState(null); // Estado para a nova imagem de perfil
     const [newPedigreeImage, setNewPedigreeImage] = useState(null); // Estado para a nova imagem de pedigree
     const [newVacinaCardImage, setNewVacinaCardImage] = useState(null); // Estado para a nova imagem de carteira de vacinação
 
+    // Função que busca e seleciona a imagem capturada pelo ImagePicker do expo
     const selectImage = async (type) => {
+        // Solicita permissão para acessar a biblioteca de mídia
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+        // Verifica se a permissão foi concedida
         if (status !== 'granted') {
             alert('A permissão para acessar a biblioteca de mídia é necessária!');
             return;
         }
-
+    
+        // Se for iOS, solicita também permissão para acessar a câmera
         if (Platform.OS === 'ios') {
             const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
             if (cameraStatus !== 'granted') {
@@ -97,17 +161,20 @@ export default function EditarPerfil() {
                 return;
             }
         }
-
+    
+        // Permite ao usuário escolher uma imagem da biblioteca
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
         });
-
+    
+        // Verifica se o usuário escolheu uma imagem e atualiza o estado com a imagem selecionada
         if (!result.canceled && result.assets.length > 0) {
             const selectedImageUri = result.assets[0].uri;
-
+    
+            // Com base no tipo especificado, atualiza o estado com a imagem correta
             if (type === 'perfilImage') {
                 setNewPerfilImage(selectedImageUri);
             } else if (type === 'pedigree') {
@@ -117,36 +184,40 @@ export default function EditarPerfil() {
             }
         }
     };
-
+    
+    // Função para fazer o upload de uma imagem no storage
     const uploadImageToStorage = async (imageUri, imageName) => {
         try {
+            // Obtém o ID do usuário atualmente logado
             const user = auth.currentUser.uid;
-            console.log('O user é', user)
-            // Verificar se a imagem anterior existe no Storage e excluir, se necessário
+    
+            // Cria uma referência para o local de armazenamento da imagem no Firebase Storage
             const storageRef = ref(storage, `imagens/${user}/${petId}/${imageName}`);
-
+    
+            // Tenta excluir uma imagem anterior no mesmo local, se existir
             try {
                 await deleteObject(storageRef);
                 console.log('Imagem anterior excluída com sucesso:', imageName);
             } catch (error) {
+                // Se a imagem anterior não existir, ou houver um erro diferente de "object-not-found," ele é tratado aqui
                 if (error.code !== 'storage/object-not-found') {
-                    // Se o erro não for "object-not-found", algo deu errado
                     console.log('Erro ao excluir imagem anterior:', error);
                     throw error;
                 }
                 console.log('Imagem anterior não encontrada:', imageName);
             }
-
-            // Restante do código de upload da nova imagem...
-            // (o código abaixo permanece o mesmo)
-
+    
+            // Faz o download da imagem selecionada (URI) como um blob
             const response = await axios.get(imageUri, {
                 responseType: 'blob',
             });
-
+    
             const blob = response.data;
+    
+            // Inicia o processo de upload da imagem para o Firebase Storage
             const uploadTask = uploadBytesResumable(storageRef, blob);
-
+    
+            // Aguarda até que o upload seja concluído
             const snapshot = await new Promise((resolve, reject) => {
                 uploadTask.on(
                     'state_changed',
@@ -160,41 +231,44 @@ export default function EditarPerfil() {
                     }
                 );
             });
-
+    
+            // Obtém a URL de download da imagem após o upload bem-sucedido
             const downloadUrl = await getDownloadURL(snapshot.ref);
             console.log('URL da imagem:', downloadUrl);
-
+    
             return downloadUrl;
         } catch (error) {
             console.log('Erro ao fazer upload da imagem:', error);
             throw error;
         }
     };
-
-
+    
+    // Função para puxar as informações do pet já existentes no banco de dados
     const loadPetData = async () => {
         try {
             setLoadingVisible(true);
             console.log("Iniciando a carga de dados do pet...");
 
+            // Armazena o id do usuário logado
             const user = auth.currentUser;
             const responsavelId = user ? user.uid : null;
 
             console.log("Responsável ID:", responsavelId);
 
-            // Consulte os pets filtrando pelo responsável associado a eles
+            // Consulta os pets filtrando pelo responsável associado a eles
             const petsRef = collection(db, 'pets');
             const querySnapshot = await getDocs(query(petsRef, where('responsavelID', '==', doc(db, 'responsaveis', responsavelId))));
 
             if (!querySnapshot.empty) {
-                // Supondo que cada responsável tenha apenas um pet associado
+                
+                // Busca as informações do pet que pertence ao responsável logado
                 const petDocSnap = querySnapshot.docs[0];
                 const petData = petDocSnap.data();
 
                 console.log("Dados do pet:", petData);
 
+                // Armazenando em cada estado as informações puxadas
                 setPetData(petData);
-                // Preencha os campos com as informações do pet
                 setPetId(petDocSnap.id);
                 setNomePet(petData.nomePet);
                 setSexo(petData.sexo);
@@ -206,7 +280,7 @@ export default function EditarPerfil() {
                 setCep(petData.cep)
                 updateRacaOptions(petData.tipo);
 
-                // Verifique se as URLs das imagens existem antes de tentar carregá-las
+                // Verifica se as URLs das imagens existem antes de tentar carregá-las
                 if (petData.pedigree) {
                     try {
                         const pedigreeUrl = await getDownloadURL(ref(storage, petData.pedigree));
@@ -235,7 +309,7 @@ export default function EditarPerfil() {
                 }
 
                 if (racaOptions.length > 0) {
-                    // Renderize o SelectDropdown aqui ou dispare a exibição em outra função.
+                    // Renderiza o SelectDropdown aqui
                 }
 
             } else {
@@ -258,17 +332,20 @@ export default function EditarPerfil() {
     const minIdade = new Date();
     minIdade.setFullYear(minIdade.getFullYear() - 2);
 
-    // Lógica para adicionar uma idade mínima para o pet
+    // Lógica para adicionar uma idade mínima para o responsável
     const minIdadeResp = new Date();
     minIdadeResp.setFullYear(minIdadeResp.getFullYear() - 18);
 
+    // Função para validar o cep
     const validarCep = async () => {
         try {
+            // Verifica se o cep foi digitada corretamente
             if (!cep) {
                 alert('Digite um CEP válido antes de salvar as alterações.');
                 return false; // Retorna falso se o CEP estiver em branco
             }
 
+            // Verifica se o cep realmente existe
             const formattedCep = cep.replace(/\D/g, ''); // Remove caracteres não numéricos do CEP
             const response = await axios.get(`https://viacep.com.br/ws/${encodeURIComponent(formattedCep)}/json/`);
             const data = response.data;
@@ -286,6 +363,7 @@ export default function EditarPerfil() {
         }
     };
 
+    // Função para puxar as informações do responsável já existentes no banco de dados
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
@@ -294,7 +372,8 @@ export default function EditarPerfil() {
                 const userProfileSnapshot = await getDoc(userProfileRef);
 
                 if (userProfileSnapshot.exists()) {
-                    // Se o documento do usuário existir, atualize os estados com as informações do usuário
+                   
+                    // Armazenando em cada estado as informações puxadas
                     const userData = userProfileSnapshot.data();
                     setUserNome(userData.nome);
                     setUserEmail(userData.email);
@@ -315,6 +394,7 @@ export default function EditarPerfil() {
         return unsubscribe;
     }, []);
 
+    // Função que verifica se o email já existe no banco
     const checkEmailExists = async (email) => {
         try {
             const providers = await fetchSignInMethodsForEmail(auth, email);
@@ -325,16 +405,17 @@ export default function EditarPerfil() {
         }
     };
 
-    const sexoOptions = ['Macho', 'Fêmea'];
-    const [racaOptions, setRacaOptions] = useState([])
+    const sexoOptions = ['Macho', 'Fêmea']; // Armazena as informações do sexo
+    const [racaOptions, setRacaOptions] = useState([]) // Estado que armazena as opções de raça
 
+    // Condição, para mostrar diferentes tipos de raça dependendo do tipo de pet
     const updateRacaOptions = (selectedTipo) => {
-
-        if (selectedTipo === 'Cão') {
+        if (selectedTipo === 'Cão') { // Se for cão
+             // Atualiza o estado de raça com um vetor de pets do tipo cão
             const optionsCao = ['Pug', 'Shih Tzu', 'Bulldog Francês', 'Pomerânia', 'Golden Retriever']
             setRacaOptions(optionsCao)
-            console.log(racaOptions)
-        } else if (selectedTipo === 'Gato') {
+        } else if (selectedTipo === 'Gato') { // Se for gato
+             // Atualiza o estado de raça com um vetor de pets do tipo gato
             setRacaOptions(['Persa', 'Siamês', 'Angorá', 'Ashera', 'Sphynx']);
         } else {
             setRacaOptions([]); // Se nenhum tipo estiver selecionado, não há opções de raça]
@@ -342,37 +423,42 @@ export default function EditarPerfil() {
         }
     };
 
-
+    // Função para mostrar o Date Picker do Pet
     const showDatePickerPet = () => {
         setDatePickerVisiblePet(true);
     };
 
+     // Função para mostrar o Date Picker do Responsável
     const showDatePickerResp = () => {
         setDatePickerVisibleResp(true);
     };
 
+    // Função para fechar o Date Picker do Pet
     const hideDatePickerPet = () => {
         setDatePickerVisiblePet(false);
     };
 
+     // Função para fechar o Date Picker do Responsável
     const hideDatePickerResp = () => {
         setDatePickerVisibleResp(false);
     };
 
+    // Função para confirmar a data escolhida do Pet
     const handleConfirmPet = (date) => {
         hideDatePickerPet();
-        const formattedDate = format(date, 'yyyy-MM-dd'); // Formate a data como desejar
-        setDataNascimentoPet(formattedDate); // Atualize dataNascimentoPet com a data formatada
+        const formattedDate = format(date, 'yyyy-MM-dd'); // Formata a data como desejar
+        setDataNascimentoPet(formattedDate); // Atualiza dataNascimentoPet com a data formatada
 
     };
 
+     // Função para confirmar a data escolhida do  Responsavel
     const handleConfirmResp = (date) => {
         hideDatePickerResp();
-        const formattedDate = format(date, 'yyyy-MM-dd'); // Formate a data como desejar
-
-        setDataNascimentoResp(formattedDate);
+        const formattedDate = format(date, 'yyyy-MM-dd'); // Formata a data como desejar
+        setDataNascimentoResp(formattedDate); // Atualiza dataNascimentoPet com a data formatada
     };
 
+    // Verifica se o CPF e o RG já existem no banco de dados
     const checkCpfRgExistence = async () => {
         try {
             // Consulta o Firestore para verificar se já existe algum documento com o mesmo CPF.
@@ -460,8 +546,9 @@ export default function EditarPerfil() {
         return true; // RG válido
     }
 
-    const maxDate = new Date(); // Data atual
+    const maxDate = new Date(); // Variável que armazena a data atual
 
+    // Lógica que solicita a permissão de uso do armazenamento do dispositivo
     useEffect(() => {
         (async () => {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -471,17 +558,20 @@ export default function EditarPerfil() {
         })();
     }, []);
 
+
+    // Função de editar perfil
     const editarPerfil = async () => {
         try {
             setLoadingVisible(true);
 
+            // Verifica se todos os campos estão preenchidos
             if (!userNome || !userEmail || !userCPF || !userRG || !dataNascimentoResp || !nomePet || !sexo || !tipoPet || !racaPet || !cor || !dataNascimentoPet || !cep) {
                 alert('Por favor, preencha todos os campos obrigatórios.');
                 setLoadingVisible(false);
                 return;
             }
 
-            // Validar se é um email válido
+            // Verifica se é um email válido
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(userEmail)) {
                 alert('Por favor, insira um email válido');
@@ -506,6 +596,7 @@ export default function EditarPerfil() {
                 return;
             }
 
+            // Armazena a Data de Nascimento do responsável
             const dataNascimentoRespDate = new Date(dataNascimentoResp);
 
             // Verifica se a idade do responsável é superior a 18 anos 
@@ -538,14 +629,14 @@ export default function EditarPerfil() {
                 return;
             }
 
-            // Consultar o Firestore para obter os dados do usuário com base no ID do usuário atual
+            // Consulta o Firestore para obter os dados do usuário com base no ID do usuário atual
             const userDocRef = doc(db, 'responsaveis', auth.currentUser.uid);
             const userDoc = await getDoc(userDocRef);
 
             if (userDoc.exists()) {
                 const dadosAtuaisDoUsuario = userDoc.data();
 
-                // Verificar se CPF e RG foram alterados e precisam ser validados
+                // Verifica se CPF e RG foram alterados e precisam ser validados
                 const oldCpf = dadosAtuaisDoUsuario.cpf;
                 const oldRg = dadosAtuaisDoUsuario.rg;
 
@@ -558,10 +649,10 @@ export default function EditarPerfil() {
                 }
             }
 
-            // Verificar se o email foi alterado
+            // Verifica se o email foi alterado
             const oldEmail = auth.currentUser.email;
             if (userEmail !== oldEmail) {
-                // Verificar se o novo email já existe no banco de dados
+                // Verifica se o novo email já existe no banco de dados
                 const emailExists = await checkEmailExists(userEmail);
                 if (emailExists) {
                     alert('O email já está em uso');
@@ -571,7 +662,6 @@ export default function EditarPerfil() {
 
                 // Exiba o aviso de senha apenas se o email for alterado
                 if (emailAlterado) {
-
                     setPasswordModalVisible(true); // Mostre o modal de senha
                     setLoadingVisible(false);
                     return;
@@ -582,7 +672,7 @@ export default function EditarPerfil() {
                     const credential = EmailAuthProvider.credential(oldEmail, senhaAtual);
                     await reauthenticateWithCredential(user, credential);
 
-                    // Se a reautenticação for bem-sucedida, atualize o email
+                    // Se a reautenticação for bem-sucedida, atualiza o email
                     await updateEmail(user, userEmail);
                     setPasswordModalVisible(false);
                 } catch (reauthError) {
@@ -592,40 +682,37 @@ export default function EditarPerfil() {
                 }
             }
 
-
-            // Atualize as imagens apenas se novas imagens foram selecionadas
+            // Atualiza as imagens apenas se novas imagens foram selecionadas
             if (newPerfilImage || newPedigreeImage || newVacinaCardImage) {
                 const updatedPetData = {}; // Um objeto para armazenar os dados atualizados do pet
 
-                // Verifique e atualize a imagem de perfil, se necessário
+                // Verifica e atualiza a imagem de perfil, se necessário
                 if (newPerfilImage && newPerfilImage !== perfilImage) {
                     const perfilImageName = `perfilImage.jpg`;
                     const perfilImageUrl = await uploadImageToStorage(newPerfilImage, perfilImageName);
                     updatedPetData.perfilImage = perfilImageUrl;
                 }
 
-                // Verifique e atualize a imagem de pedigree, se necessário
+                // Verifica e atualiza a imagem de pedigree, se necessário
                 if (newPedigreeImage && newPedigreeImage !== pedigreeImage) {
                     const pedigreeImageName = `pedigreeImage.jpg`;
                     const pedigreeImageUrl = await uploadImageToStorage(newPedigreeImage, pedigreeImageName);
                     updatedPetData.pedigree = pedigreeImageUrl;
                 }
 
-                // Verifique e atualize a imagem da carteira de vacinação, se necessário
+                // Verifica e atualiza a imagem da carteira de vacinação, se necessário
                 if (newVacinaCardImage && newVacinaCardImage !== vacinaCardImage) {
                     const vacinaCardImageName = `vacinaImage.jpg`;
                     const vacinaCardImageUrl = await uploadImageToStorage(newVacinaCardImage, vacinaCardImageName);
                     updatedPetData.vacina = vacinaCardImageUrl;
                 }
 
-                // Atualize os dados do pet no Firestore com as URLs das novas imagens
+                // Atualiza os dados do pet no Firestore com as URLs das novas imagens
                 const petRef = doc(db, 'pets', petId);
                 await updateDoc(petRef, updatedPetData);
             }
 
-
-
-            // Atualize os dados do responsável no Firestore
+            // Atualiza os dados do responsável no Firestore
             const responsavelRef = doc(db, 'responsaveis', auth.currentUser.uid);
             await setDoc(responsavelRef, {
                 nome: userNome,
@@ -635,7 +722,7 @@ export default function EditarPerfil() {
                 dataNascimentoResp: dataNascimentoResp,
             }, { merge: true });
 
-            // Atualize os dados do pet no Firestore
+            // Atualiza os dados do pet no Firestore
             const petRef = doc(db, 'pets', petId);
             await setDoc(petRef, {
                 nomePet: nomePet,
@@ -646,13 +733,12 @@ export default function EditarPerfil() {
                 dataNascimentoPet: dataNascimentoPet,
                 bio: bio,
                 cep: cep,
-                // Outros campos do pet aqui...
             }, { merge: true });
 
 
             setLoadingVisible(false);
             alert('Perfil editado com sucesso!');
-            navigation.navigate('BottomTabs');
+            navigation.navigate('BottomTabs'); // Navega para a tela de perfil
         } catch (error) {
             console.error('Erro ao editar o perfil:', error);
             alert('Ocorreu um erro ao editar o perfil. Por favor, tente novamente mais tarde.');
@@ -660,20 +746,22 @@ export default function EditarPerfil() {
         }
     };
 
+    // Função para mostrar a caixa de texto da senha
     const showPasswordModal = () => {
         setPasswordModalVisible(true);
     };
 
+    // Função para atualziar o email no auth
     const atualizarEmailNoAuth = async (newEmail) => {
         try {
             const user = auth.currentUser;
             const oldEmail = user.email;
 
-            // Reautentique o usuário com a senha atual
+            // Reautentica o usuário com a senha atual
             const credential = EmailAuthProvider.credential(oldEmail, senhaAtual);
             await reauthenticateWithCredential(user, credential);
 
-            // Se a reautenticação for bem-sucedida, atualize o email
+            // Se a reautenticação for bem-sucedida, atualiza o email
             await updateEmail(user, newEmail);
         } catch (reauthError) {
             console.error('Erro de reautenticação:', reauthError);
@@ -682,6 +770,7 @@ export default function EditarPerfil() {
         }
     };
 
+    // Função para confirmar as alterações do perfil
     const confirmarAlteracoesPerfil = async () => {
         try {
             // Verifique se o email foi alterado
@@ -707,11 +796,9 @@ export default function EditarPerfil() {
         }
     };
 
-
-
     if (!fontsLoaded && !fontError) {
         return null;
-    }
+    } // Condição caso as fontes não carreguem
 
     return (
         <PaperProvider theme={theme}>
@@ -726,7 +813,6 @@ export default function EditarPerfil() {
                     confirmarAlteracoesPerfil={confirmarAlteracoesPerfil}
                 />
 
-                {/* Renderize o ActivityIndicator condicionalmente */}
                 {loadingVisible && (
                     <View style={[styles.loadingOverlay, StyleSheet.absoluteFillObject]}>
                         <Image source={LogoBranca} style={styles.imagemLogo} />
@@ -735,7 +821,6 @@ export default function EditarPerfil() {
                     </View>
                 )}
 
-                {/* Bloqueio de tela enquanto o ActivityIndicator estiver visível */}
                 <View style={[styles.overlay, { display: loadingVisible ? 'flex' : 'none' }]} />
                 <KeyboardAvoidingView
                     behavior={'padding'}
@@ -775,18 +860,18 @@ export default function EditarPerfil() {
                                     label="Nome"
                                     style={styles.input}
                                     placeholder="Digite seu Nome"
-                                    value={userNome} // Preencha o campo com o valor do estado userNome
-                                    onChangeText={setUserNome} // Atualize o estado userNome quando o campo for editado
+                                    value={userNome}
+                                    onChangeText={setUserNome}
                                 />
 
                                 <Input
                                     label="E-mail"
                                     style={styles.input}
                                     placeholder="Digite seu Email"
-                                    value={userEmail} // Preencha o campo com o valor do estado userEmail
+                                    value={userEmail}
                                     onChangeText={(newEmail) => {
                                         setUserEmail(newEmail);
-                                        setEmailAlterado(true); // Defina emailAlterado como true quando o email for editado
+                                        setEmailAlterado(true); 
                                     }}
                                 />
 
@@ -795,11 +880,11 @@ export default function EditarPerfil() {
                                     style={styles.input}
                                     placeholder="Digite seu CPF"
                                     type={'cpf'}
-                                    value={userCPF} // Preencha o campo com o valor do estado userCPF
+                                    value={userCPF}
                                     onChangeText={(text) => {
                                         const formattedCPF = text.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
                                         setUserCPF(formattedCPF);
-                                    }} // Atualize o estado userCPF quando o campo for editado
+                                    }} 
                                     keyboardType="numeric"
                                     maxLength={14}
                                 />
@@ -809,7 +894,7 @@ export default function EditarPerfil() {
                                     placeholder="Digite seu RG"
                                     type={'custom'}
                                     options={{ mask: '99.999.999-9' }}
-                                    value={userRG} // Preencha o campo com o valor do estado userRG
+                                    value={userRG}
                                     onChangeText={(text) => {
                                         const formattedRG = text.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/, '$1.$2.$3-$4');
                                         setUserRG(formattedRG);
@@ -860,7 +945,7 @@ export default function EditarPerfil() {
                                         data={['Cão', 'Gato']}
                                         onSelect={(selectedItem, index) => {
                                             setTipoPet(selectedItem);
-                                            updateRacaOptions(selectedItem); // Atualize as opções de raça com base no tipo selecionado
+                                            updateRacaOptions(selectedItem);
                                         }}
                                         buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                                         rowTextForSelection={(item, index) => item}

@@ -1,26 +1,55 @@
-import { View, Text, ImageBackground, TouchableOpacity, Alert, ScrollView, Switch } from 'react-native';
-import { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import SelectDropdown from 'react-native-select-dropdown';
+// Importando o React
+import React, { useState, useEffect } from 'react';
+
+// Importando os componentes do React
+import { 
+    View, 
+    Text, 
+    ImageBackground, 
+    TouchableOpacity, 
+    Alert, 
+    ScrollView 
+} from 'react-native';
+
+// Importando as variáveis do Firebase
 import { db, auth } from '../../config/Firebase';
-import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
+
+// Importando as funções do Firebase
+
+// Firestore
+import { 
+    doc, 
+    setDoc, 
+    getDoc, 
+    deleteDoc 
+} from 'firebase/firestore';
+
+// Importando os componentes do react navigation
+import { useNavigation } from '@react-navigation/native';
+
+// Importando componente de dropdown
+import SelectDropdown from 'react-native-select-dropdown';
+
+// Importando Async Storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Estilos
+// Importando os estilos
 import { styles } from './styles';
+
+// Importando os componentes do react-native-paper
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
-// Expo
+// importando as fontes
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 
 // Importando imagens
 import Background from '../../assets/Background/Background.png'
 
-// Importando componentes
+// Importando os componentes
 import Header from '../../components/Header';
 
-// Importando ícones
+// Importando os ícones
 import { Ionicons } from '@expo/vector-icons';
 
 // Configurando cores do react native paper
@@ -33,59 +62,77 @@ const theme = {
 };
 
 export default function Filtros() {
+
     let [fontsLoaded, fontError] = useFonts({
         LuckiestGuy_400Regular,
         Roboto_900Black,
-    });
+    }); // Estado que armazena as fontes do projeto
 
+    const navigation = useNavigation(); // Variável de navegação
+
+    // Estados que armazenam as informações de filtros
     const [sexo, setSexo] = useState('');
     const [tipo, setTipo] = useState('');
     const [raca, setRaca] = useState('');
     const [distancia, setDistancia] = useState(0);
+
+    // Estado que armazena as opções de sexo
     const sexoOptions = ['Macho', 'Fêmea'];
+
+    // Estado que armazena se o dropdown de raça deve aparecer ou não
     const [showRacaDropdown, setShowRacaDropdown] = useState(false);
+
+    // Estado que armazena as opções de raça
     const [racaOptions, setRacaOptions] = useState([])
+
+    // Estado que armazena se os filtros de distância devem aparecer ou não
     const [filtroDistanciaAtivado, setFiltroDistanciaAtivado] = useState(true);
 
+    // Função que atualiza a raça dependendo do tipo de pet
     const updateRacaOptions = (selectedTipo) => {
-        if (selectedTipo === 'Cão') {
+
+        if (selectedTipo === 'Cão') { // Se for cão
+
+            // Atualiza o estado de raça com um vetor de pets do tipo cão
             setRacaOptions(['Pug', 'Shih Tzu', 'Bulldog Francês', 'Pomerânia', 'Golden Retriever']);
-        } else if (selectedTipo === 'Gato') {
+
+        } else if (selectedTipo === 'Gato') { // Se for Gato
+
+            // Atualiza o estado de raça com um vetor de pets do tipo gato
             setRacaOptions(['Persa', 'Siamês', 'Angorá', 'Ashera', 'Sphynx']);
-        } else {
-            setRacaOptions([]); // Se nenhum tipo estiver selecionado, não há opções de raça
+
+        } else { // Se nenhum tipo estiver selecionado, não há opções de raça
+            setRacaOptions([]); 
         }
     };
 
-
-    const navigation = useNavigation();
-
+    // Lógica que puxa as preferências já definidas de um usuário
     useEffect(() => {
         const fetchUserPreferences = async () => {
+
+            // Verifica se o usuário está logado
             if (!auth.currentUser) {
                 console.log("User not logged in");
                 return;
             }
 
             try {
+                // Busca na coleção de preferencias
                 const preferencesRef = doc(db, 'preferencias', auth.currentUser.uid);
                 const preferencesDoc = await getDoc(preferencesRef);
 
                 if (preferencesDoc.exists()) {
                     const preferencesData = preferencesDoc.data();
-                    // Preencha os campos com os dados do documento de preferências
+                    // Preenche os campos com os dados do documento de preferências
                     setSexo(preferencesData.sexo || '');
                     setTipo(preferencesData.tipo || '');
                     setRaca(preferencesData.raca || '');
                     setDistancia(preferencesData.distancia || 0);
                     if (racaOptions.length > 0) {
-                        // Renderize o SelectDropdown aqui ou dispare a exibição em outra função.
+                        // Renderiza o SelectDropdown
                     }
-                    // Chame a função updateRacaOptions com o tipo existente para preencher as opções de raça
+                    // Chama a função updateRacaOptions com o tipo existente para preencher as opções de raça
                     updateRacaOptions(preferencesData.tipo || '');
-
-
-                    
                 }
             } catch (error) {
                 console.error('Error fetching user preferences:', error);
@@ -95,13 +142,10 @@ export default function Filtros() {
         fetchUserPreferences();
     }, []);
 
+    // Função que salva as preferências do usuário
     const savePreferences = async () => {
-        if (!auth.currentUser) {
-            console.log("User not logged in");
-            return;
-        }
 
-        // Crie um objeto que contenha todos os filtros
+        // Cria um objeto que contenha todos os filtros
         const filters = {
             sexo: sexo,
             tipo: tipo,
@@ -110,7 +154,7 @@ export default function Filtros() {
             userId: auth.currentUser.uid,
         };
 
-        // Adicione o filtro de distância apenas se estiver ativado
+        // Adiciona o filtro de distância apenas se estiver ativado
         if (filtroDistanciaAtivado) {
             filters.distancia = distancia;
         } else {
@@ -118,43 +162,36 @@ export default function Filtros() {
         }
 
         try {
-            // Salve os filtros no AsyncStorage
+            // Salva os filtros no AsyncStorage
             await AsyncStorage.setItem('userFilters', JSON.stringify(filters));
 
-            // Salve os filtros no Firestore
+            // Salva os filtros no Firestore
             const preferencesRef = doc(db, 'preferencias', auth.currentUser.uid);
             await setDoc(preferencesRef, filters, { merge: true });
 
-            // Navegue de volta para a tela de Avaliação
+            // Navega de volta para a tela de Avaliação
             navigation.navigate('BottomTabs');
-            console.log('Preferences saved successfully!');
         } catch (error) {
             console.error('Error saving preferences:', error);
         }
     };
 
+    // Função para limpar os filtros
     const limparFiltros = async () => {
-        if (!auth.currentUser) {
-            console.log("User not logged in");
-            return;
-        }
-
         try {
             // Referência ao documento de filtro no Firestore
             const preferencesRef = doc(db, 'preferencias', auth.currentUser.uid);
 
-            // Verifique se o documento existe antes de tentar excluí-lo
+            // Verifica se o documento existe antes de tentar excluí-lo
             const preferencesDoc = await getDoc(preferencesRef);
 
             if (preferencesDoc.exists()) {
-                // Use a função deleteDoc para excluir o documento
+                // Exclui o documento de preferências
                 await deleteDoc(preferencesRef);
 
-                // Navegue de volta para a tela de Avaliação
+                // Navega de volta para a tela de Avaliação
                 navigation.navigate('BottomTabs');
-                console.log('Filters cleared successfully!');
             } else {
-                // Exiba uma mensagem ao usuário informando que os filtros já foram limpos
                 Alert.alert('Filtros já limpos', 'Os filtros já foram limpos anteriormente.');
             }
         } catch (error) {
@@ -162,10 +199,9 @@ export default function Filtros() {
         }
     };
 
-
     if (!fontsLoaded && !fontError) {
         return null;
-    }
+    } // Condição caso as fontes não carreguem
 
     return (
         <PaperProvider theme={theme}>
@@ -225,8 +261,10 @@ export default function Filtros() {
                                 />
                             </View>
                             <View style={styles.racaContainer}>
-                                <Text style={styles.racaContainerText}>Raça</Text>
+                                
                                 {racaOptions.length > 0 && (
+                                    <>
+                                    <Text style={styles.racaContainerText}>Raça</Text>
                                 <SelectDropdown
                                     data={racaOptions} // Use o estado racaOptions como fonte de dados
                                     onSelect={(selectedItem, index) => setRaca(selectedItem)} // Atualize a raça selecionada
@@ -239,6 +277,7 @@ export default function Filtros() {
                                     dropdownStyle={styles.dropdownContainer}
                                     defaultValue={raca}
                                 />
+                                </>
                                 )}
                             </View>
 
@@ -300,10 +339,10 @@ export default function Filtros() {
 
 
                             <TouchableOpacity
-                                style={styles.botaoAvancar}
+                                style={styles.botaoSalvar}
                                 onPress={savePreferences} // Adicione isso para chamar a função ao pressionar o botão
                             >
-                                <Text style={styles.botaoAvancarText}>Salvar</Text>
+                                <Text style={styles.botaoSalvarText}>Salvar</Text>
                             </TouchableOpacity>
 
                         </View>

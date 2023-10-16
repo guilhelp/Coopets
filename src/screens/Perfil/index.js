@@ -1,59 +1,102 @@
+// Importando o React
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, View, Text, TouchableOpacity, ScrollView, Image, StyleSheet, ActivityIndicator } from 'react-native';
-import { doc, getDoc, deleteDoc, getDocs, query, collection, where } from 'firebase/firestore';
-import { db, auth, storage } from '../../config/Firebase';
-import { ref, deleteObject, listAll, uploadString } from 'firebase/storage';
+
+// Importando os componentes do React
+import {
+    ImageBackground,
+    View,
+    Text,
+    TouchableOpacity,
+    ScrollView,
+    Image,
+    StyleSheet,
+    ActivityIndicator
+} from 'react-native';
+
+// Importando as variáveis do Firebase
+import { db, auth, database } from '../../config/Firebase';
+
+// Importando as funções do Firebase
+
+// Firestore
+import {
+    doc,
+    getDoc,
+    deleteDoc,
+    getDocs,
+    query,
+    collection,
+    where
+} from 'firebase/firestore';
+
+// Auth
 import { deleteUser, signOut } from 'firebase/auth';
-import styles from './styles';
+
+// Realtime Database
+import { ref, get, remove } from 'firebase/database';
+
+// Importandos os estilos
+import { styles } from './styles';
+
+// Importando os componentes
 import Header from '../../components/Header';
+import ConfirmationModal from '../../components/ModalConfirma';
+
+// Importando os componentes do react navigation
 import { useNavigation } from '@react-navigation/native';
+
+// Importando os ícones
 import { MaterialIcons } from '@expo/vector-icons';
+
+// Importando a biblioteca axios para requisições
 import axios from 'axios';
 
-// Expo
+// Importando as fontes
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 
 // Importanto imagens
 import Background from '../../assets/Background/Background.png'
-import ConfirmationModal from '../../components/ModalConfirma';
-
-// Importanto imagens
 import LogoBranca from '../../assets/Logo/Logo_FundoBranco.png';
 
 export default function Perfil() {
+
     let [fontsLoaded, fontError] = useFonts({
         LuckiestGuy_400Regular,
         Roboto_900Black,
-    });
-    const navigation = useNavigation();
+    }); // Estado que armazena as fontes do projeto
 
+    const navigation = useNavigation(); // Variável de navegação
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true); // Estado de carregamento
+
+    // Estados que armazenam as informações do pet
     const [petData, setPetData] = useState(null);
     const [petCep, setPetCep] = useState('');
     const [endereco, setEndereco] = useState('');
     const [petRef, setPetRef] = useState(null);
-    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-    const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
 
 
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false); // Estado para mostrar a confirmação de senha
+    const [password, setPassword] = useState(''); // Estado que armazenam a senha
+    const [isLoading, setIsLoading] = useState(true); // Estado de carregamento
+
+    // Função para deslogar
     const handleSignOut = async () => {
         try {
             await signOut(auth).then(() => {
                 console.log('saiu')
-              }).catch((error) => {
+            }).catch((error) => {
                 // An error happened.
-              });
+            });
             // Navega para a tela de login ou qualquer outra tela desejada
             navigation.navigate('Login');
         } catch (error) {
             console.log('Erro ao fazer logout:', error);
-            // Trate o erro, se necessário
         }
     };
 
+    // Função para calcular a idade formatada
     const calculateAge = (dataNascimento) => {
         const currentDate = new Date();
         const birthDate = new Date(dataNascimento);
@@ -96,6 +139,8 @@ export default function Perfil() {
             return 'Erro ao buscar endereço. Verifique sua conexão com a internet.';
         }
     };
+
+    // Lógica para atualizar o endereço do Pet
     useEffect(() => {
         // Verifica se petCep está definido antes de buscar o endereço
         if (petCep) {
@@ -141,12 +186,13 @@ export default function Perfil() {
         } catch (error) {
             console.log('Erro ao recuperar os dados do pet:', error);
             setPetData(null); // Define os dados como null em caso de erro
-            
-        }finally {
+
+        } finally {
             setIsLoading(false)
         }
     };
 
+    // Lógica que chama a função fetchPetData
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             // Busca os dados do pet toda vez que a tela é focada
@@ -160,97 +206,118 @@ export default function Perfil() {
     // Função para excluir dados do Firestore
     const deleteFirestoreData = async () => {
         try {
-            // Exclua o documento do responsável
+            // Exclui o documento do responsável
             const responsavelDocRef = doc(db, 'responsaveis', auth.currentUser.uid);
             await deleteDoc(responsavelDocRef);
 
-            // Exclua os documentos na coleção "pets" que têm uma referência ao perfil do responsável
+
+            // Exclui os documentos na coleção "pets" que têm uma referência ao perfil do responsável
+
+
             const petsQuery = query(collection(db, 'pets'), where('responsavelID', '==', responsavelDocRef));
             const petsSnapshot = await getDocs(petsQuery);
             setPetRef(petsSnapshot.id)
+            const petId = petsSnapshot.docs[0].id;
 
-            // Itere pelos documentos encontrados e exclua-os
             petsSnapshot.forEach(async (petDoc) => {
                 await deleteDoc(petDoc.ref);
             });
 
-            // Exclua os documentos na coleção "likes" onde o perfil do responsável está envolvido
+
+            // Exclui os documentos na coleção "likes" onde o perfil do responsável está envolvido
+
+
             const likesQuery = query(collection(db, 'likes'), where('petIDLike', '==', petRef));
             const likesSnapshot = await getDocs(likesQuery);
 
-            // Itere pelos documentos encontrados e exclua-os
             likesSnapshot.forEach(async (likeDoc) => {
                 await deleteDoc(likeDoc.ref);
             });
 
-            // Agora, repita o processo para documentos onde o perfil do responsável está como petIDRecebeu
             const likesQuery2 = query(collection(db, 'likes'), where('petIDRecebeu', '==', petRef));
             const likesSnapshot2 = await getDocs(likesQuery2);
 
-            // Itere pelos documentos encontrados e exclua-os
             likesSnapshot2.forEach(async (likeDoc) => {
                 await deleteDoc(likeDoc.ref);
             });
 
-            // Exclua o documento na coleção "preferencias" que tem uma referência ao perfil do responsável
+
+            // Exclui o documento na coleção "preferencias" que tem uma referência ao perfil do responsável
+
+
             const preferenciasQuery = query(collection(db, 'preferencias'), where('userId', '==', auth.currentUser.uid));
             const preferenciasSnapshot = await getDocs(preferenciasQuery);
 
-            // Itere pelos documentos encontrados e exclua-os
             preferenciasSnapshot.forEach(async (preferenciaDoc) => {
                 await deleteDoc(preferenciaDoc.ref);
             });
 
-            // Exclua os documentos na coleção "avaliações" onde o perfil do responsável está envolvido
+
+            // Exclui os documentos na coleção "denuncias" onde o perfil do responsável está envolvido
+
+
+            const denunciasDenuncianteQuery = query(collection(db, 'denuncias'), where('idDenunciante', '==', auth.currentUser.uid));
+            const denunciasDenuncianteSnapshot = await getDocs(denunciasDenuncianteQuery);
+
+            denunciasDenuncianteSnapshot.forEach(async (denunciaDoc) => {
+                await deleteDoc(denunciaDoc.ref);
+            });
+
+            const denunciasRecebidorQuery = query(collection(db, 'denuncias'), where('idRecebedor', '==', petId));
+            const denunciasRecebidorSnapshot = await getDocs(denunciasRecebidorQuery);
+
+            denunciasRecebidorSnapshot.forEach(async (denunciaDoc) => {
+                await deleteDoc(denunciaDoc.ref);
+            });
+
+
+            // Exclui os documentos na coleção "avaliações" onde o perfil do responsável está envolvido
+
+
             const avaliacoesQuery = query(collection(db, 'avaliacoes'), where('userId', '==', auth.currentUser.uid));
             const avaliacoesSnapshot = await getDocs(avaliacoesQuery);
 
-            // Itere pelos documentos encontrados e exclua-os
             avaliacoesSnapshot.forEach(async (avaliacaoDoc) => {
                 await deleteDoc(avaliacaoDoc.ref);
             });
 
-            // Exclua os documentos na coleção "avaliações" onde "petIdAvaliado" é igual a "petRef"
             const avaliacoesQuery2 = query(collection(db, 'avaliacoes'), where('petIdAvaliado', '==', petRef));
             const avaliacoesSnapshot2 = await getDocs(avaliacoesQuery2);
 
-            // Itere pelos documentos encontrados e exclua-os
             avaliacoesSnapshot2.forEach(async (avaliacaoDoc) => {
                 await deleteDoc(avaliacaoDoc.ref);
             });
 
-            // Exclua os documentos na coleção "dislikes" onde o perfil do responsável está envolvido como "petIDDislike"
+            // Exclui os documentos na coleção "dislikes" onde o perfil do responsável está envolvido
+
+
             const dislikesQuery = query(collection(db, 'dislikes'), where('petIDDislike', '==', petRef));
             const dislikesSnapshot = await getDocs(dislikesQuery);
 
-            // Itere pelos documentos encontrados e exclua-os
             dislikesSnapshot.forEach(async (dislikeDoc) => {
                 await deleteDoc(dislikeDoc.ref);
             });
 
-            // Agora, repita o processo para documentos onde o perfil do responsável está como "petIDRecebeu"
             const dislikesQuery2 = query(collection(db, 'dislikes'), where('petIDRecebeu', '==', petRef));
             const dislikesSnapshot2 = await getDocs(dislikesQuery2);
 
-            // Itere pelos documentos encontrados e exclua-os
             dislikesSnapshot2.forEach(async (dislikeDoc) => {
                 await deleteDoc(dislikeDoc.ref);
             });
 
+
             // Exclua os documentos na coleção "matches" onde o perfil do responsável está envolvido
+
             const matchesQuery = query(collection(db, 'matches'), where('petID1', '==', petRef));
             const matchesSnapshot = await getDocs(matchesQuery);
 
-            // Itere pelos documentos encontrados e exclua-os
             matchesSnapshot.forEach(async (matchDoc) => {
                 await deleteDoc(matchDoc.ref);
             });
 
-            // Agora, repita o processo para documentos onde o perfil do responsável está como petID2
             const matchesQuery2 = query(collection(db, 'matches'), where('petID2', '==', petRef));
             const matchesSnapshot2 = await getDocs(matchesQuery2);
 
-            // Itere pelos documentos encontrados e exclua-os
             matchesSnapshot2.forEach(async (matchDoc) => {
                 await deleteDoc(matchDoc.ref);
             });
@@ -261,44 +328,49 @@ export default function Perfil() {
         }
     };
 
-    // Função para excluir a pasta do responsável e todas as imagens associadas
-    const deleteImagesFolder = async (responsavelID) => {
-        try {
-          // Construa a referência para a "pasta" com o ID do responsável
-          const folderPath = `imagens/${responsavelID}`;
-          const folderRef = ref(storage, folderPath);
-      
-          // Liste todos os objetos na "pasta"
-          const folderObjects = await listAll(folderRef);
-      
-          // Exclua cada objeto na "pasta"
-          await Promise.all(folderObjects.items.map(async (object) => {
-            await deleteObject(object);
-            console.log(`Objeto ${object.name} excluído.`);
-          }));
-      
-          // Por fim, exclua a própria "pasta"
-          await deleteObject(folderRef);
-      
-          console.log(`Pasta ${folderPath} e seus conteúdos excluídos com sucesso.`);
-        } catch (error) {
-          console.error('Erro ao excluir a pasta e seus conteúdos:', error);
-        }
-      };
+    // Função para excluir as mensagens do realtime database
+    const deleteRoomsForUser = () => {
+        const responsavelID = auth.currentUser.uid;
 
-    // Chame a função para excluir a pasta de imagens no Firebase Storage antes de deslogar o usuário
+        const roomsRef = ref(database, 'messages'); // Certifique-se de que 'messages' seja a referência correta ao nó que você deseja excluir
+
+        get(roomsRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                snapshot.forEach((roomSnapshot) => {
+                    const roomId = roomSnapshot.key;
+
+                    // Verifique se o usuário logado está envolvido na sala
+                    if (roomId.includes(responsavelID)) {
+                        // O usuário faz parte deste room, exclua-o
+                        remove(roomSnapshot.ref, (error) => {
+                            if (error) {
+                                console.error('Erro ao excluir a sala:', error);
+                            } else {
+                                console.log('Sala excluída com sucesso.');
+                            }
+                        });
+                    }
+                });
+            }
+        }).catch((error) => {
+            console.error('Erro ao excluir os rooms:', error);
+        });
+    };
+
+
+    // Função para deletar o perfil
     const handleDeleteProfile = async () => {
         try {
-            const responsavelID = auth.currentUser.uid
-            // Exclua a pasta de imagens no Firebase Storage
-            await deleteImagesFolder(responsavelID);
+            const responsavelID = auth.currentUser.uid;
 
             // Exclua os dados do Firestore
             await deleteFirestoreData();
 
+            // Exclua os "rooms" do usuário
+            deleteRoomsForUser();
 
+            // Exclua o usuário
             const user = auth.currentUser;
-
             await deleteUser(user);
 
             // Depois, deslogue o usuário
@@ -311,13 +383,14 @@ export default function Perfil() {
         }
     };
 
+    // Função para mostrar o modal
     const handleConfirmDelete = () => {
         setShowConfirmationModal(true);
     };
 
     if (!fontsLoaded && !fontError) {
         return null;
-    }
+    } // Condição caso as fontes não carreguem
 
     return (
         <ImageBackground source={Background} style={styles.background}>
@@ -340,8 +413,6 @@ export default function Perfil() {
                                 <MaterialIcons name={'edit'} size={40} color="white" />
                             </TouchableOpacity>
                         </View>
-
-                        {/* ... */}
                     </View>
                     <Text style={styles.nomePerfil}>{petData && petData.nomePet}</Text>
                     <View style={styles.bio}>
@@ -380,7 +451,7 @@ export default function Perfil() {
                             </View>
                         </View>
                     </View>
-                    
+
                     <View style={styles.tituloInfo}>
                         <Text style={styles.tituloText}>Local</Text>
                     </View>

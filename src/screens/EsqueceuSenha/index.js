@@ -1,17 +1,42 @@
+// Importando o React
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
+
+// Importando os componentes do React
+import { 
+    View, 
+    Text, 
+    TouchableOpacity, 
+    ImageBackground, 
+    Alert, 
+    KeyboardAvoidingView, 
+    ScrollView 
+} from 'react-native';
+
+// Importando as variáveis do Firebase
 import { auth } from '../../config/Firebase';
-import Header from '../../components/Header';
+
+// Importando as funções do Firebase
+
+// Auth
 import { sendPasswordResetEmail } from "firebase/auth";
-import { useNavigation } from '@react-navigation/native';
-import Background from '../../assets/Background/Background.png'
+
+// Importando componentes
+import Header from '../../components/Header';
 import Input from '../../components/Input';
 
-// Estilos
-import styles from './styles';
+// Importando os componentes do react navigation
+import { useNavigation } from '@react-navigation/native';
+
+// Importando imagens
+import Background from '../../assets/Background/Background.png'
+
+// Importando os estilos
+import { styles } from './styles';
+
+// Importando os componentes do react-native-paper
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
-// Expo
+// Importando fontes
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 
@@ -29,35 +54,41 @@ export default function EsqueceuSenha() {
     let [fontsLoaded, fontError] = useFonts({
         LuckiestGuy_400Regular,
         Roboto_900Black,
-    });
+    }); // Estado que armazena as fontes do projeto
 
-    const navigation = useNavigation();
+    const navigation = useNavigation(); // Variável de navegação
+
+    // Estado de email
     const [email, setEmail] = useState('');
 
+    // Lógica para enviar um email de redefinição de senha
     const handleResetPassword = async () => {
+
+        // Verifica se o campo é válido
         if (email.trim() === '') {
             Alert.alert('Erro', 'Por favor, digite um email válido.');
             return;
         }
 
         try {
+            // Envia um email para redefinir a senha
             await sendPasswordResetEmail(auth, email);
             Alert.alert(
                 'Sucesso',
                 'Um email com instruções para redefinir sua senha foi enviado para o seu endereço de email.'
             );
-            navigation.navigate('Login');
+            navigation.navigate('Login'); // Navega de volta para a tela de login
         } catch (error) {
             Alert.alert(
                 'Erro',
                 'Ocorreu um erro ao enviar o email de redefinição de senha. Por favor, tente novamente mais tarde.'
-            );
+            ); // Caso de errado
         }
     };
 
     if (!fontsLoaded && !fontError) {
         return null;
-    }
+    } // Condição caso as fontes não carreguem
 
     return (
         <PaperProvider theme={theme}>

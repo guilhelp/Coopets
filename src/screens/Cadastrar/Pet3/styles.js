@@ -59,7 +59,23 @@ export const styles = StyleSheet.create({
         alignItems: 'center'
     },
 
-    // Tela Bloqueada
+    // Configurando o botão de avançar
+    botaoAvancar: {
+        width: wp('80'),
+        height: hp('8%'),
+        backgroundColor: '#573C35',
+        borderRadius: 17,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 20,
+    },
+    botaoAvancarText: {
+        fontFamily: 'Roboto_900Black',
+        fontSize: wp('6%'),
+        color: '#FFF',
+    },
+
+    // Configurando a tela Bloqueada
     imagemLogo: {
         width: wp('60%'),
         height: hp('30%'),
@@ -86,22 +102,6 @@ export const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
         left: 0,
-    },
-
-    // Configurando o botão de avançar
-    botaoAvancar: {
-        width: wp('80'),
-        height: hp('8%'),
-        backgroundColor: '#573C35',
-        borderRadius: 17,
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 20,
-    },
-    botaoAvancarText: {
-        fontFamily: 'Roboto_900Black',
-        fontSize: wp('6%'),
-        color: '#FFF',
     },
 
 

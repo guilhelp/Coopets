@@ -28,23 +28,23 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 // Importando a biblioteca axios para requisições
 import axios from 'axios';
 
-// Estilos
+// Importando os estilos
 import { styles } from './styles';
 
 // Importando os componentes do react-native-paper
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
-// Importando ícones
+// Importando os ícones
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-// Expo
+// Importando as fontes
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 
 // Importando imagens
 import Background from '../../../assets/Background/Background.png'
 
-// Importando componentes
+// Importando os componentes
 import Input from '../../../components/Input';
 import Header from '../../../components/Header';
 
@@ -92,9 +92,11 @@ export default function CadastrarPet() {
 
     // Condição, para mostrar diferentes tipos de raça dependendo do tipo de pet
     const updateRacaOptions = (selectedTipo) => {
-        if (selectedTipo === 'Cão') {
+        if (selectedTipo === 'Cão') { // Se for cão
+              // Atualiza o estado de raça com um vetor de pets do tipo cão
             setRacaOptions(['Pug', 'Shih Tzu', 'Bulldog Francês', 'Pomerânia', 'Golden Retriever']);
-        } else if (selectedTipo === 'Gato') {
+        } else if (selectedTipo === 'Gato') { // Se for gato
+              // Atualiza o estado de raça com um vetor de pets do tipo gato
             setRacaOptions(['Persa', 'Siamês', 'Angorá', 'Ashera', 'Sphynx']);
         } else {
             setRacaOptions([]); // Se nenhum tipo estiver selecionado, não há opções de raça
@@ -238,6 +240,7 @@ export default function CadastrarPet() {
                                 placeholder="Digite o Nome do Pet"
                                 value={nomePet}
                                 onChangeText={setNomePet}
+                                maxLength={20}
                             />
 
                             <SelectDropdown

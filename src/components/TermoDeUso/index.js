@@ -1,5 +1,16 @@
+// Importando o React
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+
+// Importando os componentes do React
+import { 
+    View, 
+    Text, 
+    Modal, 
+    TouchableOpacity, 
+    ScrollView 
+} from 'react-native';
+
+// Importando os estilos
 import { styles } from './styles';
 
 const TermosDeUsoPopup = ({ visible, onAccept }) => {

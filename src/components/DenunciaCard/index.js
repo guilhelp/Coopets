@@ -1,10 +1,31 @@
+// Importando o React
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+
+// Importando os componentes do React
+import { View, Text, Image, TouchableOpacity } from 'react-native';
+
+// Importando os componentes do react navigation
 import { useNavigation } from '@react-navigation/native';
+
+// Importando os ícones
 import { MaterialIcons } from '@expo/vector-icons';
+
+// Importando as variáveis do Firebase
 import { db } from '../../config/Firebase';
-import { addDoc, collection, query, where, getDocs } from '@firebase/firestore';
-import styles from './styles';
+
+// Importando as funções do Firebase
+
+// Firestore
+import { 
+  addDoc, 
+  collection, 
+  query, 
+  where, 
+  getDocs 
+} from '@firebase/firestore';
+
+// Importando os estilos
+import { styles } from './styles';
 
 // Componente DenunciaCard que exibe informações de denúncia
 const DenunciaCard = ({ denuncia, countDenunciasRecebidas, handleExcluirDenunciaExcluirCard }) => {

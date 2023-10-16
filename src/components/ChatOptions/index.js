@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+// Importando o React
+import React from 'react';
+
+// Importando os componentes do React
+import { 
+  View, 
+  TouchableOpacity, 
+  Text 
+} from 'react-native';
+
+// Importando o modal do react-native-modal
 import Modal from 'react-native-modal';
-import styles from './styles';
+
+// Importando os estilos
+import { styles } from './styles';
 
 export default function ChatOptionsMenu({ onDesfazerMatchPress, isVisible, onClose }) {
   return (

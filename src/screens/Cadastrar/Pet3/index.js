@@ -47,18 +47,20 @@ import {
 // Importando a biblioteca axios para requisições
 import axios from 'axios';
 
-// Estilos
+// Importando os estilos
 import { styles } from './styles';
 
 // Importando os componentes do react-native-paper
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
-// Importando ícones
+// Importando os ícones
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-// Expo
+// Importando as fontes
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
+
+// Importando componente de imagem do expo
 import * as ImagePicker from 'expo-image-picker';
 
 // Importanto imagens
@@ -68,7 +70,6 @@ import LogoBranca from '../../../assets/Logo/Logo_FundoBranco.png';
 // Importanto componentes
 import Input from '../../../components/Input';
 import Header from '../../../components/Header';
-
 
 // Configurando cores do react native paper
 const theme = {
@@ -81,6 +82,7 @@ const theme = {
 
 
 export default function CadastrarPet3() {
+
     let [fontsLoaded, fontError] = useFonts({
         LuckiestGuy_400Regular,
         Roboto_900Black,
@@ -136,6 +138,7 @@ export default function CadastrarPet3() {
         }
     };
 
+    // Função para cadastrar os dados
     const cadastrarDados = async () => {
         try {
 

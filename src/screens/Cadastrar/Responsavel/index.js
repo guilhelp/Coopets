@@ -8,7 +8,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   KeyboardAvoidingView,
-  ScrollView
+  ScrollView,
 } from 'react-native';
 
 // Importando o componente de DateTimePicker do react-native-modal-datetime-picker
@@ -36,13 +36,13 @@ import {
 // Auth
 import { fetchSignInMethodsForEmail } from '@firebase/auth';
 
-// Estilos
+// Importando os estilos
 import { styles } from './styles';
 
 // Importando os componentes do react-native-paper
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
-// Expo
+// Importando as fontes
 import { useFonts, LuckiestGuy_400Regular } from '@expo-google-fonts/luckiest-guy';
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
 
@@ -64,10 +64,11 @@ const theme = {
 };
 
 export default function CadastrarResponsavel() {
+
   let [fontsLoaded, fontError] = useFonts({
     LuckiestGuy_400Regular,
     Roboto_900Black,
-  });
+  }); // Estado que armazena as fontes do projeto
 
   const navigation = useNavigation();
 
@@ -300,7 +301,6 @@ export default function CadastrarResponsavel() {
           style={styles.container}>
           <ScrollView style={styles.scrollContainer}>
             <Text style={styles.inputText}>CADASTRAR</Text>
-
             <View style={styles.inputContainer}>
               <Input
                 label="Nome"
@@ -308,7 +308,6 @@ export default function CadastrarResponsavel() {
                 value={nome}
                 onChangeText={setNome}
               />
-
               <Input
                 label="E-mail"
                 placeholder="Digite seu email"

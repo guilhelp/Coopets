@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
+// Importando o React
+import React from 'react';
+
+// Importando os componentes do React
 import { View, Text } from 'react-native';
+
+// Importando os estilos
 import { styles } from './styles';
+
+// Importando os ícones
 import { MaterialIcons } from '@expo/vector-icons';
 
 // Componente Cabecalho

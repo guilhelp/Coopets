@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
-const styles = StyleSheet.create ({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -13,7 +13,9 @@ const styles = StyleSheet.create ({
     width: wp('100%'),
     height: hp('110%'),
   },
-  buttonContainer:{
+
+  // Configurando os botões superiores
+  buttonContainer: {
     flexDirection: 'row'
   },
   returnButton: {
@@ -26,21 +28,22 @@ const styles = StyleSheet.create ({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center'
-    },
-    blockButton:{
-      width: 60,
-      height: 60,
-      borderRadius: 200,
-      backgroundColor: '#573C35',
-      marginRight: -100,
-      left: 125,
-      marginTop: 20,
-      position: 'absolute',
-      justifyContent: 'center',
-      alignItems: 'center',
-      textAlign: 'center'
-    },
-  
+  },
+  blockButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 200,
+    backgroundColor: '#573C35',
+    marginRight: -100,
+    left: 125,
+    marginTop: 20,
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center'
+  },
+
+  // Configurando a imagem de perfil
   imagemPerfil: {
     width: 290,
     height: 290,
@@ -50,6 +53,8 @@ const styles = StyleSheet.create ({
     backgroundColor: "#573C35",
     zIndex: 1,
   },
+
+  // Configurando o nome de perfil
   nomePerfil: {
     fontFamily: 'Roboto_900Black',
     fontSize: wp('11%'),
@@ -58,15 +63,7 @@ const styles = StyleSheet.create ({
     color: '#000000'
   },
 
-  getTextBio: {
-    fontFamily: 'Roboto_900Black',
-    fontSize: wp('5%'),
-    color: '#000000',
-    padding: 10,
-    textAlign: 'center'
-  },
-
-  // Informações do Pet
+  // Configurando a biografia
   descricaoPerfil: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -77,26 +74,32 @@ const styles = StyleSheet.create ({
     borderRadius: 17,
     backgroundColor: "#FFFFFF",
   },
-  titleViewBio:{
+  titleViewBio: {
     fontFamily: 'Roboto_900Black',
     fontSize: wp('6%'),
     color: '#000000',
     padding: 10,
   },
+  getTextBio: {
+    fontFamily: 'Roboto_900Black',
+    fontSize: wp('5%'),
+    color: '#000000',
+    padding: 10,
+    textAlign: 'center'
+  },
+
+  // Configuranod as informações do pet
   titleView: {
     fontFamily: 'Roboto_900Black',
     fontSize: wp('6%'),
     color: '#000000',
     marginHorizontal: 30,
   },
-  
   getText: {
     fontFamily: 'Roboto_900Black',
     fontSize: wp('5%'),
     color: '#000000',
   },
-
-  // Informações do pet
   sexoContainer: {
     marginTop: 20,
     flexDirection: 'row',
@@ -121,7 +124,6 @@ const styles = StyleSheet.create ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  
   viewSexo: {
     width: 150,
     height: 70,
@@ -132,7 +134,6 @@ const styles = StyleSheet.create ({
     backgroundColor: '#FFF',
     alignItems: 'center',
     justifyContent: 'center',
-
   },
   viewIdade: {
     width: 150,
@@ -144,7 +145,6 @@ const styles = StyleSheet.create ({
     backgroundColor: '#FFF',
     alignItems: 'center',
     justifyContent: 'center',
-
   },
   getSexo: {
     fontFamily: 'Roboto_900Black',
@@ -156,9 +156,8 @@ const styles = StyleSheet.create ({
     fontSize: 30,
     color: '#000000',
   },
-  
 
-  // Localizacao
+  // Configurando a localização
   tituloText: {
     fontSize: wp('7%'),
     color: '#000000',
@@ -176,14 +175,14 @@ const styles = StyleSheet.create ({
     backgroundColor: "#FFFFFF",
     padding: 10,
   },
-  getTextLocal:{
+  getTextLocal: {
     fontFamily: 'Roboto_900Black',
     fontSize: wp('5%'),
     color: '#000000',
   },
 
-  // Botão de Documentos
-  buttonDocs:{
+  // Configurando o botão de documentos
+  buttonDocs: {
     alignItems: 'center',
     justifyContent: 'center',
     width: 350,
@@ -202,8 +201,6 @@ const styles = StyleSheet.create ({
     fontSize: wp('8%'),
     color: '#FFFFFF',
   },
-  
-  
-});
 
-export default styles
+
+});

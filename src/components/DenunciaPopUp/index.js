@@ -1,25 +1,36 @@
+// Importando o React
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, Alert} from 'react-native';
+
+// Importando os componentes do React
+import { View, Text, TouchableOpacity, Modal, Alert } from 'react-native';
+
+// Importando os ícones
 import { Ionicons } from '@expo/vector-icons';
-import styles from './styles';
+
+// Importando os estilos
+import { styles } from './styles';
+
+
+// Componente funcional para um pop-up de denúncia
 const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
+  // Função para lidar com a alteração de opção selecionada
   const handleOptionChange = (option) => {
     setSelectedOption(option);
   };
 
+  // Função para lidar com o envio da denúncia
   const handleSubmit = () => {
     if (selectedOption !== null) {
-      onSubmit(selectedOption);
+      onSubmit(selectedOption); // Chama a função de envio da denúncia com a opção selecionada
       Alert.alert('Denúncia enviada com sucesso!');
     } else {
       Alert.alert('Selecione um motivo de denúncia válido');
     }
-
-    
   };
 
+  // Componente de opção que pode ser selecionado
   const Option = ({ optionText, isSelected }) => {
     return (
       <TouchableOpacity

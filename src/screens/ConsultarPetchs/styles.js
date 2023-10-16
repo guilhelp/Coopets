@@ -17,7 +17,7 @@ export default StyleSheet.create({
     height: '100%',
   },
 
-  // Cabeçalho da página
+  // Configurando o cabeçalho personalizado da página
   cabecalhoPagina: {
     zIndex: 1,
     flexDirection: 'row',
@@ -35,14 +35,14 @@ export default StyleSheet.create({
     color: '#FFF',
     paddingHorizontal: 20
   },
+
+  // Configurando os cards
   chatImage: {
     width: 80,
     height: 80,
     marginTop: 30,
     paddingLeft: 10,
   },
-
-
   buttonContainer: {
     marginTop: 30,
   },
@@ -62,9 +62,6 @@ export default StyleSheet.create({
     borderRadius: 200,
     margin: 10,
   },
-  chatDetailsContent: {
-
-  },
   chatItemName: {
     fontFamily: 'Roboto_900Black',
     fontSize: 22,
@@ -83,6 +80,4 @@ export default StyleSheet.create({
   chatLastMessage: {
     fontSize: 15,
   },
-
-
 });

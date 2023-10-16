@@ -1,6 +1,18 @@
+// Importando o React
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet  } from 'react-native';
-import styles from './styles';
+
+// Importando os componentes do React
+import { 
+  View, 
+  Text, 
+  Image, 
+  TouchableOpacity  
+} from 'react-native';
+
+// Importando os estilos
+import {styles} from './styles';
+
+// Importando imagens
 import LogoBranca from '../../assets/Logo/Logo_FundoBranco.png';
 
 const PetchScreen = ({ pet1Name, pet1Image, pet2Name, pet2Image, onClose }) => {

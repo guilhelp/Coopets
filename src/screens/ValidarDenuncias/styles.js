@@ -2,13 +2,9 @@ import { StyleSheet } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
 export const styles = StyleSheet.create({
-    // Configurando o Keyboard container
     container: {
         flex: 1,
-
     },
-
-    // Configurações da página
     background: {
         width: wp('100%'),
         height: hp('110%'),
@@ -42,11 +38,15 @@ export const styles = StyleSheet.create({
         width: 70,
         height: 70,
         marginTop: 20,
-
     },
 
+    // Configurando a view dos cards
+    denunciasCard:{
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 
-    // Cards
+    // Configurando o título de denúncias
     tituloDenuncias:{
         fontFamily: 'Roboto_900Black',
         fontSize: wp('9%'),

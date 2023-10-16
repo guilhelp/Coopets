@@ -2,7 +2,6 @@ import { StyleSheet } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
 export const styles = StyleSheet.create({
-  // Configurando o Keyboard container
   container: {
     flex: 1,
     width: wp('100%'),
@@ -12,6 +11,8 @@ export const styles = StyleSheet.create({
     width: wp('100%'),
     height: hp('110%'),
   },
+
+  // Configurando o cabeçalho personalizado da página
   cabecalho: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -30,6 +31,7 @@ export const styles = StyleSheet.create({
     textAlign: 'center'
   },
 
+  // Configurando o fundo transparente da página
   fundoContainer: {
     backgroundColor: 'rgba(87,60,53, 0.75)',
     width: wp('100%'),
@@ -40,11 +42,15 @@ export const styles = StyleSheet.create({
     marginTop: 20,
 
   },
+
+  // Configurando o container de inputs
   inputContainer: {
     marginTop: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  // Configurando o título de filtrando pets
   titleFilterPets: {
     fontFamily: 'LuckiestGuy_400Regular',
     fontSize: wp('10%'),
@@ -52,13 +58,12 @@ export const styles = StyleSheet.create({
     margin: 10,
   },
 
-  // Configurando dropdown
+  // Configurando os dropdown
   sexoContainer: {
     flexDirection: 'row',
     alignContent: 'center',
     justifyContent: 'center',
     padding: 10
-
   },
   sexoContainerText: {
     fontFamily: 'Roboto_900Black',
@@ -67,13 +72,11 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 30,
     marginTop: 10,
   },
-
   tipoContainer: {
     flexDirection: 'row',
     alignContent: 'center',
     justifyContent: 'center',
     padding: 10
-
   },
   tipoContainerText: {
     fontFamily: 'Roboto_900Black',
@@ -82,13 +85,11 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 33,
     marginTop: 10,
   },
-
   racaContainer: {
     flexDirection: 'row',
     alignContent: 'center',
     justifyContent: 'center',
     padding: 10
-
   },
   racaContainerText: {
     fontFamily: 'Roboto_900Black',
@@ -97,7 +98,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 30,
     marginTop: 10,
   },
-
   dropdownButton: {
     width: 146,
     height: 53,
@@ -131,17 +131,17 @@ export const styles = StyleSheet.create({
   },
 
 
-  // Configurando distâncias
+  // Configurando as distâncias
   textInside: {
     fontSize: wp('5%'),
     color: '#000000',
     fontFamily: 'LuckiestGuy_400Regular',
   },
-  closefilter:{
-    position: 'absolute', 
-    bottom: 40, 
-    left: 38, 
-    zIndex: 1 
+  closefilter: {
+    position: 'absolute',
+    bottom: 40,
+    left: 38,
+    zIndex: 1
   },
   titleFilter: {
     fontFamily: 'Roboto_900Black',
@@ -169,7 +169,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 45,
-
   },
   buttonDistance5: {
     height: 70,
@@ -213,6 +212,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+  // Configurando o botão de limpar 
   limparContainer: {
     marginTop: 10,
     marginRight: 10,
@@ -235,8 +235,8 @@ export const styles = StyleSheet.create({
     color: '#000000',
   },
 
-  // Configurando botão Avançar
-  botaoAvancar: {
+  // Configurando botão Salvar
+  botaoSalvar: {
     width: 202,
     height: 62,
     backgroundColor: '#FFF',
@@ -248,7 +248,7 @@ export const styles = StyleSheet.create({
     borderColor: '#573C35',
 
   },
-  botaoAvancarText: {
+  botaoSalvarText: {
     fontFamily: 'Roboto_900Black',
     fontSize: wp('5%'),
     color: '#000000',

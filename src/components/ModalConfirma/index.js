@@ -1,12 +1,30 @@
+// Importando o React
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal } from 'react-native';
-import styles from './styles';
-import { reauthenticateWithCredential, updatePassword, EmailAuthProvider } from 'firebase/auth';
+
+// Importando os componentes do React
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  Modal, 
+  Alert
+} from 'react-native';
+
+// Importando as variáveis do Firebase
 import { auth } from '../../config/Firebase';
+
+// Importando as funções do Firebase
+
+// Auth
+import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+
+// Importando os estilos
+import { styles }from './styles';
 
 const ConfirmationModal = ({
   visible,
-  user, // O usuário autenticado do Firebase
+  user, 
   onClose,
   onConfirm,
 }) => {
@@ -24,8 +42,8 @@ const ConfirmationModal = ({
       // A reautenticação foi bem-sucedida, agora podemos confirmar a ação
       onConfirm();
     } catch (error) {
-      setError('Senha incorreta. Tente novamente.');
-      console.error('Erro de reautenticação:', error);
+      Alert.alert('Senha incorreta. Tente novamente.');
+      
     }
   };
 

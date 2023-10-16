@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
-export default StyleSheet.create({
+export const styles = StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: 'center',
@@ -13,7 +13,6 @@ export default StyleSheet.create({
       borderColor: '#EEE1D3',
       borderWidth: 5,
       position: 'absolute',
-      
     },
     matchContainer: {
       flexDirection: 'row',

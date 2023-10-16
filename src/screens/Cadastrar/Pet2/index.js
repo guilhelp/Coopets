@@ -15,7 +15,7 @@ import {
 // Importando os componentes do react-navigation
 import { useRoute, useNavigation } from '@react-navigation/native';
 
-// Estilos
+// Importando os estilos
 import { styles } from './styles';
 
 // Importando componentes do react-native-paper
@@ -24,9 +24,11 @@ import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 // Importando ícones
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-// Expo
+//  Importando as fontes
 import { useFonts, LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy";
 import { Roboto_900Black } from '@expo-google-fonts/roboto';
+
+// Importando componente de imagem do expo
 import * as ImagePicker from 'expo-image-picker';
 
 // Importanto imagens
@@ -72,6 +74,7 @@ export default function CadastrarPet2() {
 
     // Função que busca e seleciona a imagem capturada pelo ImagePicker do expo
     const selectImage = async (type) => {
+        
         // Abre a galeria de imagens do dispositivo
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images, // Permite selecionar apenas imagens

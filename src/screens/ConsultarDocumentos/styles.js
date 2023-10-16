@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
-export default StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -11,6 +11,8 @@ export default StyleSheet.create({
     width: wp('100%'),
     height: hp('110%'),
   },
+
+  // Configurando o botão de retornar
   returnButton: {
     width: 60,
     height: 60,
@@ -22,7 +24,7 @@ export default StyleSheet.create({
     marginBottom: 20,
 },
 
-  // Botões das imagens
+  // Configurando os botões de imagens
   buttonContainer: {
     marginTop: 20,
   },
@@ -50,7 +52,7 @@ export default StyleSheet.create({
     marginLeft: 10,
   },
 
-  // Contatos
+  // Configurando os contatos
   contacts: {
     paddingTop: 30,
     fontFamily: 'Roboto_900Black',
@@ -102,13 +104,12 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
 
-  // Ao clicar nas imagens
+  // Configurando o clicar nas imagens
   modalContainer:{
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-
   },
   fullScreenImage:{
     width: 350,

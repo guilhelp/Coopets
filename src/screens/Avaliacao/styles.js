@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
 
     },
     
-    // Cabeçalho da página
+    // Configurando o cabeçalho personalizado da página
     cabecalhoPagina: {
         zIndex: 1,
         flexDirection: 'row',
@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
 
     },
 
-    // Cards dos pets
+    // Configurando os cards dos pets
     cardContainer: {
         width: wp('95%'),
         height:  hp('65%'),
@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-    // Botão de perfil
+    // Configurando o botão de perfil
     buttonPerfilContainer:{
         padding: 10,
         marginLeft: 260,
@@ -81,7 +81,7 @@ export const styles = StyleSheet.create({
         fontSize: wp('5%'),
     },
     
-    // Informações card
+    // Configurando as informações card
     petInfoContainer: {
         position: 'absolute',
         bottom: 50,
@@ -111,7 +111,7 @@ export const styles = StyleSheet.create({
         height:  hp('60%'),
     },
 
-    // Efeito de gradiente do card
+    // Configurando efeito de gradiente do card
     overlayContainer: {
         position: 'absolute',
         width: wp('100%'),
@@ -123,7 +123,7 @@ export const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
     },
     
-    // Não há mais pets
+    // Configurando o não há mais pets
     messageContainer: {
         width: '100%',
         height: '100%',
@@ -138,7 +138,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-    // Botões de like e dislike
+    // Configurando botões de like e dislike
     button: {
         backgroundColor: '#573C35',
         width: 140,
@@ -167,7 +167,7 @@ export const styles = StyleSheet.create({
         height: hp('5%'),
     },
 
-    // Pop-up do match
+    // Configurando pop-up do match
     matchPopup: {
         position: 'absolute',
         top: 0,
@@ -176,7 +176,7 @@ export const styles = StyleSheet.create({
         bottom: 0,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Fundo semi-transparente
+        backgroundColor: 'rgba(0, 0, 0, 0.7)', 
     },
     closePopupButton: {
         borderRadius: 8,
@@ -202,7 +202,7 @@ export const styles = StyleSheet.create({
         fontSize: 20,
     },
 
-    // Tela de carregamento
+    // Configurando tela de bloqueio
     imagemLogo:{
         width: wp('60%'),
         height: hp('30%'),
