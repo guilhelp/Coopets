@@ -5,10 +5,12 @@ export const styles = StyleSheet.create({
         width: 336,
         height: 61,
         color: '#000000',
-        margin: 5,
+        margin: 7,
         fontSize: 20,
         fontWeight: 'bold',
-        backgroundColor: '#FFF'
+        backgroundColor: '#FFF',
+        borderWidth: 1,
+        borderColor: 'gray'
     },
     
 });

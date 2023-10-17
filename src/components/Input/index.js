@@ -17,9 +17,8 @@ const Input = ({ label, placeholder, secureTextEntry, value, onChangeText, ...re
 
     return (
       <View style={styles.inputContainer}>
-        <ScrollView>
         <TextInput
-          mode="outlined"
+    
           label={label}
           placeholder={placeholder}
           secureTextEntry={secureTextEntry && !showPassword}
@@ -39,7 +38,6 @@ const Input = ({ label, placeholder, secureTextEntry, value, onChangeText, ...re
             )
           }
         />
-        </ScrollView>
       </View>
     );
   };

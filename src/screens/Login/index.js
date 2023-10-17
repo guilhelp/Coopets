@@ -2,15 +2,15 @@
 import React, { useState, useEffect } from 'react';
 
 // Importando os componentes do React
-import { 
-    View, 
-    Text, 
-    ImageBackground, 
-    Image, 
-    TouchableOpacity, 
-    Alert, 
-    KeyboardAvoidingView, 
-    ScrollView 
+import {
+    View,
+    Text,
+    ImageBackground,
+    Image,
+    TouchableOpacity,
+    Alert,
+    KeyboardAvoidingView,
+    ScrollView
 } from 'react-native';
 
 // Importando configurações da splash screen
@@ -20,14 +20,27 @@ import { preventAutoHideAsync } from 'expo-splash-screen';
 import { useNavigation } from '@react-navigation/native';
 
 // Importando as variáveis do Firebase
-import { auth } from '../../config/Firebase';
+import { auth, db } from '../../config/Firebase';
 
 // Importando as funções do Firebase
 
+// Firestore
+import {
+    collection,
+    doc,
+    query,
+    where,
+    getDocs,
+    deleteDoc,
+    getDoc,
+    updateDoc,
+    serverTimestamp
+} from 'firebase/firestore';
+
 // Auth
-import { 
-    signInWithEmailAndPassword, 
-    onAuthStateChanged 
+import {
+    signInWithEmailAndPassword,
+    onAuthStateChanged
 } from 'firebase/auth';
 
 // Importando o Async Storage
@@ -62,7 +75,7 @@ const theme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
-        primary: 'black', 
+        primary: 'black',
     },
 };
 
@@ -93,6 +106,41 @@ export default function Login() {
                     return;
                 }
 
+                // Verificar se a conta está bloqueada
+                const responsavelDocRef = doc(db, 'responsaveis', user.uid);
+                const responsavelDocSnap = await getDoc(responsavelDocRef);
+
+                if (responsavelDocSnap.exists()) {
+                    const responsavelData = responsavelDocSnap.data();
+
+
+                    // Obtém a referência para o documento do pet
+                    const petRef = responsavelData.petID;
+                    const petDocSnap = await getDoc(petRef);
+
+                    if (petDocSnap.exists()) {
+                        const petData = petDocSnap.data();
+
+                        if (petData.bloqueado) {
+                            const dataDesbloqueio = new Date(petData.dataDesbloqueio.toDate());
+                            const dataAtual = new Date();
+
+                            if (dataAtual < dataDesbloqueio) {
+                                // Pet bloqueado. Mostrar a data de desbloqueio e não permitir o login.
+                                Alert.alert('Pet Bloqueado', `Seu pet está bloqueado até ${dataDesbloqueio.toLocaleString()}.`, [
+                                    {
+                                        text: 'OK',
+                                        onPress: () => {
+                                            // Redirecione para a tela de login ou execute a ação apropriada, por exemplo:
+                                        },
+                                    },
+                                ]);
+                                return;
+                            }
+                        }
+                    }
+                }
+
                 onAuthStateChanged(auth, (userAuth) => {
                     if (userAuth && userAuth.emailVerified) {
                         navigation.navigate('BottomTabs'); // Redireciona para a tela principal após o login
@@ -107,6 +155,7 @@ export default function Login() {
     // Lógica para logar 
     const handleLogin = async () => {
         try {
+
 
             // Verifica se todos os campos foram preenchidos
             if (!email || !senha) {
@@ -128,6 +177,36 @@ export default function Login() {
 
             // Verifica se o usuário tem o email verificado
             if (user && user.emailVerified) {
+
+                // Verificar se a conta está bloqueada
+                const responsavelDocRef = doc(db, 'responsaveis', user.uid);
+                const responsavelDocSnap = await getDoc(responsavelDocRef);
+
+                if (responsavelDocSnap.exists()) {
+                    const responsavelData = responsavelDocSnap.data();
+
+
+                    // Obtém a referência para o documento do pet
+                    const petRef = responsavelData.petID;
+                    const petDocSnap = await getDoc(petRef);
+
+                    if (petDocSnap.exists()) {
+                        const petData = petDocSnap.data();
+
+                        if (petData.bloqueado) {
+                            const dataDesbloqueio = new Date(petData.dataDesbloqueio.toDate());
+                            const dataAtual = new Date();
+
+                            if (dataAtual < dataDesbloqueio) {
+                                // Pet bloqueado. Mostrar a data de desbloqueio e não permitir o login.
+                                Alert.alert('Pet Bloqueado', `Seu pet está bloqueado até ${dataDesbloqueio.toLocaleString()}.`)
+                                
+                                return;
+
+                            }
+                        }
+                    }
+                }
 
                 // Armazena as informações do usuário no AsyncStorage
                 await AsyncStorage.setItem('userData', JSON.stringify(user));

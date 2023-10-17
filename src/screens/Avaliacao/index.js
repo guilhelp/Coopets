@@ -219,7 +219,9 @@ export default function Avaliacao() {
                     // Filtrar os pets pelos campos relevantes (sexo, tipo, raça) e se ainda não foram avaliados
                     const filteredPets = petsData.filter((pet) =>
                         !ratedPetIds.includes(pet.id) &&
-                        checkUserPreferences(userPreferencesData, pet)
+                        checkUserPreferences(userPreferencesData, pet) &&
+                        !pet.bloqueado
+                    
                     );
 
                     // Define uma função para calcular a distância entre duas coordenadas geográficas.

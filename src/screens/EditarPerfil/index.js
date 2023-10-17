@@ -926,6 +926,7 @@ export default function EditarPerfil() {
                                         placeholder="Digite o nome do pet"
                                         value={nomePet}
                                         onChangeText={setNomePet}
+                                        maxLength={20}
                                     />
 
                                     <SelectDropdown

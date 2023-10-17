@@ -53,7 +53,7 @@ const DenunciaCard = ({ denuncia, countDenunciasRecebidas, handleExcluirDenuncia
       const notificacoesLidasCount = notificacoesLidasSnapshot.size;
   
       if (notificacoesLidasCount >= 3) {
-        alert('Usuário notificado 3 vezes com notificações lidas. Apague o perfil.');
+        alert('Usuário notificado 3 vezes com notificações lidas. Bloqueie o perfil.');
       } else {
         // Crie um documento de notificação no Firestore
         const notificacaoRef = await addDoc(collection(db, 'notificacoes'), {

@@ -19,16 +19,17 @@ export const styles = StyleSheet.create ({
         height: hp('105%'),
     },
     cabecalhoPagina: {
-        position: 'absolute', // Defina position como 'absolute'
-        top: 0, // Ajuste a posição superior conforme necessário
-        left: 0, // Ajuste a posição esquerda conforme necessário
-        width: '100%', // Garanta que ocupe toda a largura da tela
-        height: 170, // Garanta que ocupe toda a altura da tela
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        width: '100%', 
+        height: 170, 
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#573C35',
-
         alignItems: 'center',
+        justifyContent: 'space-between'
+
     },
     petImage: {
         width: 80,
@@ -43,8 +44,7 @@ export const styles = StyleSheet.create ({
         marginBottom: 20,
     },
     botoesContainerOption:{
-        marginLeft: 60,
-        marginTop: 15,
+    
     },
     returnButton: {
         width: 60,
@@ -62,12 +62,9 @@ export const styles = StyleSheet.create ({
         height: 60,
         borderRadius: 200,
         backgroundColor: '#573C35',
- 
-      
-        position: 'absolute',
-        top: -20,
-       
-
+        top: 20,
+        
+   
        
     },
     petName: {
@@ -79,8 +76,8 @@ export const styles = StyleSheet.create ({
     petDetails: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 20,
-        right: 20,
+        paddingHorizontal: 0,
+        right: 10,
         marginTop: 10,
     },
     inputContainer: {

@@ -442,11 +442,10 @@ export default function Chat({ route }) {
             <Image source={{ uri: petImage }} style={styles.petImage} />
             <Text style={styles.petName}>{petNome}</Text>
           </TouchableOpacity>
-          <View style={styles.botoesContainerOption}>
             <TouchableOpacity onPress={toggleOptionsModal} style={styles.optionButton}>
               <SimpleLineIcons name={'options-vertical'} size={35} color="white" style={styles.optionIcon} />
             </TouchableOpacity>
-          </View>
+        
         </View>
 
 

@@ -24,7 +24,9 @@ import {
     where,
     getDocs,
     deleteDoc,
-    getDoc
+    getDoc,
+    updateDoc,
+    serverTimestamp
 } from 'firebase/firestore';
 
 // Realtime Database 
@@ -163,123 +165,34 @@ export default function ConsultarPerfilAdm({ route }) {
         });
     };
 
-    // Função para excluir um perfil
-    const excluirPerfil = async () => {
+    const bloquearPerfil = async () => {
         try {
-
-            // Obtenha a instância de autenticação (auth) usando `getAuth`
-            const authInstance = getAuth();
-
-            // Exclua o usuário no Firebase Authentication com base no UID petResp
-            await deleteUser(authInstance, petResp);
-
-            // Busca as informações do responsável logado
-            const responsavelDocRef = doc(db, 'responsaveis', petResp);
-            const responsavelDocSnap = await getDoc(responsavelDocRef);
-
-            const responsavelData = responsavelDocSnap.data();
-            const responsavelId = responsavelDocRef.id;
-
-            // Armazena o id do pet que pertence ao responsável logado
-            const petRefPerfil = responsavelData?.petID;
-
-            // Chama a funcao para excluir os "rooms" do usuário
-            deleteRoomsForUser(petResp);
-
-
-            // Exclui os documentos na coleção "likes" onde o perfil do responsável está envolvido
-
-            const likesQuery = query(collection(db, 'likes'), where('petIDLike', '==', petRefPerfil));
-            const likesSnapshot = await getDocs(likesQuery);
-
-            likesSnapshot.forEach(async (likeDoc) => {
-                await deleteDoc(likeDoc.ref);
+            const perfilRef = doc(db, 'pets', petId);
+            const dataDesbloqueio = new Date();
+            dataDesbloqueio.setHours(dataDesbloqueio.getHours() + 24); // Adicionar 24 horas
+    
+            // Atualize o perfil para definir o campo "bloqueado" como true
+            // e registre o timestamp do bloqueio e o momento do desbloqueio
+            await updateDoc(perfilRef, {
+                bloqueado: true,
+                momentoBloqueio: serverTimestamp(),
+                dataDesbloqueio: dataDesbloqueio,
             });
-
-            const likesQuery2 = query(collection(db, 'likes'), where('petIDRecebeu', '==', petRefPerfil));
-            const likesSnapshot2 = await getDocs(likesQuery2);
-
-            likesSnapshot2.forEach(async (likeDoc) => {
-                await deleteDoc(likeDoc.ref);
-            });
-
-
-            // Exclui os documentos na coleção "preferencias" que têm uma referência ao perfil do responsável
-
-
-            const preferenciasQuery = query(collection(db, 'preferencias'), where('userId', '==', petResp));
-            const preferenciasSnapshot = await getDocs(preferenciasQuery);
-
-
-            preferenciasSnapshot.forEach(async (preferenciaDoc) => {
-                await deleteDoc(preferenciaDoc.ref);
-            });
-
-
-            // Exclui os documentos na coleção "avaliacoes" onde o perfil do responsável está envolvido
-
-
-            const avaliacoesQuery = query(collection(db, 'avaliacoes'), where('userId', '==', petResp));
-            const avaliacoesSnapshot = await getDocs(avaliacoesQuery);
-
-            avaliacoesSnapshot.forEach(async (avaliacaoDoc) => {
-                await deleteDoc(avaliacaoDoc.ref);
-            });
-
-            const avaliacoesQuery2 = query(collection(db, 'avaliacoes'), where('petIdAvaliado', '==', petRefPerfil));
-            const avaliacoesSnapshot2 = await getDocs(avaliacoesQuery2);
-
-            avaliacoesSnapshot2.forEach(async (avaliacaoDoc) => {
-                await deleteDoc(avaliacaoDoc.ref);
-            });
-
-
-            // Exclui os documentos na coleção "dislikes" onde o perfil do responsável está envolvido
-
-
-            const dislikesQuery = query(collection(db, 'dislikes'), where('petIDDislike', '==', petRefPerfil));
-            const dislikesSnapshot = await getDocs(dislikesQuery);
-
-            dislikesSnapshot.forEach(async (dislikeDoc) => {
-                await deleteDoc(dislikeDoc.ref);
-            });
-
-            const dislikesQuery2 = query(collection(db, 'dislikes'), where('petIDRecebeu', '==', petRefPerfil));
-            const dislikesSnapshot2 = await getDocs(dislikesQuery2);
-
-            dislikesSnapshot2.forEach(async (dislikeDoc) => {
-                await deleteDoc(dislikeDoc.ref);
-            });
-
-
-            // Exclui os documentos na coleção "matches" onde o perfil do responsável está envolvido
-
-
-            const matchesQuery = query(collection(db, 'matches'), where('petID1', '==', petRefPerfil));
-            const matchesSnapshot = await getDocs(matchesQuery);
-
-            matchesSnapshot.forEach(async (matchDoc) => {
-                await deleteDoc(matchDoc.ref);
-            });
-
-            const matchesQuery2 = query(collection(db, 'matches'), where('petID2', '==', petRefPerfil));
-            const matchesSnapshot2 = await getDocs(matchesQuery2);
-
-
-            matchesSnapshot2.forEach(async (matchDoc) => {
-                await deleteDoc(matchDoc.ref);
-            });
-
-
-            // Exclui os documentos na coleção "denuncias" onde o perfil do responsável está envolvido
-
-
-            const denunciasDenuncianteQuery = query(collection(db, 'denuncias'), where('idDenunciante', '==', petResp));
-            const denunciasDenuncianteSnapshot = await getDocs(denunciasDenuncianteQuery);
-
-            denunciasDenuncianteSnapshot.forEach(async (denunciaDoc) => {
-                await deleteDoc(denunciaDoc.ref);
-            });
+    
+            console.log('Perfil bloqueado com sucesso.');
+            alert('Perfil bloqueado com sucesso.');
+    
+            // Agende o desbloqueio após 24 horas
+            const tempoBloqueio = 24 * 60 * 60 * 1000; // 24 horas em milissegundos
+            setTimeout(async () => {
+                // Desbloquear o perfil definindo o campo "bloqueado" como false
+                await updateDoc(perfilRef, {
+                    bloqueado: false,
+                    dataDesbloqueio: null, // Limpar a data de desbloqueio
+                });
+    
+                console.log('Perfil desbloqueado automaticamente após 24 horas.');
+            }, tempoBloqueio);
 
             const denunciasRecebidorQuery = query(collection(db, 'denuncias'), where('idRecebedor', '==', petId));
             const denunciasRecebidorSnapshot = await getDocs(denunciasRecebidorQuery);
@@ -288,21 +201,9 @@ export default function ConsultarPerfilAdm({ route }) {
                 await deleteDoc(denunciaDoc.ref);
             });
 
-            // Exclui o documento do perfil de responsável
-            await deleteDoc(responsavelDocRef);
-
-            // Exclui o documento do perfil do pet
-            const petDocRef = doc(db, 'pets', petId); // Certifique-se de usar a referência correta para o documento do pet
-            await deleteDoc(petDocRef);
-
-
-
-            console.log('Perfil excluído com sucesso.');
-            alert('Perfil excluído com sucesso.');
-            navigation.navigate('ValidarDenuncias') // Navega para a tela de validar denuncias
-
+            navigation.goBack();
         } catch (error) {
-            console.error('Erro ao excluir o perfil:', error);
+            console.error('Erro ao bloquear o perfil:', error);
         }
     };
 
@@ -320,8 +221,8 @@ export default function ConsultarPerfilAdm({ route }) {
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.returnButton}>
                             <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={excluirPerfil} style={styles.blockButton}>
-                            <MaterialIcons name={'delete-forever'} size={50} color="white" style={styles.blockIcon} />
+                        <TouchableOpacity onPress={bloquearPerfil} style={styles.blockButton}>
+                            <MaterialIcons name={'block'} size={50} color="white" style={styles.blockIcon} />
                         </TouchableOpacity>
                     </View>
 
