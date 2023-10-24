@@ -9,10 +9,11 @@ export const styles = StyleSheet.create ({
     },
     fundoBranco:{
         width: wp('100%'),
-        height: hp('87%'),
+        height: hp('85%'),
         marginTop: 150,
         backgroundColor: '#FFF',
         borderRadius: 30,
+     
     },
     background: {
         width: wp('100%'),
@@ -63,9 +64,6 @@ export const styles = StyleSheet.create ({
         borderRadius: 200,
         backgroundColor: '#573C35',
         top: 20,
-        
-   
-       
     },
     petName: {
         fontFamily: 'Roboto_900Black',
@@ -84,15 +82,17 @@ export const styles = StyleSheet.create ({
         flexDirection: 'row',
         backgroundColor: '#573C35',
         width: wp('100%'),
-        height: hp('20%'),
-        top: '15%',
+        height: 80, // Altura fixa
+        borderRadius: 15,
         paddingTop: 10,
-        paddingHorizontal: 10, // Adicione espaço à esquerda e à direita para melhor aparência
+        paddingHorizontal: 10,
+       
+        bottom: 0, // Mantenha na parte inferior da tela
       },
       input: {
         backgroundColor: '#FFFFFF',
         flex: 1,
-        height: 70,
+        height: 60, // Altura do TextInput
         borderWidth: 3,
         borderColor: 'gray',
         borderRadius: 20,
@@ -107,9 +107,10 @@ export const styles = StyleSheet.create ({
         borderRadius: 200,
         alignItems: 'center',
         justifyContent: 'center',
-        position: 'absolute', // Defina position como 'absolute'
-        right: 10, // Ajuste a posição para o canto direito
+        position: 'absolute',
+        right: 10,
       },
+      
       
     messageContainer: {
         padding: 10,

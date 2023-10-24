@@ -676,7 +676,7 @@ export default function EditarPerfil() {
                     await updateEmail(user, userEmail);
                     setPasswordModalVisible(false);
                 } catch (reauthError) {
-                    alert('Senha atual incorreta. As alterações de email não foram feitas.');
+                    
                     setLoadingVisible(false);
                     return;
                 }
@@ -765,7 +765,7 @@ export default function EditarPerfil() {
             await updateEmail(user, newEmail);
         } catch (reauthError) {
             console.error('Erro de reautenticação:', reauthError);
-            alert('Senha atual incorreta. O email não foi alterado.');
+          
             throw reauthError; // Relança o erro para que ele possa ser tratado no chamador
         }
     };

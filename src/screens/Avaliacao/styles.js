@@ -63,7 +63,7 @@ export const styles = StyleSheet.create({
     // Configurando o botão de perfil
     buttonPerfilContainer:{
         padding: 10,
-        marginLeft: 260,
+        marginLeft: '67%',
         position: 'absolute',
         fontFamily: 'Roboto_900Black',
     },

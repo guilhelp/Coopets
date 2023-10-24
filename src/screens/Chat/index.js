@@ -1,17 +1,17 @@
 // Importando o React
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Importando os componentes do React
-import { 
-  View, 
-  ImageBackground, 
-  TouchableOpacity, 
-  Image, 
-  Text, 
-  TextInput, 
-  ScrollView, 
-  KeyboardAvoidingView, 
-  Alert 
+import {
+  View,
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+  Text,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
+  Alert
 } from 'react-native';
 
 // Importando os estilos
@@ -23,24 +23,24 @@ import { database, auth, db } from '../../config/Firebase';
 // Importando as funções do Firebase
 
 // Firestore
-import { 
-  doc, 
-  getDoc, 
-  deleteDoc, 
-  query, 
-  collection, 
-  getDocs, 
-  where 
+import {
+  doc,
+  getDoc,
+  deleteDoc,
+  query,
+  collection,
+  getDocs,
+  where
 } from '@firebase/firestore';
 
 // Realtime Database
-import { 
-  ref, 
-  set, 
-  child, 
-  get, 
-  onValue, 
-  remove 
+import {
+  ref,
+  set,
+  child,
+  get,
+  onValue,
+  remove
 } from "firebase/database"
 
 // Importando os componentes do react navigation
@@ -68,6 +68,8 @@ import Background from '../../assets/Background/Background.png'
 const databaseReference = ref(database)
 
 
+
+
 export default function Chat({ route }) {
 
   let [fontsLoaded, fontError] = useFonts({
@@ -79,7 +81,7 @@ export default function Chat({ route }) {
 
   // Variável que decidir se o modal de desfazer petch irá aparecer ou não
   const [isOptionsVisible, setOptionsVisible] = useState(false);
-  
+
   // Variáveis que recebem como parâmetro
   const { petId } = route.params
   const { petImage } = route.params
@@ -98,6 +100,9 @@ export default function Chat({ route }) {
 
   // Armazenando o id do usuário logado
   const myId = auth.currentUser.uid
+
+  // Referência do scrollview
+  const scrollViewRef = useRef();
 
   // Estados que irão armazenam as mensagens digitadas
   const [displayMessages, setDisplayMessages] = useState([])
@@ -143,33 +148,33 @@ export default function Chat({ route }) {
       title: 'Nova mensagem',
       body: message,
     };
-  
+
     // Agende uma notificação com o conteúdo fornecido e um gatilho nulo.
     await Notifications.scheduleNotificationAsync({
       content: notificationContent,
       trigger: null,
     });
   };
-  
+
   async function sendNotificationIfNeeded(message) {
     // Obtém o ID da sala de bate-papo
     const room = getRoomId();
-  
+
     // Cria uma referência à sala de bate-papo no banco de dados.
     const chatReference = ref(database, `messages/${room}`);
-  
+
     // Observa alterações na sala de bate-papo.
     onValue(chatReference, (snapshot) => {
       const newMessages = snapshot.val();
-  
+
       // Se houver novas mensagens na sala de bate-papo:
       if (newMessages) {
         // Atualiza as mensagens exibidas no aplicativo.
         setDisplayMessages(newMessages);
-  
+
         // Obtém a última mensagem enviada.
         const lastMessage = newMessages[newMessages.length - 1];
-  
+
         // Verifica se a última mensagem não é do usuário atual.
         if (lastMessage.userId !== myId) {
           // Envia uma notificação com a mensagem recebida.
@@ -178,44 +183,44 @@ export default function Chat({ route }) {
       }
     });
   }
-  
+
   function getRoomId() {
     // Cria um ID de sala único, ordenando os IDs dos usuários e os unindo com um hífen.
     return [petResp, myId].sort().join("-");
   }
-  
+
   async function fetchChatMessages() {
     // Obtém as mensagens da sala de bate-papo no banco de dados.
     const room = getRoomId();
     const chatChild = child(databaseReference, `messages/${room}`);
     const chatSnapshot = await get(chatChild);
-  
+
     // Retorna as mensagens, se existirem; caso contrário, retorna um array vazio.
     if (chatSnapshot.exists()) return chatSnapshot.val();
     else return [];
   }
-  
+
   async function writeMessage() {
     // Obtém o ID da sala de bate-papo.
     const room = getRoomId();
-  
+
     try {
       // Obtém as mensagens atuais da sala de bate-papo.
       const messages = await fetchChatMessages();
-  
+
       // Cria uma referência à sala de bate-papo no banco de dados.
       const chatReference = ref(database, `messages/${room}`);
-  
+
       // Adiciona a nova mensagem à lista de mensagens.
       set(chatReference, [...messages, { userId: petResp, message }]);
-  
+
       // Limpa a mensagem do estado.
       setMessage("");
-  
+
       // Exibe a mensagem no console.
       console.log("A mensagem foi enviada com sucesso! ✨");
       console.log(`${petResp}: ${message}`);
-  
+
       // Envia uma notificação se a mensagem não for do usuário atual.
       if (petResp !== myId) {
         sendNotificationIfNeeded(message);
@@ -225,43 +230,46 @@ export default function Chat({ route }) {
       console.error(error);
     }
   }
-  
+
   async function buttonPress() {
     if (message.trim() !== "") {
       // Verifica se a mensagem não está em branco (após remover espaços em branco).
       writeMessage("Hello World");
+
+      // Rola para a parte inferior do ScrollView
+      scrollViewRef.current.scrollToEnd({ animated: true });
     } else {
       // Exibe um alerta ao usuário informando que a mensagem está em branco.
       Alert.alert("Aviso", "Por favor, digite uma mensagem antes de enviar.");
     }
   }
-  
+
   useEffect(() => {
     // Carrega as mensagens de chat ao montar o componente.
-  
+
     async function _() {
       setDisplayMessages(await fetchChatMessages());
     }
-  
+
     _();
-  
+
     // Obtém o ID da sala de bate-papo.
     const room = getRoomId();
-  
+
     // Cria uma referência à sala de bate-papo no banco de dados.
     const chatReference = ref(database, `messages/${room}`);
-  
+
     // Observa alterações na sala de bate-papo e atualiza as mensagens exibidas.
     onValue(chatReference, (snapshot) => {
       setDisplayMessages(snapshot.val());
     });
   }, []);
-  
+
   const toggleOptionsModal = () => {
     // Alterna a visibilidade do modal de opções.
     setOptionsVisible(!isOptionsVisible);
   };
-  
+
   async function fetchPetIdForMyId(myId) {
     try {
       // Crie uma referência ao documento do responsável com base no myId
@@ -430,86 +438,87 @@ export default function Chat({ route }) {
   } // Condição caso as fontes não carreguem
 
   return (
-    <ImageBackground source={Background} style={styles.background}>
-      <KeyboardAvoidingView
-        behavior={'padding'}
-        style={styles.container}
-      >
 
-        <View style={styles.cabecalhoPagina}>
+    <KeyboardAvoidingView
+      behavior={'padding'}
+      style={styles.container}
 
-          <TouchableOpacity style={styles.petDetails} onPress={() => navigation.navigate('ConsultarPerfil', { petId, petImage, petNome, petBio, petCep, petSexo, petTipo, petRaca, petIdade, petPedigree, petVac })}>
-            <Image source={{ uri: petImage }} style={styles.petImage} />
-            <Text style={styles.petName}>{petNome}</Text>
+    >
+
+      <View style={styles.cabecalhoPagina}>
+
+        <TouchableOpacity style={styles.petDetails} onPress={() => navigation.navigate('ConsultarPerfil', { petId, petImage, petNome, petBio, petCep, petSexo, petTipo, petRaca, petIdade, petPedigree, petVac })}>
+          <Image source={{ uri: petImage }} style={styles.petImage} />
+          <Text style={styles.petName}>{petNome}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={toggleOptionsModal} style={styles.optionButton}>
+          <SimpleLineIcons name={'options-vertical'} size={35} color="white" style={styles.optionIcon} />
+        </TouchableOpacity>
+
+      </View>
+
+
+      <KeyboardAvoidingView behavior={'padding'} style={styles.fundoBranco} keyboardVerticalOffset={-5}>
+
+        <View style={styles.botoesContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
+            <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
           </TouchableOpacity>
-            <TouchableOpacity onPress={toggleOptionsModal} style={styles.optionButton}>
-              <SimpleLineIcons name={'options-vertical'} size={35} color="white" style={styles.optionIcon} />
-            </TouchableOpacity>
-        
+
+          {/* Renderize o modal de opções */}
+          <ChatOptionsMenu
+            isVisible={isOptionsVisible}
+            onDesfazerMatchPress={() => {
+              desfazerMatch();
+              toggleOptionsModal(); // Feche o modal após desfazer o match
+            }}
+            onClose={toggleOptionsModal}
+          />
         </View>
 
 
-        <KeyboardAvoidingView behavior={'padding'} style={styles.fundoBranco}>
-
-          <View style={styles.botoesContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
-              <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
-            </TouchableOpacity>
-
-            {/* Renderize o modal de opções */}
-            <ChatOptionsMenu
-              isVisible={isOptionsVisible}
-              onDesfazerMatchPress={() => {
-                desfazerMatch();
-                toggleOptionsModal(); // Feche o modal após desfazer o match
-              }}
-              onClose={toggleOptionsModal}
-            />
-          </View>
-
-
-          <ScrollView style={styles.scrollContainer}>
-            {displayMessages ? (
-              displayMessages.map((msg, id) => (
-                <View
-                  key={id}
+        <ScrollView style={styles.scrollContainer} ref={scrollViewRef}>
+          {displayMessages ? (
+            displayMessages.map((msg, id) => (
+              <View
+                key={id}
+                style={[
+                  styles.messageContainer,
+                  msg.userId === petResp ? styles.myMessage : styles.otherMessage
+                ]}
+              >
+                <Text
                   style={[
-                    styles.messageContainer,
-                    msg.userId === petResp ? styles.myMessage : styles.otherMessage
+                    styles.messageText,
+                    msg.userId === myId ? styles.myMessageText : styles.otherMessageText
                   ]}
                 >
-                  <Text
-                    style={[
-                      styles.messageText,
-                      msg.userId === myId ? styles.myMessageText : styles.otherMessageText
-                    ]}
-                  >
-                    {msg.message}
-                  </Text>
-                </View>
-              ))
-            ) : (
-              <Text>No messages available.</Text>
-            )}
-          </ScrollView>
+                  {msg.message}
+                </Text>
+              </View>
+            ))
+          ) : (
+            <Text>No messages available.</Text>
+          )}
+        </ScrollView>
 
-          <View style={styles.inputContainer}>
+        <View style={styles.inputContainer}>
 
-            <TextInput
-              style={styles.input}
-              value={message}
-              onChangeText={(value) => setMessage(value)} placeholder="Digite uma mensagem"
-            />
-            <TouchableOpacity style={styles.sendButton} onPress={buttonPress}>
-              <Icon name="send" size={30} color="gray" />
-            </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            value={message}
+            onChangeText={(value) => setMessage(value)} placeholder="Digite uma mensagem"
+          />
+          <TouchableOpacity style={styles.sendButton} onPress={buttonPress}>
+            <Icon name="send" size={30} color="gray" />
+          </TouchableOpacity>
 
-          </View>
-
-        </KeyboardAvoidingView>
+        </View>
 
       </KeyboardAvoidingView>
 
-    </ImageBackground>
+    </KeyboardAvoidingView>
+
+
   );
 }

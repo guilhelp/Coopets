@@ -52,58 +52,6 @@ export const styles = StyleSheet.create({
     marginLeft: 10,
   },
 
-  // Configurando os contatos
-  contacts: {
-    paddingTop: 30,
-    fontFamily: 'Roboto_900Black',
-    fontSize: wp('8%'),
-    marginBottom: 20,
-    color: '#000000',
-  },
-  titleView: {
-    fontFamily: 'Roboto_900Black',
-    fontSize: wp('5%'),
-    color: '#000000',
-  },
-  email:{
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 340,
-    height: 50,
-    borderWidth: 3,
-    borderColor: "#573C35",
-    borderRadius: 15,
-    backgroundColor: "#FFFFFF",
-    marginBottom: 20,
-    marginTop: 10,
-  },
-  emailText: {
-    fontFamily: 'Roboto_900Black',
-    fontSize: wp('5%'),
-    color: '#000000',
-    padding: 10,
-    textAlign: 'center'
-  },
-  telefone:{
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 340,
-    height: 50,
-    borderWidth: 3,
-    borderColor: "#573C35",
-    borderRadius: 15,
-    backgroundColor: "#FFFFFF",
-    marginBottom: 100,
-    marginTop: 10,
-  },
-  telefoneText: {
-    fontFamily: 'Roboto_900Black',
-    fontSize: wp('5%'),
-    color: '#000000',
-    padding: 10,
-    textAlign: 'center',
-  },
-
   // Configurando o clicar nas imagens
   modalContainer:{
     flex: 1,

@@ -56,7 +56,10 @@ export default function Documentos() {
     const [petData, setPetData] = useState(null);
 
     // Estado que armazenará quando a imagem deve aparecer ou não
-    const [fullScreenImage, setFullScreenImage] = useState(null);
+    const [fullScreenImage1, setFullScreenImage1] = useState(null);
+
+     // Estado que armazenará quando a imagem deve aparecer ou não
+     const [fullScreenImage2, setFullScreenImage2] = useState(null);
 
     // Função para buscar as URLs das imagens
     const fetchImageUrls = async () => {
@@ -98,13 +101,23 @@ export default function Documentos() {
     }, []);
 
      // Função para abrir a imagem e aparecer na tela
-    const openFullScreenImage = (imageUrl) => {
-        setFullScreenImage(imageUrl);
+    const openFullScreenImage1 = (imageUrl) => {
+        setFullScreenImage1(imageUrl);
     };
 
     // Função para fechar a imagem e desaparecer da tela
-    const closeFullScreenImage = () => {
-        setFullScreenImage(null);
+    const closeFullScreenImage1 = () => {
+        setFullScreenImage1(null);
+    };
+
+     // Função para abrir a imagem e aparecer na tela
+     const openFullScreenImage2 = (imageUrl) => {
+        setFullScreenImage2(imageUrl);
+    };
+
+    // Função para fechar a imagem e desaparecer da tela
+    const closeFullScreenImage2 = () => {
+        setFullScreenImage2(null);
     };
 
     if (!fontsLoaded && !fontError) {
@@ -120,13 +133,13 @@ export default function Documentos() {
                         <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')}>
                             <Ionicons name={'arrow-undo'} size={50} color="white" style={styles.returnButton} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage(petData?.pedigree)}>
+                        <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage1(petData?.pedigree)}>
                             <Text style={styles.title}>PEDIGREE</Text>
                             {petData?.pedigree && (
                                 <Image style={styles.documentImage} source={{ uri: petData.pedigree }} />
                             )}
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage(petData?.vacina)}>
+                        <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage2(petData?.vacina)}>
                             <Text style={styles.title}>VACINAS</Text>
                             {petData?.vacina && (
                                 <Image style={styles.documentImage} source={{ uri: petData.vacina }} />
@@ -151,15 +164,31 @@ export default function Documentos() {
             </ScrollView>
 
             {/* Modal para exibir a imagem em tela cheia */}
-            <Modal visible={!!fullScreenImage} transparent={true} onRequestClose={closeFullScreenImage}>
+            <Modal visible={!!fullScreenImage1} transparent={true} onRequestClose={closeFullScreenImage1}>
                 <View style={styles.modalContainer}>
-                    <TouchableOpacity style={styles.closeButton} onPress={closeFullScreenImage}>
+                    <TouchableOpacity style={styles.closeButton} onPress={closeFullScreenImage1}>
                         <Ionicons name="close-circle" size={80} color="#FFFFFF" style={styles.closeButtonIcon} />
                     </TouchableOpacity>
-                    {fullScreenImage && (
+                    {fullScreenImage1 && (
                         <Image
                             style={styles.fullScreenImage}
-                            source={{ uri: fullScreenImage }}
+                            source={{ uri: fullScreenImage1 }}
+                            resizeMode="contain"
+                        />
+                    )}
+                </View>
+            </Modal>
+
+            {/* Modal para exibir a imagem em tela cheia */}
+            <Modal visible={!!fullScreenImage2} transparent={true} onRequestClose={closeFullScreenImage2}>
+                <View style={styles.modalContainer}>
+                    <TouchableOpacity style={styles.closeButton} onPress={closeFullScreenImage2}>
+                        <Ionicons name="close-circle" size={80} color="#FFFFFF" style={styles.closeButtonIcon} />
+                    </TouchableOpacity>
+                    {fullScreenImage2 && (
+                        <Image
+                            style={styles.fullScreenImage}
+                            source={{ uri: fullScreenImage2 }}
                             resizeMode="contain"
                         />
                     )}

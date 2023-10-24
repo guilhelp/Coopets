@@ -8,7 +8,8 @@ import {
     ImageBackground,
     TouchableOpacity,
     KeyboardAvoidingView,
-    FlatList
+    FlatList,
+    ScrollView
 } from 'react-native';
 
 // Importando as variáveis do Firebase
@@ -189,10 +190,12 @@ export default function ValidarDenuncias() {
                         <MaterialCommunityIcons name={'logout'} size={60} color="white" style={styles.sairButton} />
                     </TouchableOpacity>
                 </View>
-                <KeyboardAvoidingView behavior={'padding'} style={styles.container}>
+                <View style={styles.container}>
                     <Text style={styles.tituloDenuncias}>DENÚNCIAS</Text>
+             
                     <View style={styles.denunciasCard}>
                         <FlatList
+                            style={styles.flatlistStyle}
                             data={denuncias}
                             keyExtractor={(item) => item.id}
                             renderItem={({ item }) => (
@@ -203,8 +206,9 @@ export default function ValidarDenuncias() {
                             )}
                         />
                     </View>
+                 
 
-                </KeyboardAvoidingView>
+                </View>
             </ImageBackground>
         </PaperProvider>
     );

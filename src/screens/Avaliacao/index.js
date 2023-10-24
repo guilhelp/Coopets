@@ -436,6 +436,7 @@ export default function Avaliacao() {
             if (userPreferencesChanged) {  // Verifica se as preferências do usuário foram alteradas
                 // As preferências do usuário mudaram, busque dados atualizados com base nas novas preferências
                 fetchData();
+                console.log(userPreferencesChanged)
                 // Redefina userPreferencesChanged como false após buscar os dados
                 setUserPreferencesChanged(false);
             }

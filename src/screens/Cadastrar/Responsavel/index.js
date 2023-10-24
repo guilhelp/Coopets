@@ -215,6 +215,15 @@ export default function CadastrarResponsavel() {
     return true; // RG válido
   }
 
+  // Função que verifica se as letras após o "@" no e-mail estão em minúsculas
+function checkEmailDomainLowerCase(email) {
+  const [beforeAt, afterAt] = email.split('@');
+  const isLowerCase = afterAt === afterAt.toLowerCase();
+
+  return isLowerCase;
+}
+
+
   // Função que valida diversos campos antes de avançar para a próxima tela
   const checkFieldsAndNavigate = async () => {
 
@@ -267,6 +276,12 @@ export default function CadastrarResponsavel() {
       alert('RG inválido. Verifique o formato do RG.');
       return;
     }
+
+    // Verifica se as letras após o "@" estão em minúsculas
+  if (!checkEmailDomainLowerCase(email)) {
+    alert('As letras após o "@" no e-mail devem estar em minúsculas.');
+    return;
+  }
 
     // Chama a função de verificar se o CPF e RG já existem na base de dados
     if (!(await checkCpfRgExistence())) {

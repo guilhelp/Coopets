@@ -45,16 +45,29 @@ export default function ConsultarDocumentos({ route }) {
     const { petVac } = route.params
 
     // Estado que armazenará quando a imagem deve aparecer ou não
-    const [fullScreenImage, setFullScreenImage] = useState(null);
+    const [fullScreenImage1, setFullScreenImage1] = useState(null);
+
+     // Estado que armazenará quando a imagem deve aparecer ou não
+     const [fullScreenImage2, setFullScreenImage2] = useState(null);
 
     // Função para abrir a imagem e aparecer na tela
-    const openFullScreenImage = (imageUrl) => {
-        setFullScreenImage(imageUrl);
+    const openFullScreenImage1 = (imageUrl) => {
+        setFullScreenImage1(imageUrl);
     };
 
     // Função para fechar a imagem e desaparecer da tela
-    const closeFullScreenImage = () => {
-        setFullScreenImage(null);
+    const closeFullScreenImage1 = () => {
+        setFullScreenImage1(null);
+    };
+
+    // Função para abrir a imagem e aparecer na tela
+    const openFullScreenImage2 = (imageUrl) => {
+        setFullScreenImage2(imageUrl);
+    };
+
+    // Função para fechar a imagem e desaparecer da tela
+    const closeFullScreenImage2 = () => {
+        setFullScreenImage2(null);
     };
 
     if (!fontsLoaded && !fontError) {
@@ -70,46 +83,50 @@ export default function ConsultarDocumentos({ route }) {
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.returnButton}>
                             <Ionicons name={'arrow-undo'} size={50} color="white" style={styles.returnIcon} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage(petPedigree)}>
+                        <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage1(petPedigree)}>
                             <Text style={styles.title}>PEDIGREE</Text>
                             {petPedigree && (
                                 <Image style={styles.documentImage} source={{ uri: petPedigree }} />
                             )}
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage(petVac)}>
+                        <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage2(petVac)}>
                             <Text style={styles.title}>VACINAS</Text>
                             {petVac && (
                                 <Image style={styles.documentImage} source={{ uri: petVac }} />
                             )}
                         </TouchableOpacity>
                         <Text style={styles.caixas}>Clique nas caixas para expandir as imagens</Text>
-                        <View style={styles.textContainer}>
-                            <Text style={styles.contacts}>CONTATOS</Text>
-                            <Text style={styles.titleView}>Email</Text>
-                            <View style={styles.email}>
-                                <Text style={styles.emailText}>coopetsapp@gmail.com</Text>
-                            </View>
-
-                            <Text style={styles.titleView}>Telefone</Text>
-                            <View style={styles.telefone}>
-                                <Text style={styles.telefoneText}> (11) 97749-8984</Text>
-                            </View>
-
-                        </View>
+                        
                     </View>
                 </View>
             </ScrollView>
 
             {/* Modal para exibir a imagem em tela cheia */}
-            <Modal visible={!!fullScreenImage} transparent={true} onRequestClose={closeFullScreenImage}>
+            <Modal visible={!!fullScreenImage1} transparent={true} onRequestClose={closeFullScreenImage1}>
                 <View style={styles.modalContainer}>
-                    <TouchableOpacity style={styles.closeButton} onPress={closeFullScreenImage}>
+                    <TouchableOpacity style={styles.closeButton} onPress={closeFullScreenImage1}>
                         <Ionicons name="close-circle" size={80} color="#FFFFFF" style={styles.closeButtonIcon} />
                     </TouchableOpacity>
-                    {fullScreenImage && (
+                    {fullScreenImage1 && (
                         <Image
                             style={styles.fullScreenImage}
-                            source={{ uri: fullScreenImage }}
+                            source={{ uri: fullScreenImage1 }}
+                            resizeMode="contain"
+                        />
+                    )}
+                </View>
+            </Modal>
+
+            {/* Modal para exibir a imagem em tela cheia */}
+            <Modal visible={!!fullScreenImage2} transparent={true} onRequestClose={closeFullScreenImage2}>
+                <View style={styles.modalContainer}>
+                    <TouchableOpacity style={styles.closeButton} onPress={closeFullScreenImage2}>
+                        <Ionicons name="close-circle" size={80} color="#FFFFFF" style={styles.closeButtonIcon} />
+                    </TouchableOpacity>
+                    {fullScreenImage2 && (
+                        <Image
+                            style={styles.fullScreenImage}
+                            source={{ uri: fullScreenImage2 }}
                             resizeMode="contain"
                         />
                     )}

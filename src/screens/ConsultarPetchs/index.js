@@ -135,6 +135,7 @@ export default function ConsultarPetchs() {
 
 
 
+
     // Lógica para atualizar a lista toda vez que houver um novo match
     useEffect(() => {
         fetchData();
@@ -201,16 +202,21 @@ export default function ConsultarPetchs() {
 
     // Função que renderiza cada chat que aparecerá na lista de chats
 
+    const renderChatItem = ({ item }) => {
+        if (item.bloqueado === true) {
+            return null; // Não renderiza o card se o perfil estiver bloqueado
+        }
 
-    const renderChatItem = ({ item }) => (
-        <TouchableOpacity
-            style={styles.chatItemContainer}
-            onPress={() => {
-                console.log("PetId a ser enviado para Chat:", item.id); // Adicione este log
-                if (item.bloqueado) {
-                    // Lógica para lidar com o perfil bloqueado
-                    // Exibir uma mensagem, redirecionar para outra tela, etc.
-                } else {
+        // Agora, antes de renderizar o card, verifique se há um item válido
+        if (!item.id || !item.perfilImage || !item.nomePet) {
+            return null; // Não renderiza o card se faltarem informações essenciais
+        }
+
+        return (
+            <TouchableOpacity
+                style={styles.chatItemContainer}
+                onPress={() => {
+                    console.log("PetId a ser enviado para Chat:", item.id);
                     navigation.navigate('Chat', {
                         petId: item.id,
                         petImage: item.perfilImage,
@@ -226,17 +232,20 @@ export default function ConsultarPetchs() {
                         petRaca: item.raca,
                         petCep: item.cep
                     });
-                }
-            }}
-        >
-            <View style={styles.chatItemContent}>
-                <Image source={{ uri: item.perfilImage }} style={styles.chatItemImage} />
-                <View style={styles.chatDetailsContent}>
-                    <Text style={styles.chatItemName}>{item.bloqueado ? "Perfil Bloqueado" : item.nomePet}</Text>
+                }}
+            >
+                <View style={styles.chatItemContent}>
+                    <Image source={{ uri: item.perfilImage }} style={styles.chatItemImage} />
+                    <View style={styles.chatDetailsContent}>
+                        <Text style={styles.chatItemName}>{item.nomePet}</Text>
+                    </View>
                 </View>
-            </View>
-        </TouchableOpacity>
-    );
+            </TouchableOpacity>
+        );
+    };
+
+
+
 
     return (
         <ImageBackground source={Background} style={styles.background}>

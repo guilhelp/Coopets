@@ -4,10 +4,16 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageT
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
+       
     },
     background: {
         width: wp('100%'),
-        height: hp('110%'),
+        height: hp('150%'),
+   
+    },
+    flatlistStyle:{
+    
+        marginBottom: 500,
     },
 
     // Configurando cabeçalho da página
@@ -44,6 +50,7 @@ export const styles = StyleSheet.create({
     denunciasCard:{
         alignItems: 'center',
         justifyContent: 'center',
+     
     },
 
     // Configurando o título de denúncias

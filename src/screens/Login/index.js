@@ -127,14 +127,9 @@ export default function Login() {
 
                             if (dataAtual < dataDesbloqueio) {
                                 // Pet bloqueado. Mostrar a data de desbloqueio e não permitir o login.
-                                Alert.alert('Pet Bloqueado', `Seu pet está bloqueado até ${dataDesbloqueio.toLocaleString()}.`, [
-                                    {
-                                        text: 'OK',
-                                        onPress: () => {
-                                            // Redirecione para a tela de login ou execute a ação apropriada, por exemplo:
-                                        },
-                                    },
-                                ]);
+                                Alert.alert('Pet Bloqueado', `Seu pet está bloqueado até ${dataDesbloqueio.toLocaleString()}.`)
+                                    navigation.goBack();
+                               
                                 return;
                             }
                         }
@@ -200,7 +195,7 @@ export default function Login() {
                             if (dataAtual < dataDesbloqueio) {
                                 // Pet bloqueado. Mostrar a data de desbloqueio e não permitir o login.
                                 Alert.alert('Pet Bloqueado', `Seu pet está bloqueado até ${dataDesbloqueio.toLocaleString()}.`)
-                                
+                                navigation.goBack();
                                 return;
 
                             }
@@ -238,7 +233,8 @@ export default function Login() {
             <ImageBackground source={Background} style={styles.background}>
                 <KeyboardAvoidingView
                     behavior={'padding'}
-                    style={styles.container}>
+                    style={styles.container}
+                    keyboardVerticalOffset={15}>
                     <ScrollView>
 
                         {/* Container para imagem de logo e texto do COOPETS */}
