@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     FlatList,
-    ScrollView
+    ScrollView,
+    RefreshControl
 } from 'react-native';
 
 // Importando as variáveis do Firebase
@@ -72,67 +73,75 @@ export default function ValidarDenuncias() {
 
     const [denuncias, setDenuncias] = useState([]); // Estado que armazena as denúncias
 
+    const [refreshing, setRefreshing] = useState(false); // Estado para atualizar a lista de chats
+   
+    const loadDenuncias = async () => {
+        try {
+            // Consulta a coleção 'denuncias' no banco de dados Firestore
+            const q = query(collection(db, 'denuncias'));
+            const querySnapshot = await getDocs(q);
+
+            const denunciasData = [];
+            for (const docSnap of querySnapshot.docs) {
+                const denuncia = docSnap.data();
+                const idRecebedor = denuncia.idRecebedor;
+
+                // Log para verificar o ID do recebedor
+                console.log('ID do Recebedor:', idRecebedor);
+
+                // Busque informações do pet (recebedor)
+                const petDocRef = doc(db, 'pets', idRecebedor);
+
+                // Log para verificar a referência do documento do pet
+                console.log('Referência do Documento do Pet:', petDocRef);
+
+                const petDocSnap = await getDoc(petDocRef);
+                if (petDocSnap.exists()) {
+                    const petData = petDocSnap.data();
+
+                    // Log para verificar os dados do pet
+                    console.log('Dados do Pet:', petData);
+                    console.log('foto', petData.perfilImage)
+                    denunciasData.push({
+                        id: docSnap.id,
+                        motivo: denuncia.motivo,
+                        dataDenuncia: denuncia.data.toDate(),
+                        fotoPerfil: petData.perfilImage,
+                        nomePerfil: petData.nomePet,
+                        petBio: petData.bio,
+                        petId: idRecebedor,
+                        petResp: petData.responsavelID.id,
+                        petSexo: petData.sexo,
+                        petIdade: petData.dataNascimentoPet,
+                        petPedigree: petData.pedigree,
+                        petVac: petData.vacina,
+                        petTipo: petData.tipo,
+                        petRaca: petData.raca,
+                        petCep: petData.cep,
+                        idDenuncia: denuncia.id
+                    });
+                }
+            }
+
+            // Log para verificar as denúncias carregadas
+            console.log('Denúncias Carregadas:', denunciasData);
+
+            setDenuncias(denunciasData);
+        } catch (error) {
+            console.error('Erro ao carregar denúncias:', error);
+        }
+    };
+
     // Lógica para buscar as denúncias no banco de dados
     useEffect(() => {
-        const loadDenuncias = async () => {
-            try {
-                // Consulta a coleção 'denuncias' no banco de dados Firestore
-                const q = query(collection(db, 'denuncias'));
-                const querySnapshot = await getDocs(q);
-    
-                const denunciasData = [];
-                for (const docSnap of querySnapshot.docs) {
-                    const denuncia = docSnap.data();
-                    const idRecebedor = denuncia.idRecebedor;
-    
-                    // Log para verificar o ID do recebedor
-                    console.log('ID do Recebedor:', idRecebedor);
-    
-                    // Busque informações do pet (recebedor)
-                    const petDocRef = doc(db, 'pets', idRecebedor);
-    
-                    // Log para verificar a referência do documento do pet
-                    console.log('Referência do Documento do Pet:', petDocRef);
-    
-                    const petDocSnap = await getDoc(petDocRef);
-                    if (petDocSnap.exists()) {
-                        const petData = petDocSnap.data();
-    
-                        // Log para verificar os dados do pet
-                        console.log('Dados do Pet:', petData);
-                        console.log('foto', petData.perfilImage)
-                        denunciasData.push({
-                            id: docSnap.id,
-                            motivo: denuncia.motivo,
-                            dataDenuncia: denuncia.data.toDate(),
-                            fotoPerfil: petData.perfilImage,
-                            nomePerfil: petData.nomePet,
-                            petBio: petData.bio,
-                            petId: idRecebedor,
-                            petResp: petData.responsavelID.id,
-                            petSexo: petData.sexo,
-                            petIdade: petData.dataNascimentoPet,
-                            petPedigree: petData.pedigree,
-                            petVac: petData.vacina,
-                            petTipo: petData.tipo,
-                            petRaca: petData.raca,
-                            petCep: petData.cep,
-                            idDenuncia: denuncia.id
-                        });
-                    }
-                }
-    
-                // Log para verificar as denúncias carregadas
-                console.log('Denúncias Carregadas:', denunciasData);
-    
-                setDenuncias(denunciasData);
-            } catch (error) {
-                console.error('Erro ao carregar denúncias:', error);
-            }
-        };
-    
         loadDenuncias();
     }, []);
+
+    const onRefresh = () => {
+        setRefreshing(true);
+        loadDenuncias();
+        setRefreshing(false);
+    };
     
     // Função para contar o número de denúncias recebidas por um perfil
     const countDenunciasRecebidas = async (petId) => {
@@ -204,6 +213,12 @@ export default function ValidarDenuncias() {
                                     handleExcluirDenunciaExcluirCard={handleExcluirDenunciaExcluir}
                                     countDenunciasRecebidas={countDenunciasRecebidas} />
                             )}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={refreshing}
+                                    onRefresh={onRefresh}
+                                />
+                            }
                         />
                     </View>
                  

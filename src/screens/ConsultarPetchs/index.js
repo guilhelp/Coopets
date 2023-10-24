@@ -59,7 +59,6 @@ export default function ConsultarPetchs() {
     const [refreshing, setRefreshing] = useState(false); // Estado para atualizar a lista de chats
 
     // Função para buscar os chats
-    // ...
 
     const fetchData = async () => {
         const user = auth.currentUser;

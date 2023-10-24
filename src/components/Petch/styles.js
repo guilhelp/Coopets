@@ -20,8 +20,8 @@ export const styles = StyleSheet.create({
       padding: 30,
     },
     image: {
-      width: wp('40%'),
-      height: hp('21%'),
+      width: 170,
+      height: 170,
       borderRadius: 100,
       borderColor: '#EEE1D3',
       borderWidth: 5,
