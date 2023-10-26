@@ -187,7 +187,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 350,
     height: 90,
-    borderRadius: 30,
+    borderRadius: 17,
     marginBottom: 20,
     marginTop: 0,
     backgroundColor: "#573C35",

@@ -219,7 +219,7 @@ export default function ConsultarPerfilAdm({ route }) {
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.returnButton}>
-                            <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
+                            <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={bloquearPerfil} style={styles.blockButton}>
                             <MaterialIcons name={'block'} size={50} color="white" style={styles.blockIcon} />

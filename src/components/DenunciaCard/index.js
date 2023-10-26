@@ -131,6 +131,9 @@ const DenunciaCard = ({ denuncia, countDenunciasRecebidas, handleExcluirDenuncia
         </TouchableOpacity>
       </View>
       <Text style={styles.motivo}>Motivo: {denuncia.motivo}</Text>
+      <Text style={styles.idText}>Id: {denuncia.idDenuncia}</Text>
+      <Text style={styles.idText}>Denúncias Recebidas: {countDenunciasRecebidasNum}</Text>
+      <Text style={styles.idText}>Notificações Enviadas Lidas: {countNotificacoesEnviadasLidasNum}</Text>
       <View style={styles.containerBotoes}>
         <TouchableOpacity
           style={styles.button}
@@ -162,9 +165,7 @@ const DenunciaCard = ({ denuncia, countDenunciasRecebidas, handleExcluirDenuncia
           <Text style={styles.buttonText}>Perfil</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.idText}>Id: {denuncia.idDenuncia}</Text>
-      <Text style={styles.idText}>Denúncias Recebidas: {countDenunciasRecebidasNum}</Text>
-      <Text style={styles.idText}>Notificações Enviadas Lidas: {countNotificacoesEnviadasLidasNum}</Text>
+      
     </View>
   );
 };

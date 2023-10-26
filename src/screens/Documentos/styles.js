@@ -64,6 +64,7 @@ export const styles = StyleSheet.create({
     fontFamily: 'Roboto_900Black',
     fontSize: wp('5%'),
     color: '#000000',
+    marginBottom: 20,
   },
   email:{
     alignItems: 'center',

@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
 
     // Configurando botão de enviar
     botaoEnviar: {
-        width: wp('70%'),
+        width: wp('80%'),
         height: hp('8%'),
         backgroundColor: '#573C35',
         borderRadius: 17,

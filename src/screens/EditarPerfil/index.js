@@ -803,7 +803,7 @@ export default function EditarPerfil() {
     return (
         <PaperProvider theme={theme}>
             <ImageBackground source={Background} style={styles.background}>
-                <Header title="EDITAR PERFIL" iconName="topic" />
+                <Header title="EDITAR PERFIL" iconName="supervised-user-circle" />
 
                 <PasswordModal
                     visible={isPasswordModalVisible}
@@ -829,7 +829,7 @@ export default function EditarPerfil() {
                         <View style={styles.container}>
                             <View style={styles.buttonContainer}>
                                 <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
-                                    <Ionicons name={'arrow-back'} size={55} color="white" style={styles.returnIcon} />
+                                    <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.inputContainerPerfil}>

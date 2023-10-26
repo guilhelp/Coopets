@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
       margin: 30,
       marginTop: 10,
       width: 330,
-      height: 300,
+      height: 320,
     },
     infoContainer: {
       flexDirection: 'row',
@@ -44,13 +44,14 @@ export const styles = StyleSheet.create({
     containerBotoes: {
       flexDirection: 'row',
       justifyContent: 'center',
-      marginTop: 10,
+      marginTop: 20,
       alignItems: 'center',
+      
     },
     button: {
       backgroundColor: 'white',
       padding: 8,
-      borderRadius: 5,
+      borderRadius: 17,
       width: 107,
       height: 42,
       justifyContent: 'center',

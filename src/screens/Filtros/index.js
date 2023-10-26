@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from 'react';
 
 // Importando os componentes do React
-import { 
-    View, 
-    Text, 
-    ImageBackground, 
-    TouchableOpacity, 
-    Alert, 
-    ScrollView 
+import {
+    View,
+    Text,
+    ImageBackground,
+    TouchableOpacity,
+    Alert,
+    ScrollView
 } from 'react-native';
 
 // Importando as variáveis do Firebase
@@ -17,11 +17,11 @@ import { db, auth } from '../../config/Firebase';
 // Importando as funções do Firebase
 
 // Firestore
-import { 
-    doc, 
-    setDoc, 
-    getDoc, 
-    deleteDoc 
+import {
+    doc,
+    setDoc,
+    getDoc,
+    deleteDoc
 } from 'firebase/firestore';
 
 // Importando os componentes do react navigation
@@ -102,7 +102,7 @@ export default function Filtros() {
             setRacaOptions(['Persa', 'Siamês', 'Angorá', 'Ashera', 'Sphynx']);
 
         } else { // Se nenhum tipo estiver selecionado, não há opções de raça
-            setRacaOptions([]); 
+            setRacaOptions([]);
         }
     };
 
@@ -189,6 +189,9 @@ export default function Filtros() {
                 // Exclui o documento de preferências
                 await deleteDoc(preferencesRef);
 
+                // Atualiza o estado de `distancia` para 0
+                setDistancia(0);
+
                 // Navega de volta para a tela de Avaliação
                 navigation.navigate('BottomTabs');
             } else {
@@ -261,23 +264,23 @@ export default function Filtros() {
                                 />
                             </View>
                             <View style={styles.racaContainer}>
-                                
+
                                 {racaOptions.length > 0 && (
                                     <>
-                                    <Text style={styles.racaContainerText}>Raça</Text>
-                                <SelectDropdown
-                                    data={racaOptions} // Use o estado racaOptions como fonte de dados
-                                    onSelect={(selectedItem, index) => setRaca(selectedItem)} // Atualize a raça selecionada
-                                    buttonTextAfterSelection={(selectedItem, index) => selectedItem}
-                                    rowTextForSelection={(item, index) => item}
-                                    dropdownIconPosition="right"
-                                    defaultButtonText="Selecione"
-                                    buttonStyle={styles.dropdownButton}
-                                    buttonTextStyle={styles.dropdownButtonText}
-                                    dropdownStyle={styles.dropdownContainer}
-                                    defaultValue={raca}
-                                />
-                                </>
+                                        <Text style={styles.racaContainerText}>Raça</Text>
+                                        <SelectDropdown
+                                            data={racaOptions} // Use o estado racaOptions como fonte de dados
+                                            onSelect={(selectedItem, index) => setRaca(selectedItem)} // Atualize a raça selecionada
+                                            buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+                                            rowTextForSelection={(item, index) => item}
+                                            dropdownIconPosition="right"
+                                            defaultButtonText="Selecione"
+                                            buttonStyle={styles.dropdownButton}
+                                            buttonTextStyle={styles.dropdownButtonText}
+                                            dropdownStyle={styles.dropdownContainer}
+                                            defaultValue={raca}
+                                        />
+                                    </>
                                 )}
                             </View>
 

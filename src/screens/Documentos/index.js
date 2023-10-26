@@ -126,12 +126,12 @@ export default function Documentos() {
 
     return (
         <ImageBackground source={Background} style={styles.background}>
-            <Header title="DOCUMENTOS" iconName="topic" />
+            <Header title="DOCUMENTOS" iconName="folder-shared" />
             <ScrollView>
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')}>
-                            <Ionicons name={'arrow-undo'} size={50} color="white" style={styles.returnButton} />
+                        <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
+                            <Ionicons name={'arrow-undo'} size={40} color="white" />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage1(petData?.pedigree)}>
                             <Text style={styles.title}>PEDIGREE</Text>
@@ -148,15 +148,9 @@ export default function Documentos() {
                         <Text style={styles.caixas}>Clique nas caixas para expandir as imagens</Text>
                         <View style={styles.textContainer}>
                             <Text style={styles.contacts}>CONTATOS</Text>
-                            <Text style={styles.titleView}>Email</Text>
-                            <View style={styles.email}>
-                                <Text style={styles.emailText}>coopetsapp@gmail.com</Text>
-                            </View>
-
-                            <Text style={styles.titleView}>Telefone</Text>
-                            <View style={styles.telefone}>
-                                <Text style={styles.telefoneText}> (11) 97749-8984</Text>
-                            </View>
+                            <Text style={styles.titleView}>Email: coopetsapp@gmail.com</Text>
+                            <Text style={styles.titleView}>Telefone: (11) 97749-8984</Text>
+                            
 
                         </View>
                     </View>

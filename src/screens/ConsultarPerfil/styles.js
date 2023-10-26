@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
   imagemPerfil: {
     width: 290,
     height: 290,
-    borderWidth: 5,
+    borderWidth: 4,
     borderColor: "#573C35",
     borderRadius: 2000,
     backgroundColor: "#573C35",

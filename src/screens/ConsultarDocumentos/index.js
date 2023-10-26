@@ -76,12 +76,12 @@ export default function ConsultarDocumentos({ route }) {
 
     return (
         <ImageBackground source={Background} style={styles.background}>
-            <Header title="DOCUMENTOS" iconName="topic" />
+            <Header title="DOCUMENTOS" iconName="folder-shared" />
             <ScrollView>
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.returnButton}>
-                            <Ionicons name={'arrow-undo'} size={50} color="white" style={styles.returnIcon} />
+                            <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button} onPress={() => openFullScreenImage1(petPedigree)}>
                             <Text style={styles.title}>PEDIGREE</Text>
