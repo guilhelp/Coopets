@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'rgba(87, 60, 53, 0.93)',
+      backgroundColor: 'rgba(87, 60, 53, 0.88)',
       width: wp('100%'),
       height: hp('100%'),
       borderRadius: 50,
@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     },
     matchText: {
       marginTop: 10,
-      fontSize: wp('8%'),
+      fontSize: wp('7%'),
       color: 'white',
       textAlign: 'center',
       height: '65%',
@@ -48,7 +48,8 @@ export const styles = StyleSheet.create({
     closeButton: {
       borderColor: '#EEE1D3',
       borderRadius: 17,
-      backgroundColor: '#FFF'
+      backgroundColor: '#FFF',
+      
     },
     closeButtonText: {
       fontSize: 16,

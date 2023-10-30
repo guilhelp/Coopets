@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#573C35',
         width: wp('100%'),
-        height: hp('20%'),
+        height: hp('22%'),
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -133,7 +133,7 @@ export const styles = StyleSheet.create({
     },
     messageText: {
         fontFamily: 'Roboto_900Black',
-        fontSize: wp('7%'),
+        fontSize: wp('5.5%'),
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -176,7 +176,7 @@ export const styles = StyleSheet.create({
         bottom: 0,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)', 
+        backgroundColor: 'rgba(0, 0, 0, 1)',
     },
     closePopupButton: {
         borderRadius: 8,
@@ -187,7 +187,9 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         borderColor: "#EEE1D3",
         marginBottom: 50,
-        textAlign: 'center'
+        textAlign: 'center',
+        borderColor: '#573C35',
+        borderWidth: 3,
     },
     closePopupButtonText: {
         fontSize: 20,
@@ -196,6 +198,7 @@ export const styles = StyleSheet.create({
         fontFamily: 'Roboto_900Black',
         alignContent: 'center',
         justifyContent: 'center',
+        
     },
     petchMatch: {
         fontFamily: 'Roboto_900Black',

@@ -183,7 +183,9 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 0,
     backgroundColor: "#573C35",
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    borderColor: '#EEE1D3',
+    borderWidth: 3,
   },
   buttonScreensContainer: {
     paddingTop: 50,
@@ -215,13 +217,16 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 0,
     backgroundColor: "#573C35",
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    borderColor: '#EEE1D3',
+    borderWidth: 3,
   },
   buttonTextExcluir:{
     fontFamily: 'Roboto_900Black',
     fontSize: wp('4%'),
     color: '#FFFFFF',
   },
+
   // Botão de Sair
   buttonSairContainer:{
     paddingTop: 10,
@@ -236,7 +241,9 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 0,
     backgroundColor: "#573C35",
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    borderColor: '#EEE1D3',
+    borderWidth: 3,
   },
   buttonTextSair:{
     fontFamily: 'Roboto_900Black',

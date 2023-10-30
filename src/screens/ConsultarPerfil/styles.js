@@ -195,7 +195,9 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 0,
     backgroundColor: "#573C35",
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    borderColor: '#EEE1D3',
+    borderWidth: 3,
   },
   buttonScreensContainer: {
     paddingTop: 50,

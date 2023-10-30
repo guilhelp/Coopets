@@ -90,21 +90,25 @@ export default function Filtros() {
 
     // Função que atualiza a raça dependendo do tipo de pet
     const updateRacaOptions = (selectedTipo) => {
-
-        if (selectedTipo === 'Cão') { // Se for cão
-
-            // Atualiza o estado de raça com um vetor de pets do tipo cão
+        // Verifica se o campo "Raça" já tem um valor definido
+        if (raca != '') {
+            // O campo "Raça" está vazio, então você pode definir a raça com base no tipo
+            if (selectedTipo === 'Cão') {
+                setRaca('Pug');
+            } else if (selectedTipo === 'Gato') {
+                setRaca('Persa');
+            }
+        }
+        // Atualiza o estado de racaOptions com base no tipo selecionado
+        if (selectedTipo === 'Cão') {
             setRacaOptions(['Pug', 'Shih Tzu', 'Bulldog Francês', 'Pomerânia', 'Golden Retriever']);
-
-        } else if (selectedTipo === 'Gato') { // Se for Gato
-
-            // Atualiza o estado de raça com um vetor de pets do tipo gato
+        } else if (selectedTipo === 'Gato') {
             setRacaOptions(['Persa', 'Siamês', 'Angorá', 'Ashera', 'Sphynx']);
-
-        } else { // Se nenhum tipo estiver selecionado, não há opções de raça
+        } else {
             setRacaOptions([]);
         }
     };
+
 
     // Lógica que puxa as preferências já definidas de um usuário
     useEffect(() => {
@@ -140,7 +144,10 @@ export default function Filtros() {
         };
 
         fetchUserPreferences();
+
     }, []);
+
+
 
     // Função que salva as preferências do usuário
     const savePreferences = async () => {
@@ -177,30 +184,36 @@ export default function Filtros() {
     };
 
     // Função para limpar os filtros
+    // Função para limpar os filtros
     const limparFiltros = async () => {
         try {
             // Referência ao documento de filtro no Firestore
             const preferencesRef = doc(db, 'preferencias', auth.currentUser.uid);
 
-            // Verifica se o documento existe antes de tentar excluí-lo
-            const preferencesDoc = await getDoc(preferencesRef);
+            // Crie um objeto vazio para definir todos os campos como null ou vazio
+            const clearedFilters = {
+                sexo: null,
+                tipo: null,
+                raca: null,
+                distancia: null,
+            };
 
-            if (preferencesDoc.exists()) {
-                // Exclui o documento de preferências
-                await deleteDoc(preferencesRef);
+            // Atualize o documento de preferências com os campos nulos ou vazios
+            await setDoc(preferencesRef, clearedFilters, { merge: true });
 
-                // Atualiza o estado de `distancia` para 0
-                setDistancia(0);
+            // Atualiza os estados dos campos para refletir as alterações
+            setSexo('');
+            setTipo('');
+            setRaca('');
+            setDistancia(0);
 
-                // Navega de volta para a tela de Avaliação
-                navigation.navigate('BottomTabs');
-            } else {
-                Alert.alert('Filtros já limpos', 'Os filtros já foram limpos anteriormente.');
-            }
+            // Navega de volta para a tela de Avaliação
+            navigation.navigate('BottomTabs');
         } catch (error) {
             console.error('Error clearing filters:', error);
         }
     };
+
 
     if (!fontsLoaded && !fontError) {
         return null;
@@ -250,8 +263,11 @@ export default function Filtros() {
                                     data={['Cão', 'Gato']}
                                     onSelect={(selectedItem, index) => {
                                         setTipo(selectedItem);
-                                        updateRacaOptions(selectedItem); // Atualize as opções de raça com base no tipo selecionado
-                                        setShowRacaDropdown(true); // Mostrar o dropdown de raças quando um tipo é selecionado
+
+
+
+                                        updateRacaOptions(selectedItem);
+                                        setShowRacaDropdown(true);
                                     }}
                                     buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                                     rowTextForSelection={(item, index) => item}
@@ -263,6 +279,7 @@ export default function Filtros() {
                                     defaultValue={tipo}
                                 />
                             </View>
+
                             <View style={styles.racaContainer}>
 
                                 {racaOptions.length > 0 && (

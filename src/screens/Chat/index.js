@@ -440,7 +440,7 @@ export default function Chat({ route }) {
   return (
 
     <KeyboardAvoidingView
-      behavior={'padding'}
+    behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={styles.container}
 
     >
@@ -449,7 +449,10 @@ export default function Chat({ route }) {
 
         <TouchableOpacity style={styles.petDetails} onPress={() => navigation.navigate('ConsultarPerfil', { petId, petImage, petNome, petBio, petCep, petSexo, petTipo, petRaca, petIdade, petPedigree, petVac })}>
           <Image source={{ uri: petImage }} style={styles.petImage} />
-          <Text style={styles.petName}>{petNome}</Text>
+          <Text style={styles.petName} numberOfLines={1} ellipsizeMode="tail">
+            {petNome.length > 10 ? petNome.slice(0, 10) + '...' : petNome}
+          </Text>
+
         </TouchableOpacity>
         <TouchableOpacity onPress={toggleOptionsModal} style={styles.optionButton}>
           <SimpleLineIcons name={'options-vertical'} size={35} color="white" style={styles.optionIcon} />
@@ -458,24 +461,8 @@ export default function Chat({ route }) {
       </View>
 
 
-      <KeyboardAvoidingView behavior={'padding'} style={styles.fundoBranco} keyboardVerticalOffset={-5}>
-
-        <View style={styles.botoesContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
-            <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
-          </TouchableOpacity>
-
-          {/* Renderize o modal de opções */}
-          <ChatOptionsMenu
-            isVisible={isOptionsVisible}
-            onDesfazerMatchPress={() => {
-              desfazerMatch();
-              toggleOptionsModal(); // Feche o modal após desfazer o match
-            }}
-            onClose={toggleOptionsModal}
-          />
-        </View>
-
+      
+      <KeyboardAvoidingView behavior={'padding'} style={styles.fundoBranco} keyboardVerticalOffset={-300} >
 
         <ScrollView style={styles.scrollContainer} ref={scrollViewRef}>
           {displayMessages ? (
@@ -502,6 +489,23 @@ export default function Chat({ route }) {
           )}
         </ScrollView>
 
+        <TouchableOpacity
+        onPress={() => navigation.navigate('BottomTabs')}
+        style={[styles.returnButton, styles.returnButtonOverlapping]}
+      >
+        <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
+      </TouchableOpacity>
+
+      {/* Renderize o modal de opções */}
+      <ChatOptionsMenu
+        isVisible={isOptionsVisible}
+        onDesfazerMatchPress={() => {
+          desfazerMatch();
+          toggleOptionsModal(); // Feche o modal após desfazer o match
+        }}
+        onClose={toggleOptionsModal}
+      />
+  
         <View style={styles.inputContainer}>
 
           <TextInput
@@ -515,7 +519,7 @@ export default function Chat({ route }) {
 
         </View>
 
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
 
     </KeyboardAvoidingView>
 

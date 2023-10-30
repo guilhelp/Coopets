@@ -311,6 +311,7 @@ export default function CadastrarPet3() {
                                 placeholder="Digite a biografia"
                                 value={bio}
                                 onChangeText={setBio}
+                                maxLength={40}
                             />
 
                             <TouchableOpacity style={styles.botaoAvancar} onPress={cadastrarDados} disabled={cadastrando}>

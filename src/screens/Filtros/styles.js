@@ -246,7 +246,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 60,
     borderColor: '#573C35',
-
+    
   },
   botaoSalvarText: {
     fontFamily: 'Roboto_900Black',

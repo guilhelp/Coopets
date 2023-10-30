@@ -469,7 +469,7 @@ export default function Perfil() {
                         visible={showConfirmationModal}
                         password={password}
                         onPasswordChange={setPassword}
-                        onCancel={() => setShowConfirmationModal(false)}
+                        onClose={() => setShowConfirmationModal(false)}
                         onConfirm={handleDeleteProfile} // Chame a função de exclusão quando o usuário confirmar
                     />
                     <View style={styles.botoesFinalContainer}>

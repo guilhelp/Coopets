@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#573C35',
         width: wp('100%'),
-        height: hp('20%'),
+        height: hp('22%'),
         alignItems: 'center',
         justifyContent: 'center',
     },

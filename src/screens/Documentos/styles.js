@@ -53,6 +53,9 @@ export const styles = StyleSheet.create({
   },
 
   // Configurando os contatos
+  textContainer:{
+    marginTop: 10,
+  },
   contacts: {
     paddingTop: 30,
     fontFamily: 'Roboto_900Black',
@@ -117,8 +120,10 @@ export const styles = StyleSheet.create({
     height: 350,
     resizeMode: 'contain',
   },
-  closeButtonIcon:{
-    left: 150,
+
+  closeButton:{
+    marginLeft: 300,
   }
+  
 
 });

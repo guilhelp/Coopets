@@ -219,6 +219,12 @@ export default function CadastrarPet() {
         }
     }
 
+    const handleCorChange = (text) => {
+        // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
+        const corLimpa = text.replace(/[^a-zA-Z]/g, '');
+        setCor(corLimpa);
+      };
+
     if (!fontsLoaded && !fontError) {
         return null;
     } // Condição caso as fontes não carreguem
@@ -293,7 +299,7 @@ export default function CadastrarPet() {
                                 label="Cor do Pet"
                                 placeholder="Digite a cor do Pet"
                                 value={cor}
-                                onChangeText={setCor}
+                                onChangeText={handleCorChange}
                             />
 
 

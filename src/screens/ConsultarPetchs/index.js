@@ -236,7 +236,7 @@ export default function ConsultarPetchs() {
                 <View style={styles.chatItemContent}>
                     <Image source={{ uri: item.perfilImage }} style={styles.chatItemImage} />
                     <View style={styles.chatDetailsContent}>
-                        <Text style={styles.chatItemName}>{item.nomePet}</Text>
+                        <Text style={styles.chatItemName}>{ item.nomePet.length > 10 ? item.nomePet.slice(0, 10) + '...' : item.nomePet}</Text>
                     </View>
                 </View>
             </TouchableOpacity>

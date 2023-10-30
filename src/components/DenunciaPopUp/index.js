@@ -71,17 +71,17 @@ const DenunciaPopup = ({ visible, onClose, onSubmit }) => {
           </View>
           <Text style={styles.optionSubTitleText}>Selecione a opção de denúncia:</Text>
           <Option
-            optionText="Perfil com foto ou nome indevido"
-            isSelected={selectedOption === 'Perfil com foto ou nome indevido'}
+            optionText="Perfil com foto de perfil indevida"
+            isSelected={selectedOption === 'Perfil com foto de perfil indevida'}
             style={styles.optionText}
           />
           <Option
-            optionText="Perfil com foto de pedigree e/ou vacinação indevido"
-            isSelected={selectedOption === 'Perfil com foto de pedigree e/ou vacinação indevido'}
+            optionText="Perfil com foto de pedigree e/ou vacinação indevido(s)"
+            isSelected={selectedOption === 'Perfil com foto de pedigree e/ou vacinação indevido(s)'}
           />
           <Option
-            optionText="Perfil com nome ou algum dado abusivo"
-            isSelected={selectedOption === 'Perfil com nome ou algum dado abusivo'}
+            optionText="Perfil com algum dado abusivo"
+            isSelected={selectedOption === 'Perfil com algum dado abusivo'}
           />
           <View style={styles.header}>
             <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>

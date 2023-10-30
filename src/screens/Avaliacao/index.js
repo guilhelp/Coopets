@@ -718,7 +718,9 @@ export default function Avaliacao() {
 
 
                     {showMatchPopup && (
+                        
                         <View style={styles.matchPopup}>
+                           
                             <PetchScreen
                                 pet1Name={pet1Name}
                                 pet1Image={pet1Image}
@@ -732,7 +734,9 @@ export default function Avaliacao() {
                             >
                                 <Text style={styles.closePopupButtonText}>Fechar</Text>
                             </TouchableOpacity>
+                         
                         </View>
+                       
 
                     )}
                 </View>

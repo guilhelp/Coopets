@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 
 // Importando os componentes do React
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, Keyboard } from 'react-native';
 
 // Importando os estilos
 import { styles } from './style';
@@ -14,6 +14,11 @@ import { TextInput } from 'react-native-paper';
 const Input = ({ label, placeholder, secureTextEntry, value, onChangeText, ...rest }) => {
 
     const [showPassword, setShowPassword] = useState(false); // Estado que armazena se a senha deve aparecer ou não
+
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+      Keyboard.dismiss(); // Fecha o teclado ao clicar no ícone
+    }
 
     return (
       <View style={styles.inputContainer}>
@@ -33,7 +38,7 @@ const Input = ({ label, placeholder, secureTextEntry, value, onChangeText, ...re
                 size={30}
                 color="black"
                 style={styles.iconButton}
-                onPress={() => setShowPassword(!showPassword)}
+                onPress={togglePasswordVisibility}
               />
             )
           }

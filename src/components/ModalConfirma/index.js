@@ -41,10 +41,16 @@ const ConfirmationModal = ({
 
       // A reautenticação foi bem-sucedida, agora podemos confirmar a ação
       onConfirm();
+      setPassword('');
     } catch (error) {
       Alert.alert('Senha incorreta. Tente novamente.');
       
     }
+  };
+
+  const handleClose = () => {
+    setPassword(''); // Limpar o campo de senha
+    onClose();
   };
 
   return (
@@ -64,7 +70,7 @@ const ConfirmationModal = ({
           />
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+            <TouchableOpacity style={styles.cancelButton} onPress={handleClose}>
               <Text style={styles.buttonText}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity

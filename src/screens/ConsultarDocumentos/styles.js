@@ -64,8 +64,8 @@ export const styles = StyleSheet.create({
     height: 350,
     resizeMode: 'contain',
   },
-  closeButtonIcon:{
-    left: 150,
+  closeButton:{
+    marginLeft: 300,
   }
 
 });

@@ -303,6 +303,12 @@ function checkEmailDomainLowerCase(email) {
     navigation.navigate('CadastrarPet1', { dadosResp });
   };
 
+  const handleNomeChange = (text) => {
+    // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
+    const nomeLimpo = text.replace(/[^a-zA-Z]/g, '');
+    setNome(nomeLimpo);
+  };
+
   if (!fontsLoaded && !fontError) {
     return null;
   } // Condição caso as fontes não carreguem
@@ -321,7 +327,7 @@ function checkEmailDomainLowerCase(email) {
                 label="Nome"
                 placeholder="Digite seu nome"
                 value={nome}
-                onChangeText={setNome}
+                onChangeText={handleNomeChange}
               />
               <Input
                 label="E-mail"

@@ -115,7 +115,7 @@ export default function EditarPerfil() {
     const [userRG, setUserRG] = useState('');
     const [dataNascimentoResp, setDataNascimentoResp] = useState('');
     const [loadingVisible, setLoadingVisible] = useState(false);
-
+    
 
     // Estados com as informações do pet
     const [petId, setPetId] = useState('');
@@ -565,7 +565,7 @@ export default function EditarPerfil() {
             setLoadingVisible(true);
 
             // Verifica se todos os campos estão preenchidos
-            if (!userNome || !userEmail || !userCPF || !userRG || !dataNascimentoResp || !nomePet || !sexo || !tipoPet || !racaPet || !cor || !dataNascimentoPet || !cep) {
+            if (!bio || !userNome || !userEmail || !userCPF || !userRG || !dataNascimentoResp || !nomePet || !sexo || !tipoPet || !racaPet || !cor || !dataNascimentoPet || !cep) {
                 alert('Por favor, preencha todos os campos obrigatórios.');
                 setLoadingVisible(false);
                 return;
@@ -796,6 +796,19 @@ export default function EditarPerfil() {
         }
     };
 
+    const handleNameChange = (text) => {
+        // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
+        const nomeLimpo = text.replace(/[^a-zA-Z]/g, '');
+        setUserNome(nomeLimpo);
+      };
+
+      const handleCorChange = (text) => {
+        // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
+        const corLimpa = text.replace(/[^a-zA-Z]/g, '');
+        setCor(corLimpa);
+      };
+
+
     if (!fontsLoaded && !fontError) {
         return null;
     } // Condição caso as fontes não carreguem
@@ -845,25 +858,32 @@ export default function EditarPerfil() {
                                         <Icon name="plus-circle" size={50} color="black" style={styles.buttonImage} />
                                     )}
                                 </TouchableOpacity>
-
-
+                                
+                                <View style={styles.viewTextBio}>
+                                <Text style={styles.titleView}>Bio</Text>
+                                
                                 <Input
                                     label="Bio"
                                     placeholder="Digite a biografia"
                                     value={bio}
                                     onChangeText={setBio}
+                                    maxLength={40}
                                 />
+                                </View>
                             </View>
                             <View style={styles.inputContainerResp}>
                                 <Text style={styles.inputText}>RESPONSÁVEL</Text>
+
+                                <Text style={styles.titleView}>Nome</Text>
                                 <Input
                                     label="Nome"
                                     style={styles.input}
                                     placeholder="Digite seu Nome"
                                     value={userNome}
-                                    onChangeText={setUserNome}
+                                    onChangeText={handleNameChange}
                                 />
 
+                                <Text style={styles.titleView}>E-mail</Text>       
                                 <Input
                                     label="E-mail"
                                     style={styles.input}
@@ -875,6 +895,7 @@ export default function EditarPerfil() {
                                     }}
                                 />
 
+                                <Text style={styles.titleView}>CPF</Text>
                                 <Input
                                     label="CPF"
                                     style={styles.input}
@@ -888,6 +909,8 @@ export default function EditarPerfil() {
                                     keyboardType="numeric"
                                     maxLength={14}
                                 />
+
+                                <Text style={styles.titleView}>RG</Text>
                                 <Input
                                     label="RG"
                                     style={styles.input}
@@ -903,6 +926,7 @@ export default function EditarPerfil() {
                                     maxLength={12}
                                 />
 
+                                <Text style={styles.titleView}>Data de Nascimento</Text>           
                                 <TouchableOpacity onPress={showDatePickerResp} style={styles.datePickerButton}>
                                     <Text style={styles.datePickerText}>
                                         {dataNascimentoResp ? format(new Date(dataNascimentoResp), 'dd/MM/yyyy') : 'Data de Nascimento'}
@@ -920,6 +944,7 @@ export default function EditarPerfil() {
                                 <View style={styles.inputContainerPet}>
                                     <Text style={styles.inputText}>PET</Text>
 
+                                    <Text style={styles.titleView}>Nome</Text>
                                     <Input
                                         label="Nome do Pet"
                                         style={styles.input}
@@ -929,6 +954,7 @@ export default function EditarPerfil() {
                                         maxLength={20}
                                     />
 
+                                    <Text style={styles.titleView}>Sexo</Text>
                                     <SelectDropdown
                                         data={sexoOptions}
                                         onSelect={(selectedItem, index) => setSexo(selectedItem)}
@@ -942,10 +968,20 @@ export default function EditarPerfil() {
                                         defaultValue={sexo}
                                     />
 
+                                    <Text style={styles.titleView}>Tipo</Text>
                                     <SelectDropdown
                                         data={['Cão', 'Gato']}
                                         onSelect={(selectedItem, index) => {
                                             setTipoPet(selectedItem);
+
+                                             // Adicione lógica condicional para definir a raça automaticamente com base no tipo selecionado
+                                        if (selectedItem === 'Cão') {
+                                            setRacaPet('Pug');
+                                        } else if (selectedItem === 'Gato') {
+                                            setRacaPet('Persa');
+                                        }
+
+
                                             updateRacaOptions(selectedItem);
                                         }}
                                         buttonTextAfterSelection={(selectedItem, index) => selectedItem}
@@ -958,7 +994,10 @@ export default function EditarPerfil() {
                                         defaultValue={tipoPet}
                                     />
 
+                                   
                                     {racaOptions.length > 0 && (
+                                        <>
+                                        <Text style={styles.titleView}>Raça</Text>
                                         <SelectDropdown
                                             data={racaOptions}
                                             onSelect={(selectedItem, index) => setRacaPet(selectedItem)}
@@ -971,15 +1010,18 @@ export default function EditarPerfil() {
                                             dropdownStyle={styles.dropdownContainer}
                                             defaultValue={racaPet}
                                         />
+                                        </>
                                     )}
 
+                                    <Text style={styles.titleView}>Cor</Text>
                                     <Input
                                         style={styles.input}
                                         placeholder="Digite a cor do pet"
                                         value={cor}
-                                        onChangeText={setCor}
+                                        onChangeText={handleCorChange}
                                     />
 
+                                    <Text style={styles.titleView}>Data de Nascimento</Text>
                                     <TouchableOpacity onPress={showDatePickerPet} style={styles.datePickerButton}>
                                         <Text style={styles.datePickerText}>
                                             {dataNascimentoPet ? format(new Date(dataNascimentoPet), 'dd/MM/yyyy') : 'Data de Nascimento'}
@@ -994,8 +1036,7 @@ export default function EditarPerfil() {
                                         maximumDate={maxDate}
                                     />
 
-
-
+                                    <Text style={styles.titleView}>CEP</Text>
                                     <Input
                                         label="CEP"
                                         placeholder="Digite o CEP"

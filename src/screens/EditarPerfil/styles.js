@@ -29,6 +29,16 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    viewTextBio:{
+        textAlign: 'left',
+        
+    },
+    titleView:{
+        fontFamily: 'Roboto_900Black',
+        fontSize: wp('4.5%'),
+        color: '#000000',
+        paddingLeft: 5,
+    },
     imageInputPerfil: {
         width: 259,
         height: 259,
@@ -178,6 +188,8 @@ export const styles = StyleSheet.create({
         margin: 5,
         borderRadius: 20,
         marginBottom: 230,
+        borderColor: '#EEE1D3',
+    borderWidth: 3,
     },
     buttonText: {
         color: '#FFFFFF',

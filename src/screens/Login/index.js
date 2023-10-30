@@ -10,7 +10,9 @@ import {
     TouchableOpacity,
     Alert,
     KeyboardAvoidingView,
-    ScrollView
+    ScrollView,
+    StyleSheet,
+    ActivityIndicator
 } from 'react-native';
 
 // Importando configurações da splash screen
@@ -68,6 +70,7 @@ import LogoBranca from '../../assets/Logo/Logo_FundoBranco.png';
 
 // Importanto componentes
 import Input from '../../components/Input';
+import { Platform } from 'react-native';
 
 
 // Configurando cores do react native paper
@@ -93,10 +96,13 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
 
+    const [isLoading, setIsLoading] = useState(true);
+
     // Lógica para autenticar automaticamente um usuário
     useEffect(() => {
         // Verifique se há dados de usuário no AsyncStorage
         const checkAuthentication = async () => {
+            setIsLoading(true);
             const userData = await AsyncStorage.getItem('userData');
             if (userData) {
                 const user = JSON.parse(userData);
@@ -128,8 +134,8 @@ export default function Login() {
                             if (dataAtual < dataDesbloqueio) {
                                 // Pet bloqueado. Mostrar a data de desbloqueio e não permitir o login.
                                 Alert.alert('Pet Bloqueado', `Seu pet está bloqueado até ${dataDesbloqueio.toLocaleString()}.`)
-                                    navigation.goBack();
-                               
+                                navigation.navigate('Login');
+                                setIsLoading(false);
                                 return;
                             }
                         }
@@ -142,6 +148,7 @@ export default function Login() {
                     }
                 });
             }
+            setIsLoading(false);
         };
 
         checkAuthentication();
@@ -195,7 +202,7 @@ export default function Login() {
                             if (dataAtual < dataDesbloqueio) {
                                 // Pet bloqueado. Mostrar a data de desbloqueio e não permitir o login.
                                 Alert.alert('Pet Bloqueado', `Seu pet está bloqueado até ${dataDesbloqueio.toLocaleString()}.`)
-                                navigation.goBack();
+                                navigation.navigate('Login');
                                 return;
 
                             }
@@ -230,65 +237,76 @@ export default function Login() {
 
     return (
         <PaperProvider theme={theme}>
-            <ImageBackground source={Background} style={styles.background}>
-                <KeyboardAvoidingView
-                    behavior={'padding'}
-                    style={styles.container}
-                    keyboardVerticalOffset={15}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
+                style={{flex: 1}}
+            >
+
+                {isLoading && (
+                    <View style={[styles.loadingOverlay, StyleSheet.absoluteFillObject]}>
+                        <Image source={LogoBranca} style={styles.imagemLogo} />
+                        <Text style={styles.carregando}>Carregando</Text>
+                        <ActivityIndicator size="large" color="#FFF" />
+                    </View>
+                )}
+
+                <ImageBackground source={Background} style={styles.background}>
                     <ScrollView>
+                    {/* Container para imagem de logo e texto do COOPETS */}
+                    <View style={styles.logoContainer}>
 
-                        {/* Container para imagem de logo e texto do COOPETS */}
-                        <View style={styles.logoContainer}>
+                        <Image source={LogoBranca} style={styles.imagemLogoBranca} />
+                        <Text style={styles.textLogo}>COOPETS</Text>
 
-                            <Image source={LogoBranca} style={styles.imagemLogo} />
-                            <Text style={styles.textLogo}>COOPETS</Text>
+                    </View>
 
-                        </View>
-
+                    <View style={styles.entrarTextView}>
                         <Text style={styles.entrarText}>ENTRAR</Text>
+                    </View>
 
-                        {/* Container para os inputs */}
+                    <View style={styles.inputContainer}>
 
-                        <View style={styles.inputContainer}>
+                        <Input
+                            label="E-mail"
+                            placeholder="Digite seu email"
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address" // Define o teclado apropriado para e-mail
+                            autoCapitalize="none" // Desativa a autocapitalização
+                        />
 
-                            <Input
-                                label="E-mail"
-                                placeholder="Digite seu email"
-                                value={email}
-                                onChangeText={setEmail}
-                                keyboardType="email-address" // Define o teclado apropriado para e-mail
-                                autoCapitalize="none" // Desativa a autocapitalização
-                            />
+                        <Input
+                            label="Senha"
+                            placeholder="Digite sua senha"
+                            secureTextEntry
+                            value={senha}
+                            onChangeText={setSenha}
+                        />
 
-                            <Input
-                                label="Senha"
-                                placeholder="Digite sua senha"
-                                secureTextEntry
-                                value={senha}
-                                onChangeText={setSenha}
-                            />
+                        <TouchableOpacity style={styles.botaoEnviar} onPress={handleLogin}>
+                            <Text style={styles.botaoEnviarText}>ENTRAR</Text>
+                        </TouchableOpacity>
+                    </View>
 
-                            <TouchableOpacity style={styles.botaoEnviar} onPress={handleLogin}>
-                                <Text style={styles.botaoEnviarText}>ENTRAR</Text>
-                            </TouchableOpacity>
-                        </View>
+                    <View style={styles.botoesContainer}>
 
-                        <View style={styles.botoesContainer}>
+                        <TouchableOpacity style={styles.botaoCadastro} onPress={() => { navigation.navigate('CadastrarResponsavel'); }}>
+                            <FontAwesome name="user-circle" size={25} color="black" />
+                            <Text style={styles.cadastroText}>Criar Conta</Text>
+                        </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.botaoCadastro} onPress={() => { navigation.navigate('CadastrarResponsavel'); }}>
-                                <FontAwesome name="user-circle" size={25} color="black" />
-                                <Text style={styles.cadastroText}>Criar Conta</Text>
-                            </TouchableOpacity>
+                        <TouchableOpacity style={styles.botaoEsqueciSenha} onPress={() => { navigation.navigate('EsqueceuSenha'); }}>
+                            <MaterialCommunityIcons name="email" size={25} color="black" />
+                            <Text style={styles.esqueciSenhaText}>Esqueci Senha</Text>
+                        </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.botaoEsqueciSenha} onPress={() => { navigation.navigate('EsqueceuSenha'); }}>
-                                <MaterialCommunityIcons name="email" size={25} color="black" />
-                                <Text style={styles.esqueciSenhaText}>Esqueci Senha</Text>
-                            </TouchableOpacity>
-
-                        </View>
+                    </View>
                     </ScrollView>
-                </KeyboardAvoidingView>
-            </ImageBackground>
+                </ImageBackground>
+
+
+
+            </KeyboardAvoidingView>
         </PaperProvider>
 
     );

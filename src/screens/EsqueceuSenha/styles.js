@@ -45,6 +45,8 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
+    borderColor: '#EEE1D3',
+        borderWidth: 3,
   },
   buttonText: {
     color: '#FFFFFF',

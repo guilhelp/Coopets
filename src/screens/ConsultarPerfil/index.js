@@ -213,7 +213,7 @@ export default function ConsultarPerfil({ route }) {
     return (
         <ImageBackground source={Background} style={styles.background}>
 
-            <Header title={petNome} iconName="pets" />
+            <Header title={petNome.length > 10 ? petNome.slice(0, 7) + '...' : petNome} iconName="pets" />
             <ScrollView>
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>

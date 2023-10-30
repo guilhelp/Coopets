@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 
 export const styles = StyleSheet.create({
   popupContainer: {
@@ -9,8 +10,8 @@ export const styles = StyleSheet.create({
   },
   popupContent: {
     backgroundColor: '#573C35',
-    width: '90%',
-    height: '65%',
+    width: wp('95%'),
+    height: hp('70%'),
     borderRadius: 10,
     alignItems: 'center',
     borderColor: '#FFF',
@@ -21,20 +22,20 @@ export const styles = StyleSheet.create({
   tituloText: {
     marginTop: 10,
     fontFamily: 'LuckiestGuy_400Regular',
-    fontSize: 40,
+    fontSize: wp('10%'),
     color: '#FFF'
   },
   popupText: {
     fontFamily: 'Roboto_900Black',
-    fontSize: 15,
+    fontSize: wp('3.5%'),
     color: '#FFF',
     textAlign: 'justify',
-    marginHorizontal: 30,
+    marginHorizontal: 10,
   },
   verMaisContainer: {
     justifyContent: 'flex-end',
     left: 130,
-    marginTop: 10,
+    marginTop: 20,
   },
   showMoreButtonText: {
     fontFamily: 'Roboto_900Black',

@@ -161,7 +161,7 @@ export default function Documentos() {
             <Modal visible={!!fullScreenImage1} transparent={true} onRequestClose={closeFullScreenImage1}>
                 <View style={styles.modalContainer}>
                     <TouchableOpacity style={styles.closeButton} onPress={closeFullScreenImage1}>
-                        <Ionicons name="close-circle" size={80} color="#FFFFFF" style={styles.closeButtonIcon} />
+                        <Ionicons name="close-circle" size={80} color="#FFFFFF" />
                     </TouchableOpacity>
                     {fullScreenImage1 && (
                         <Image
@@ -177,7 +177,7 @@ export default function Documentos() {
             <Modal visible={!!fullScreenImage2} transparent={true} onRequestClose={closeFullScreenImage2}>
                 <View style={styles.modalContainer}>
                     <TouchableOpacity style={styles.closeButton} onPress={closeFullScreenImage2}>
-                        <Ionicons name="close-circle" size={80} color="#FFFFFF" style={styles.closeButtonIcon} />
+                        <Ionicons name="close-circle" size={80} color="#FFFFFF" />
                     </TouchableOpacity>
                     {fullScreenImage2 && (
                         <Image

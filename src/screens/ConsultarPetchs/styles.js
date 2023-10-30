@@ -50,7 +50,7 @@ export default StyleSheet.create({
     backgroundColor: '#E8CBC1',
     flexDirection: 'row',
     alignItems: 'center',
-    width: 370,
+    width: wp('90%'),
     marginTop: 15,
     borderRadius: 30,
     borderColor: '#EEE1D3',

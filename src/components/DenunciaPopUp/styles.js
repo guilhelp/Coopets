@@ -56,11 +56,14 @@ export const styles = StyleSheet.create({
       color: 'black',
       textAlign: 'center',
       width: 150,
-      height: 40,
+      height: 60,
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 5,
       fontWeight: 'bold',
+      borderColor: '#573C35',
+      borderWidth: 3,
+      borderRadius: 17
     },
     submitButtonText:{
       fontFamily: 'Roboto_900Black',
