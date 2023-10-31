@@ -51,7 +51,7 @@ export const styles = StyleSheet.create({
         height: 60,
         borderRadius: 200,
         backgroundColor: '#573C35',
-        marginLeft: 20,
+        marginLeft: 15,
         marginTop: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -74,7 +74,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 0,
-        right: 10,
+        right: 50,
         marginTop: 10,
     },
     returnButtonOverlapping: {

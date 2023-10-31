@@ -46,6 +46,9 @@ export default StyleSheet.create({
   buttonContainer: {
     marginTop: 30,
   },
+  flatListaStyle:{
+    width: wp('90%'),
+  },
   chatItemContent: {
     backgroundColor: '#E8CBC1',
     flexDirection: 'row',

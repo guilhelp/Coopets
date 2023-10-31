@@ -798,13 +798,13 @@ export default function EditarPerfil() {
 
     const handleNameChange = (text) => {
         // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
-        const nomeLimpo = text.replace(/[^a-zA-Z]/g, '');
+        const nomeLimpo = text.replace(/[^a-zA-Z ]/g, '');
         setUserNome(nomeLimpo);
       };
 
       const handleCorChange = (text) => {
         // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
-        const corLimpa = text.replace(/[^a-zA-Z]/g, '');
+        const corLimpa = text.replace(/[^a-zA-Z ]/g, '');
         setCor(corLimpa);
       };
 

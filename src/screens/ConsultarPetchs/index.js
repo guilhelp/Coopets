@@ -128,6 +128,9 @@ export default function ConsultarPetchs() {
             } catch (error) {
                 console.log('Erro ao buscar dados dos chats:', error);
                 setLoading(false);
+            } finally {
+                // Defina refreshing como false após a conclusão da chamada fetchData
+                setRefreshing(false);
             }
         }
     };
@@ -190,9 +193,9 @@ export default function ConsultarPetchs() {
 
     // Função para atualizar a lista
     const onRefresh = () => {
+        // Define refreshing como true antes de chamar fetchData
         setRefreshing(true);
         fetchData();
-        setRefreshing(false);
     };
 
     if (!fontsLoaded && !fontError) {
@@ -257,6 +260,7 @@ export default function ConsultarPetchs() {
                     data={chatsData}
                     keyExtractor={(item) => item.matchId}
                     renderItem={renderChatItem}
+                    style={styles.flatListaStyle}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}

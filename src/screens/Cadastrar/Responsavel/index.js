@@ -305,7 +305,7 @@ function checkEmailDomainLowerCase(email) {
 
   const handleNomeChange = (text) => {
     // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
-    const nomeLimpo = text.replace(/[^a-zA-Z]/g, '');
+    const nomeLimpo = text.replace(/[^a-zA-Z ]/g, '');
     setNome(nomeLimpo);
   };
 

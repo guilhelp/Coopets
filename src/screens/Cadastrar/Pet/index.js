@@ -221,7 +221,7 @@ export default function CadastrarPet() {
 
     const handleCorChange = (text) => {
         // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
-        const corLimpa = text.replace(/[^a-zA-Z]/g, '');
+        const corLimpa = text.replace(/[^a-zA-Z ]/g, '');
         setCor(corLimpa);
       };
 

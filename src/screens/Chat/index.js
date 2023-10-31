@@ -447,6 +447,14 @@ export default function Chat({ route }) {
 
       <View style={styles.cabecalhoPagina}>
 
+      <TouchableOpacity
+        onPress={() => navigation.navigate('BottomTabs')}
+        style={styles.returnButton}
+      >
+        <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
+      </TouchableOpacity>
+
+
         <TouchableOpacity style={styles.petDetails} onPress={() => navigation.navigate('ConsultarPerfil', { petId, petImage, petNome, petBio, petCep, petSexo, petTipo, petRaca, petIdade, petPedigree, petVac })}>
           <Image source={{ uri: petImage }} style={styles.petImage} />
           <Text style={styles.petName} numberOfLines={1} ellipsizeMode="tail">
@@ -488,13 +496,6 @@ export default function Chat({ route }) {
             <Text>No messages available.</Text>
           )}
         </ScrollView>
-
-        <TouchableOpacity
-        onPress={() => navigation.navigate('BottomTabs')}
-        style={[styles.returnButton, styles.returnButtonOverlapping]}
-      >
-        <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
-      </TouchableOpacity>
 
       {/* Renderize o modal de opções */}
       <ChatOptionsMenu

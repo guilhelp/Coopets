@@ -4,8 +4,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp, widthPercentageT
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: wp('100%'),
-    height: hp('100%'),
+   
   },
   background: {
     width: wp('100%'),
@@ -34,8 +33,8 @@ export const styles = StyleSheet.create({
   // Configurando o fundo transparente da página
   fundoContainer: {
     backgroundColor: 'rgba(87,60,53, 0.75)',
-    width: wp('100%'),
-    height: hp('80%'),
+    width: '100%',
+    height: '150%',
     borderColor: '#573C35',
     borderWidth: 5,
     borderRadius: 20,

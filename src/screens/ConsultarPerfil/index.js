@@ -217,7 +217,7 @@ export default function ConsultarPerfil({ route }) {
             <ScrollView>
                 <View style={styles.container}>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('BottomTabs')} style={styles.returnButton}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.returnButton}>
                             <Ionicons name={'arrow-undo'} size={40} color="white" style={styles.returnIcon} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleDenunciar} style={styles.denunciarButton}>

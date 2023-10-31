@@ -17,7 +17,6 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_APP_ID,
 };
 
-
 // Inicializa o Firebase com a configuração
 const app = initializeApp(firebaseConfig); 
 
