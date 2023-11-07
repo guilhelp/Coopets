@@ -2,15 +2,15 @@
 import React, { useState, useEffect } from 'react';
 
 // Importando os componentes do React
-import { 
-    View, 
-    Text, 
-    TouchableOpacity, 
-    ImageBackground, 
-    ScrollView, 
-    ActivityIndicator, 
-    Image, 
-    StyleSheet, 
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    ImageBackground,
+    ScrollView,
+    ActivityIndicator,
+    Image,
+    StyleSheet,
     KeyboardAvoidingView
 } from 'react-native';
 
@@ -20,32 +20,32 @@ import { auth, db, storage } from '../../config/Firebase';
 // Importando as funções do Firebase
 
 // Firestore
-import { 
-    doc, 
-    setDoc, 
-    collection, 
-    getDoc, 
-    getDocs, 
-    query, 
-    where, 
-    updateDoc 
+import {
+    doc,
+    setDoc,
+    collection,
+    getDoc,
+    getDocs,
+    query,
+    where,
+    updateDoc
 } from 'firebase/firestore';
 
 // Auth
-import { 
-    fetchSignInMethodsForEmail, 
-    reauthenticateWithCredential, 
-    EmailAuthProvider, 
+import {
+    fetchSignInMethodsForEmail,
+    reauthenticateWithCredential,
+    EmailAuthProvider,
     sendEmailVerification,
     updateEmail
 } from "firebase/auth";
 
 // Realtime Database
-import { 
-    getDownloadURL, 
-    ref, 
-    uploadBytesResumable, 
-    deleteObject 
+import {
+    getDownloadURL,
+    ref,
+    uploadBytesResumable,
+    deleteObject
 } from '@firebase/storage';
 
 // Importando os componentes do react navigation
@@ -94,7 +94,7 @@ const theme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
-        primary: 'black', 
+        primary: 'black',
     },
 };
 
@@ -115,7 +115,7 @@ export default function EditarPerfil() {
     const [userRG, setUserRG] = useState('');
     const [dataNascimentoResp, setDataNascimentoResp] = useState('');
     const [loadingVisible, setLoadingVisible] = useState(false);
-    
+
 
     // Estados com as informações do pet
     const [petId, setPetId] = useState('');
@@ -142,17 +142,20 @@ export default function EditarPerfil() {
     const [newPedigreeImage, setNewPedigreeImage] = useState(null); // Estado para a nova imagem de pedigree
     const [newVacinaCardImage, setNewVacinaCardImage] = useState(null); // Estado para a nova imagem de carteira de vacinação
 
+    // Variável que armazena as opções de cor
+    const corOptions = ['Branco', 'Cinza', 'Preto', 'Marrom', 'Listrado', 'Caramelo'];
+
     // Função que busca e seleciona a imagem capturada pelo ImagePicker do expo
     const selectImage = async (type) => {
         // Solicita permissão para acessar a biblioteca de mídia
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
+
         // Verifica se a permissão foi concedida
         if (status !== 'granted') {
             alert('A permissão para acessar a biblioteca de mídia é necessária!');
             return;
         }
-    
+
         // Se for iOS, solicita também permissão para acessar a câmera
         if (Platform.OS === 'ios') {
             const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
@@ -161,7 +164,7 @@ export default function EditarPerfil() {
                 return;
             }
         }
-    
+
         // Permite ao usuário escolher uma imagem da biblioteca
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -169,11 +172,11 @@ export default function EditarPerfil() {
             aspect: [1, 1],
             quality: 1,
         });
-    
+
         // Verifica se o usuário escolheu uma imagem e atualiza o estado com a imagem selecionada
         if (!result.canceled && result.assets.length > 0) {
             const selectedImageUri = result.assets[0].uri;
-    
+
             // Com base no tipo especificado, atualiza o estado com a imagem correta
             if (type === 'perfilImage') {
                 setNewPerfilImage(selectedImageUri);
@@ -184,16 +187,16 @@ export default function EditarPerfil() {
             }
         }
     };
-    
+
     // Função para fazer o upload de uma imagem no storage
     const uploadImageToStorage = async (imageUri, imageName) => {
         try {
             // Obtém o ID do usuário atualmente logado
             const user = auth.currentUser.uid;
-    
+
             // Cria uma referência para o local de armazenamento da imagem no Firebase Storage
             const storageRef = ref(storage, `imagens/${user}/${petId}/${imageName}`);
-    
+
             // Tenta excluir uma imagem anterior no mesmo local, se existir
             try {
                 await deleteObject(storageRef);
@@ -206,17 +209,17 @@ export default function EditarPerfil() {
                 }
                 console.log('Imagem anterior não encontrada:', imageName);
             }
-    
+
             // Faz o download da imagem selecionada (URI) como um blob
             const response = await axios.get(imageUri, {
                 responseType: 'blob',
             });
-    
+
             const blob = response.data;
-    
+
             // Inicia o processo de upload da imagem para o Firebase Storage
             const uploadTask = uploadBytesResumable(storageRef, blob);
-    
+
             // Aguarda até que o upload seja concluído
             const snapshot = await new Promise((resolve, reject) => {
                 uploadTask.on(
@@ -231,18 +234,18 @@ export default function EditarPerfil() {
                     }
                 );
             });
-    
+
             // Obtém a URL de download da imagem após o upload bem-sucedido
             const downloadUrl = await getDownloadURL(snapshot.ref);
             console.log('URL da imagem:', downloadUrl);
-    
+
             return downloadUrl;
         } catch (error) {
             console.log('Erro ao fazer upload da imagem:', error);
             throw error;
         }
     };
-    
+
     // Função para puxar as informações do pet já existentes no banco de dados
     const loadPetData = async () => {
         try {
@@ -260,7 +263,7 @@ export default function EditarPerfil() {
             const querySnapshot = await getDocs(query(petsRef, where('responsavelID', '==', doc(db, 'responsaveis', responsavelId))));
 
             if (!querySnapshot.empty) {
-                
+
                 // Busca as informações do pet que pertence ao responsável logado
                 const petDocSnap = querySnapshot.docs[0];
                 const petData = petDocSnap.data();
@@ -372,7 +375,7 @@ export default function EditarPerfil() {
                 const userProfileSnapshot = await getDoc(userProfileRef);
 
                 if (userProfileSnapshot.exists()) {
-                   
+
                     // Armazenando em cada estado as informações puxadas
                     const userData = userProfileSnapshot.data();
                     setUserNome(userData.nome);
@@ -411,11 +414,11 @@ export default function EditarPerfil() {
     // Condição, para mostrar diferentes tipos de raça dependendo do tipo de pet
     const updateRacaOptions = (selectedTipo) => {
         if (selectedTipo === 'Cão') { // Se for cão
-             // Atualiza o estado de raça com um vetor de pets do tipo cão
+            // Atualiza o estado de raça com um vetor de pets do tipo cão
             const optionsCao = ['Pug', 'Shih Tzu', 'Bulldog Francês', 'Pomerânia', 'Golden Retriever']
             setRacaOptions(optionsCao)
         } else if (selectedTipo === 'Gato') { // Se for gato
-             // Atualiza o estado de raça com um vetor de pets do tipo gato
+            // Atualiza o estado de raça com um vetor de pets do tipo gato
             setRacaOptions(['Persa', 'Siamês', 'Angorá', 'Ashera', 'Sphynx']);
         } else {
             setRacaOptions([]); // Se nenhum tipo estiver selecionado, não há opções de raça]
@@ -428,7 +431,7 @@ export default function EditarPerfil() {
         setDatePickerVisiblePet(true);
     };
 
-     // Função para mostrar o Date Picker do Responsável
+    // Função para mostrar o Date Picker do Responsável
     const showDatePickerResp = () => {
         setDatePickerVisibleResp(true);
     };
@@ -438,7 +441,7 @@ export default function EditarPerfil() {
         setDatePickerVisiblePet(false);
     };
 
-     // Função para fechar o Date Picker do Responsável
+    // Função para fechar o Date Picker do Responsável
     const hideDatePickerResp = () => {
         setDatePickerVisibleResp(false);
     };
@@ -451,7 +454,7 @@ export default function EditarPerfil() {
 
     };
 
-     // Função para confirmar a data escolhida do  Responsavel
+    // Função para confirmar a data escolhida do  Responsavel
     const handleConfirmResp = (date) => {
         hideDatePickerResp();
         const formattedDate = format(date, 'yyyy-MM-dd'); // Formata a data como desejar
@@ -676,7 +679,7 @@ export default function EditarPerfil() {
                     await updateEmail(user, userEmail);
                     setPasswordModalVisible(false);
                 } catch (reauthError) {
-                    
+
                     setLoadingVisible(false);
                     return;
                 }
@@ -765,7 +768,7 @@ export default function EditarPerfil() {
             await updateEmail(user, newEmail);
         } catch (reauthError) {
             console.error('Erro de reautenticação:', reauthError);
-          
+
             throw reauthError; // Relança o erro para que ele possa ser tratado no chamador
         }
     };
@@ -800,13 +803,13 @@ export default function EditarPerfil() {
         // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
         const nomeLimpo = text.replace(/[^a-zA-Z ]/g, '');
         setUserNome(nomeLimpo);
-      };
+    };
 
-      const handleCorChange = (text) => {
+    const handleCorChange = (text) => {
         // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
         const corLimpa = text.replace(/[^a-zA-Z ]/g, '');
         setCor(corLimpa);
-      };
+    };
 
 
     if (!fontsLoaded && !fontError) {
@@ -858,17 +861,17 @@ export default function EditarPerfil() {
                                         <Icon name="plus-circle" size={50} color="black" style={styles.buttonImage} />
                                     )}
                                 </TouchableOpacity>
-                                
+
                                 <View style={styles.viewTextBio}>
-                                <Text style={styles.titleView}>Bio</Text>
-                                
-                                <Input
-                                    label="Bio"
-                                    placeholder="Digite a biografia"
-                                    value={bio}
-                                    onChangeText={setBio}
-                                    maxLength={40}
-                                />
+                                    <Text style={styles.titleView}>Bio</Text>
+
+                                    <Input
+                                        label="Bio"
+                                        placeholder="Digite a biografia"
+                                        value={bio}
+                                        onChangeText={setBio}
+                                        maxLength={40}
+                                    />
                                 </View>
                             </View>
                             <View style={styles.inputContainerResp}>
@@ -883,7 +886,7 @@ export default function EditarPerfil() {
                                     onChangeText={handleNameChange}
                                 />
 
-                                <Text style={styles.titleView}>E-mail</Text>       
+                                <Text style={styles.titleView}>E-mail</Text>
                                 <Input
                                     label="E-mail"
                                     style={styles.input}
@@ -891,7 +894,7 @@ export default function EditarPerfil() {
                                     value={userEmail}
                                     onChangeText={(newEmail) => {
                                         setUserEmail(newEmail);
-                                        setEmailAlterado(true); 
+                                        setEmailAlterado(true);
                                     }}
                                 />
 
@@ -905,7 +908,7 @@ export default function EditarPerfil() {
                                     onChangeText={(text) => {
                                         const formattedCPF = text.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
                                         setUserCPF(formattedCPF);
-                                    }} 
+                                    }}
                                     keyboardType="numeric"
                                     maxLength={14}
                                 />
@@ -926,7 +929,7 @@ export default function EditarPerfil() {
                                     maxLength={12}
                                 />
 
-                                <Text style={styles.titleView}>Data de Nascimento</Text>           
+                                <Text style={styles.titleView}>Data de Nascimento</Text>
                                 <TouchableOpacity onPress={showDatePickerResp} style={styles.datePickerButton}>
                                     <Text style={styles.datePickerText}>
                                         {dataNascimentoResp ? format(new Date(dataNascimentoResp), 'dd/MM/yyyy') : 'Data de Nascimento'}
@@ -974,12 +977,12 @@ export default function EditarPerfil() {
                                         onSelect={(selectedItem, index) => {
                                             setTipoPet(selectedItem);
 
-                                             // Adicione lógica condicional para definir a raça automaticamente com base no tipo selecionado
-                                        if (selectedItem === 'Cão') {
-                                            setRacaPet('Pug');
-                                        } else if (selectedItem === 'Gato') {
-                                            setRacaPet('Persa');
-                                        }
+                                            // Adicione lógica condicional para definir a raça automaticamente com base no tipo selecionado
+                                            if (selectedItem === 'Cão') {
+                                                setRacaPet('Pug');
+                                            } else if (selectedItem === 'Gato') {
+                                                setRacaPet('Persa');
+                                            }
 
 
                                             updateRacaOptions(selectedItem);
@@ -994,31 +997,37 @@ export default function EditarPerfil() {
                                         defaultValue={tipoPet}
                                     />
 
-                                   
+
                                     {racaOptions.length > 0 && (
                                         <>
-                                        <Text style={styles.titleView}>Raça</Text>
-                                        <SelectDropdown
-                                            data={racaOptions}
-                                            onSelect={(selectedItem, index) => setRacaPet(selectedItem)}
-                                            buttonTextAfterSelection={(selectedItem, index) => selectedItem}
-                                            rowTextForSelection={(item, index) => item}
-                                            dropdownIconPosition="right"
-                                            defaultButtonText="Selecione"
-                                            buttonStyle={styles.dropdownButton}
-                                            buttonTextStyle={styles.dropdownButtonText}
-                                            dropdownStyle={styles.dropdownContainer}
-                                            defaultValue={racaPet}
-                                        />
+                                            <Text style={styles.titleView}>Raça</Text>
+                                            <SelectDropdown
+                                                data={racaOptions}
+                                                onSelect={(selectedItem, index) => setRacaPet(selectedItem)}
+                                                buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+                                                rowTextForSelection={(item, index) => item}
+                                                dropdownIconPosition="right"
+                                                defaultButtonText="Selecione"
+                                                buttonStyle={styles.dropdownButton}
+                                                buttonTextStyle={styles.dropdownButtonText}
+                                                dropdownStyle={styles.dropdownContainer}
+                                                defaultValue={racaPet}
+                                            />
                                         </>
                                     )}
 
                                     <Text style={styles.titleView}>Cor</Text>
-                                    <Input
-                                        style={styles.input}
-                                        placeholder="Digite a cor do pet"
-                                        value={cor}
-                                        onChangeText={handleCorChange}
+                                    <SelectDropdown
+                                        data={corOptions}
+                                        onSelect={(selectedItem, index) => setCor(selectedItem)}
+                                        buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+                                        rowTextForSelection={(item, index) => item}
+                                        dropdownIconPosition="right"
+                                        defaultButtonText="Selecione a Cor"
+                                        buttonStyle={styles.dropdownButton}
+                                        buttonTextStyle={styles.dropdownButtonText}
+                                        dropdownStyle={styles.dropdownContainer}
+                                        defaultValue={cor}
                                     />
 
                                     <Text style={styles.titleView}>Data de Nascimento</Text>

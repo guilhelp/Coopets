@@ -19,17 +19,14 @@ export const styles = StyleSheet.create({
 
     cabecalhoPagina: {
         marginTop: 30,
-  
         top: 0,
         left: 0,
         width: '100%',
-        height: 170,
+        height: 120,
         flexDirection: 'row',
         backgroundColor: '#573C35',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flex: 1,
-
     },
     petImage: {
         width: 80,
@@ -38,6 +35,7 @@ export const styles = StyleSheet.create({
         margin: 20,
         borderWidth: 2,
         borderColor: '#FFFFFF',
+        
     },
     botoesContainer: {
         flexDirection: 'row',
@@ -52,6 +50,7 @@ export const styles = StyleSheet.create({
         borderRadius: 200,
         backgroundColor: '#573C35',
         marginLeft: 15,
+        marginRight: 40,
         marginTop: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -63,6 +62,7 @@ export const styles = StyleSheet.create({
         borderRadius: 200,
         backgroundColor: '#573C35',
         top: 20,
+        right: 10,
     },
     petName: {
         fontFamily: 'Roboto_900Black',

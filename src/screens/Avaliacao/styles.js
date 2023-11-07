@@ -51,7 +51,7 @@ export const styles = StyleSheet.create({
         height:  hp('65%'),
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 140,
+        marginBottom: '29%',
     },
     image: {
         width: '100%',

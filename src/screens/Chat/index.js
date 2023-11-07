@@ -458,7 +458,7 @@ export default function Chat({ route }) {
         <TouchableOpacity style={styles.petDetails} onPress={() => navigation.navigate('ConsultarPerfil', { petId, petImage, petNome, petBio, petCep, petSexo, petTipo, petRaca, petIdade, petPedigree, petVac })}>
           <Image source={{ uri: petImage }} style={styles.petImage} />
           <Text style={styles.petName} numberOfLines={1} ellipsizeMode="tail">
-            {petNome.length > 10 ? petNome.slice(0, 10) + '...' : petNome}
+            {petNome.length > 10 ? petNome.slice(0, 8) + '...' : petNome}
           </Text>
 
         </TouchableOpacity>

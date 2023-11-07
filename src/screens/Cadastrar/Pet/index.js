@@ -90,13 +90,16 @@ export default function CadastrarPet() {
     // Variável que armazena as opções de sexo
     const sexoOptions = ['Macho', 'Fêmea'];
 
+    // Variável que armazena as opções de cor
+    const corOptions = ['Branco', 'Cinza', 'Preto', 'Marrom', 'Listrado', 'Caramelo'];
+
     // Condição, para mostrar diferentes tipos de raça dependendo do tipo de pet
     const updateRacaOptions = (selectedTipo) => {
         if (selectedTipo === 'Cão') { // Se for cão
-              // Atualiza o estado de raça com um vetor de pets do tipo cão
+            // Atualiza o estado de raça com um vetor de pets do tipo cão
             setRacaOptions(['Pug', 'Shih Tzu', 'Bulldog Francês', 'Pomerânia', 'Golden Retriever']);
         } else if (selectedTipo === 'Gato') { // Se for gato
-              // Atualiza o estado de raça com um vetor de pets do tipo gato
+            // Atualiza o estado de raça com um vetor de pets do tipo gato
             setRacaOptions(['Persa', 'Siamês', 'Angorá', 'Ashera', 'Sphynx']);
         } else {
             setRacaOptions([]); // Se nenhum tipo estiver selecionado, não há opções de raça
@@ -223,7 +226,7 @@ export default function CadastrarPet() {
         // Remove caracteres que não são letras do alfabeto (maiúsculas ou minúsculas)
         const corLimpa = text.replace(/[^a-zA-Z ]/g, '');
         setCor(corLimpa);
-      };
+    };
 
     if (!fontsLoaded && !fontError) {
         return null;
@@ -279,7 +282,7 @@ export default function CadastrarPet() {
 
                             {showRacaDropdown && ( // Condição para mostrar o dropdown de raças somente depois de escolher um tipo de pet
                                 <SelectDropdown
-                                    data={racaOptions} 
+                                    data={racaOptions}
                                     onSelect={(selectedItem, index) => setRaca(selectedItem)} // Atualiza a raça selecionada
                                     buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                                     rowTextForSelection={(item, index) => item}
@@ -295,11 +298,16 @@ export default function CadastrarPet() {
                                 <Text style={styles.infoText}>Por favor, selecione um tipo antes de escolher uma raça.</Text>
                             )}
 
-                            <Input
-                                label="Cor do Pet"
-                                placeholder="Digite a cor do Pet"
-                                value={cor}
-                                onChangeText={handleCorChange}
+                            <SelectDropdown
+                                data={corOptions}
+                                onSelect={(selectedItem, index) => setCor(selectedItem)}
+                                buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+                                rowTextForSelection={(item, index) => item}
+                                dropdownIconPosition="right"
+                                defaultButtonText="Selecione a Cor"
+                                buttonStyle={styles.dropdownButton}
+                                buttonTextStyle={styles.dropdownButtonText}
+                                dropdownStyle={styles.dropdownContainer}
                             />
 
 

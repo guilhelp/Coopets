@@ -44,9 +44,9 @@ export const styles = StyleSheet.create({
 
   // Configurando o container de inputs
   inputContainer: {
-    marginTop: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    height: 700,
   },
 
   // Configurando o título de filtrando pets
