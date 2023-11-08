@@ -165,7 +165,7 @@ export default function Filtros() {
         if (filtroDistanciaAtivado) {
             filters.distancia = distancia;
         } else {
-            filters.distancia = 999999999999; // Um valor alto para mostrar todos os pets
+            filters.distancia = 999999999999999; // Um valor alto para mostrar todos os pets
         }
 
         try {
@@ -195,7 +195,7 @@ export default function Filtros() {
                 sexo: null,
                 tipo: null,
                 raca: null,
-                distancia: null,
+                distancia: 99999999999999,
             };
 
             // Atualize o documento de preferências com os campos nulos ou vazios
@@ -320,7 +320,7 @@ export default function Filtros() {
                                                 size={30} // Tamanho do ícone
                                                 style={styles.closefilter} // Estilo para posicionar o ícone "X"
                                                 color={'#573C35'}
-                                                onPress={() => setDistancia(0)} // Adicione a ação para desmarcar o botão
+                                                onPress={() => setDistancia(999999999999999)} // Adicione a ação para desmarcar o botão
                                             />
                                         )}
                                     </TouchableOpacity>
@@ -335,7 +335,7 @@ export default function Filtros() {
                                                 size={30} // Tamanho do ícone
                                                 style={styles.closefilter} // Estilo para posicionar o ícone "X"
                                                 color={'#573C35'}
-                                                onPress={() => setDistancia(0)} // Adicione a ação para desmarcar o botão
+                                                onPress={() => setDistancia(999999999999999)} // Adicione a ação para desmarcar o botão
                                             />
                                         )}
                                     </TouchableOpacity>
@@ -350,7 +350,7 @@ export default function Filtros() {
                                                 size={30} // Tamanho do ícone
                                                 style={styles.closefilter} // Estilo para posicionar o ícone "X"
                                                 color={'#573C35'}
-                                                onPress={() => setDistancia(0)} // Adicione a ação para desmarcar o botão
+                                                onPress={() => setDistancia(999999999999999)} // Adicione a ação para desmarcar o botão
                                             />
                                         )}
                                     </TouchableOpacity>
