@@ -196,6 +196,7 @@ export default function Filtros() {
                 tipo: null,
                 raca: null,
                 distancia: 99999999999999,
+                userId: auth.currentUser.uid,
             };
 
             // Atualize o documento de preferências com os campos nulos ou vazios

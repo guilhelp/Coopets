@@ -67,6 +67,8 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         margin: 20,
+        borderColor: '#EEE1D3',
+        borderWidth: 3,
     },
     botaoAvancarText: {
         fontFamily: 'Roboto_900Black',
